@@ -1,0 +1,16 @@
+import libc {...}
+
+func print(fmt: char const*, ...) {
+    args: va_list;
+    va_start(&args, &fmt);
+    vprintf(fmt, args);
+    va_end(&args);
+}
+
+func println(fmt: char const*, ...) {
+    args: va_list;
+    va_start(&args, &fmt);
+    vprintf(fmt, args);
+    printf("\n");
+    va_end(&args);
+}

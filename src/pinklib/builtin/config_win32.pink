@@ -1,0 +1,1 @@
+var current_os: char const* = "win32";

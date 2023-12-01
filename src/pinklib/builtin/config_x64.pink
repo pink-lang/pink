@@ -1,0 +1,1 @@
+var current_arch: char const* = "x64";
