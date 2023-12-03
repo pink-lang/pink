@@ -1,0 +1,18 @@
+name: Pink Build CI
+
+on:
+  push:
+   branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Try building for linux
+      run: bash ./make.sh
