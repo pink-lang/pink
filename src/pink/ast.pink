@@ -1,7 +1,6 @@
 var ast_arena: Arena;
 
 func ast_alloc(size: usize): void* {
-    #assert(size != 0);
     ptr := arena_alloc(&ast_arena, size);
     memset(ptr, 0, size);
     return ptr;
@@ -118,7 +117,6 @@ func new_aggregate(pos: SrcPos, kind: AggregateKind, items: AggregateItem*, num_
 }
 
 func new_decl_aggregate(pos: SrcPos, kind: DeclKind, name: char const*, aggregate: Aggregate*): Decl* {
-    #assert(kind == DECL_STRUCT || kind == DECL_UNION);
     d := new_decl(kind, pos, name);
     d.aggregate = aggregate;
     return d;

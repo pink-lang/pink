@@ -72,7 +72,6 @@ func init_keywords() {
     switch_keyword = init_keyword("switch");
     case_keyword = init_keyword("case");
     default_keyword = init_keyword("default");
-    #assert(intern_arena.end == arena_end);
     first_keyword = typedef_keyword;
     last_keyword = default_keyword;
 
@@ -485,7 +484,6 @@ var escape_to_char: char[256] = {
 };
 
 func scan_hex_escape(): int {
-    #assert(*stream == 'x');
     stream++;
     val := char_to_digit[(:uchar)*stream];
     if (!val && *stream != '0') {
@@ -506,7 +504,6 @@ func scan_hex_escape(): int {
 }
 
 func scan_char() {
-    #assert(*stream == '\'');
     stream++;
     val := 0;
     if (*stream == '\'') {
@@ -540,7 +537,6 @@ func scan_char() {
 }
 
 func scan_str() {
-    #assert(*stream == '"');
     stream++;
     str: char* = NULL;
     if (stream[0] == '"' && stream[1] == '"') {

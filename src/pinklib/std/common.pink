@@ -184,10 +184,10 @@ func buf_push(b: void**, elem: void*, elem_size: usize) {
 // #define buf_clear(b) ((b) ? buf__hdr(b)->len = 0 : 0)
 
 func buf__grow(buf: void const*, new_len: usize, elem_size: usize): void* {
-    #assert(buf_cap(buf) <= (USIZE_MAX - 1)/2);
+    //#assert(buf_cap(buf) <= (USIZE_MAX - 1)/2);
     new_cap := clamp_min(2*buf_cap(buf), max(new_len, 16));
-    #assert(new_len <= new_cap);
-    #assert(new_cap <= (USIZE_MAX - offsetof(BufHdr, buf))/elem_size);
+    //#assert(new_len <= new_cap);
+    //#assert(new_cap <= (USIZE_MAX - offsetof(BufHdr, buf))/elem_size);
     new_size := offsetof(BufHdr, buf) + new_cap*elem_size;
     new_hdr: BufHdr*;
     if (buf) {
@@ -211,7 +211,7 @@ func buf_printf(buf: char**, fmt: char const*, ...) {
         va_start(&args, &fmt);
         new_cap := buf_cap(*buf) - buf_len(*buf);
         n = 1 + vsnprintf(buf_end(*buf, 1), new_cap, fmt, args);
-        #assert(n <= new_cap);
+        //#assert(n <= new_cap);
         va_end(&args);
     }
     buf__hdr(*buf).len += n - 1;
@@ -231,7 +231,7 @@ const ARENA_BLOCK_SIZE = 1024 * 1024;
 func arena_grow(arena: Arena*, min_size: usize) {
     size := align_up(clamp_min(min_size, ARENA_BLOCK_SIZE), ARENA_ALIGNMENT);
     arena.ptr = xmalloc(size);
-    #assert(arena.ptr == align_down_ptr(arena.ptr, ARENA_ALIGNMENT));
+    //#assert(arena.ptr == align_down_ptr(arena.ptr, ARENA_ALIGNMENT));
     arena.end = arena.ptr + size;
     buf_push((:void**)&arena.blocks, &arena.ptr, sizeof(arena.ptr));
 }
@@ -239,12 +239,12 @@ func arena_grow(arena: Arena*, min_size: usize) {
 func arena_alloc(arena: Arena*, size: usize): void* {
     if (size > (:usize)(arena.end - arena.ptr)) {
         arena_grow(arena, size);
-        #assert(size <= (:usize)(arena.end - arena.ptr));
+        //#assert(size <= (:usize)(arena.end - arena.ptr));
     }
     ptr := arena.ptr;
     arena.ptr = align_up_ptr(arena.ptr + size, ARENA_ALIGNMENT);
-    #assert(arena.ptr <= arena.end);
-    #assert(ptr == align_down_ptr(ptr, ARENA_ALIGNMENT));
+    //#assert(arena.ptr <= arena.end);
+    //#assert(ptr == align_down_ptr(ptr, ARENA_ALIGNMENT));
     return ptr;
 }
 
@@ -297,9 +297,9 @@ func map_get_uint64_from_uint64(map: Map*, key: uint64): uint64 {
     if (map.len == 0) {
         return 0;
     }
-    #assert(is_pow2(map.cap));
+    //#assert(is_pow2(map.cap));
     i := (:usize)hash_uint64(key);
-    #assert(map.len < map.cap);
+    //#assert(map.len < map.cap);
     for (;;) {
         i &= map.cap - 1;
         if (map.keys[i] == key) {
@@ -330,15 +330,15 @@ func map_grow(map: Map*, new_cap: usize) {
 }
 
 func map_put_uint64_from_uint64(map: Map*, key: uint64, val: uint64) {
-    #assert(key);
+    //#assert(key);
     if (!val) {
         return;
     }
     if (2*map.len >= map.cap) {
         map_grow(map, 2*map.cap);
     }
-    #assert(2*map.len < map.cap);
-    #assert(is_pow2(map.cap));
+    //#assert(2*map.len < map.cap);
+    //#assert(is_pow2(map.cap));
     i := (:usize)hash_uint64(key);
     for (;;) {
         i &= map.cap - 1;

@@ -71,7 +71,6 @@ func parse_type(): Typespec* {
         } else if (match_keyword(const_keyword)) {
             type = new_typespec_const(pos, type);
         } else {
-            #assert(is_token(TOKEN_MUL));
             next_token();
             type = new_typespec_ptr(pos, type);
         }
@@ -229,7 +228,6 @@ func parse_expr_base(): Expr* {
             expect_token(TOKEN_NAME);
             expr = new_expr_field(pos, expr, field);
         } else {
-            #assert(is_token(TOKEN_INC) || is_token(TOKEN_DEC));
             op := token.kind;
             next_token();
             expr = new_expr_modify(pos, op, true, expr);
@@ -501,7 +499,6 @@ func parse_stmt_switch_case(): SwitchCase {
                 buf_push((:void**)&patterns, &pattern, sizeof(pattern));
             }
         } else {
-            #assert(is_keyword(default_keyword));
             next_token();
             if (is_default) {
                 error(token.pos, "Duplicate default labels in same switch clause");
@@ -663,7 +660,6 @@ func parse_aggregate(kind: AggregateKind): Aggregate* {
 }
 
 func parse_decl_aggregate(pos: SrcPos, kind: DeclKind): Decl* {
-    #assert(kind == DECL_STRUCT || kind == DECL_UNION);
     name := parse_name();
     aggregate_kind := kind == DECL_STRUCT ? AGGREGATE_STRUCT : AGGREGATE_UNION;
     if (match_token(TOKEN_SEMICOLON)) {

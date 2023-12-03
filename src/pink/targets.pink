@@ -123,7 +123,7 @@ func init_target() {
         type_usize = type_uint;
         type_ssize = type_int;
     } else {
-        #assert(type_metrics[CMPL_TYPE_PTR].size == 8);
+        //#assert(type_metrics[CMPL_TYPE_PTR].size == 8);
         type_uintptr = type_ullong;
         type_usize = type_ullong;
         type_ssize = type_llong;

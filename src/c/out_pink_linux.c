@@ -6585,7 +6585,7 @@ bool src_pink_resolve_stmt(src_pink_Stmt (*stmt), src_pink_Type (*ret_type), src
     case SRC_PINK_STMT_NOTE: {
         if ((stmt->note.name) == (src_pink_assert_name)) {
             if ((stmt->note.num_args) != (1)) {
-                src_pink_fatal_error(stmt->pos, "#assert takes 1 argument");
+                src_pink_fatal_error(stmt->pos, "//#assert takes 1 argument");
             }
             src_pink_resolve_cond_expr(stmt->note.args[0].expr);
         } else if ((stmt->note.name) == (src_pink_static_assert_name)) {

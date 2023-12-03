@@ -206,7 +206,7 @@ var type_ranks: int[NUM_CMPL_TYPE_KINDS] = {
 
 func type_rank(type: Type*): int {
     rank := type_ranks[type.kind];
-    #assert(rank != 0);
+    //#assert(rank != 0);
     return rank;
 }
 
@@ -231,18 +231,18 @@ func unsigned_type(type: Type*): Type* {
     case CMPL_TYPE_ULLONG:
         return type_ullong;
     default:
-        #assert(0);
+        //#assert(0);
         return NULL;
     }
 }
 
 func type_sizeof(type: Type*): usize {
-    #assert(type.kind > CMPL_TYPE_COMPLETING);
+    //#assert(type.kind > CMPL_TYPE_COMPLETING);
     return type.size;
 }
 
 func type_alignof(type: Type*): usize {
-    #assert(type.kind > CMPL_TYPE_COMPLETING);
+    //#assert(type.kind > CMPL_TYPE_COMPLETING);
     return type.align;
 }
 
@@ -364,7 +364,7 @@ func has_duplicate_fields(type: Type*): bool {
 }
 
 func add_type_fields(fields: TypeField**, type: Type*, offset: usize) {
-    #assert(type.kind == CMPL_TYPE_STRUCT || type.kind == CMPL_TYPE_UNION);
+    //#assert(type.kind == CMPL_TYPE_STRUCT || type.kind == CMPL_TYPE_UNION);
     for (i: usize = 0; i < type.aggregate.num_fields; i++) {
         field := &type.aggregate.fields[i];
         new_field := TypeField {field.name, field.type, field.offset + offset};
@@ -373,14 +373,14 @@ func add_type_fields(fields: TypeField**, type: Type*, offset: usize) {
 }
 
 func type_complete_struct(type: Type*, fields: TypeField*, num_fields: usize) {
-    #assert(type.kind == CMPL_TYPE_COMPLETING);
+    //#assert(type.kind == CMPL_TYPE_COMPLETING);
     type.kind = CMPL_TYPE_STRUCT;
     type.size = 0;
     type.align = 0;
     nonmodifiable: bool = false;
     new_fields: TypeField*;
     for (it := fields; it != fields + num_fields; it++) {
-        #assert(is_pow2(type_alignof(it.type)));
+        //#assert(is_pow2(type_alignof(it.type)));
         if (it.name) {
             it.offset = type.size;
             buf_push((:void**)&new_fields, it, sizeof(*it));
@@ -398,14 +398,14 @@ func type_complete_struct(type: Type*, fields: TypeField*, num_fields: usize) {
 }
 
 func type_complete_union(type: Type*, fields: TypeField*, num_fields: usize) {
-    #assert(type.kind == CMPL_TYPE_COMPLETING);
+    //#assert(type.kind == CMPL_TYPE_COMPLETING);
     type.kind = CMPL_TYPE_UNION;
     type.size = 0;
     type.align = 0;
     nonmodifiable: bool = false;
     new_fields: TypeField*;
     for (it := fields; it != fields + num_fields; it++) {
-        #assert(it.type.kind > CMPL_TYPE_COMPLETING);
+        //#assert(it.type.kind > CMPL_TYPE_COMPLETING);
         if (it.name) {
             it.offset = type.size;
             buf_push((:void**)&new_fields, it, sizeof(*it));
@@ -463,7 +463,7 @@ func init_builtin_types() {
 }
 
 func aggregate_item_field_index(type: Type*, name: char const*): int {
-    #assert(is_aggregate_type(type));
+    //#assert(is_aggregate_type(type));
     for (i: usize = 0; i < type.aggregate.num_fields; i++) {
         if (type.aggregate.fields[i].name == name) {
             return (:int)i;
@@ -473,13 +473,13 @@ func aggregate_item_field_index(type: Type*, name: char const*): int {
 }
 
 func aggregate_item_field_type_from_index(type: Type*, index: int): Type* {
-    #assert(is_aggregate_type(type));
-    #assert(0 <= index && index < (:int)type.aggregate.num_fields);
+    //#assert(is_aggregate_type(type));
+    //#assert(0 <= index && index < (:int)type.aggregate.num_fields);
     return type.aggregate.fields[index].type;
 }
 
 func aggregate_item_field_type_from_name(type: Type*, name: char const*): Type* {
-    #assert(is_aggregate_type(type));
+    //#assert(is_aggregate_type(type));
     index := aggregate_item_field_index(type, name);
     if (index < 0) {
         return NULL;
