@@ -4,6 +4,8 @@ setlocal
 set PINK_HOME=%~dp0\src
 set PINK_OS=win32
 
+call vs\vsenv -arch=x64
+
 if exist bin\pink.exe (
   bin\pink.exe -nosourcemap -notypeinfo -o src\c\out_pink_win32.c src/pink
 ) else (
@@ -12,6 +14,8 @@ if exist bin\pink.exe (
   echo.
 )
 
-gcc -Isrc\c\ -o dist\bin\pink.exe src\c\pink.c
+md dist\bin
+
+cl /Fe:dist\bin\pink /Fo:dist\bin\pink src\c\pink.c
 
 endlocal
