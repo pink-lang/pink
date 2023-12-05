@@ -1,4 +1,4 @@
-name: Pink Build CI
+name: Pink Windows CI
 
 on:
   push:
