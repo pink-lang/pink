@@ -2193,8 +2193,1031 @@ void (*std_xrealloc(void (*ptr), size_t num_bytes));
 #define TYPEID0(index, kind) ((ullong)(index) | ((ullong)(kind) << 24))
 #define TYPEID(index, kind, ...) ((ullong)(index) | ((ullong)sizeof(__VA_ARGS__) << 32) | ((ullong)(kind) << 24))
 
-int num_typeinfos;
-const TypeInfo **typeinfos;
+const TypeInfo *typeinfo_table[646] = {
+    [0] = NULL, // No associated type
+    [1] = &(TypeInfo){TYPE_VOID, .name = "void", .size = 0, .align = 0},
+    [2] = &(TypeInfo){TYPE_BOOL, .size = sizeof(bool), .align = sizeof(bool), .name = "bool"},
+    [3] = &(TypeInfo){TYPE_CHAR, .size = sizeof(char), .align = sizeof(char), .name = "char"},
+    [4] = &(TypeInfo){TYPE_UCHAR, .size = sizeof(uchar), .align = sizeof(uchar), .name = "uchar"},
+    [5] = &(TypeInfo){TYPE_SCHAR, .size = sizeof(schar), .align = sizeof(schar), .name = "schar"},
+    [6] = &(TypeInfo){TYPE_SHORT, .size = sizeof(short), .align = sizeof(short), .name = "short"},
+    [7] = &(TypeInfo){TYPE_USHORT, .size = sizeof(ushort), .align = sizeof(ushort), .name = "ushort"},
+    [8] = &(TypeInfo){TYPE_INT, .size = sizeof(int), .align = sizeof(int), .name = "int"},
+    [9] = &(TypeInfo){TYPE_UINT, .size = sizeof(uint), .align = sizeof(uint), .name = "uint"},
+    [10] = &(TypeInfo){TYPE_LONG, .size = sizeof(long), .align = sizeof(long), .name = "long"},
+    [11] = &(TypeInfo){TYPE_ULONG, .size = sizeof(ulong), .align = sizeof(ulong), .name = "ulong"},
+    [12] = &(TypeInfo){TYPE_LLONG, .size = sizeof(llong), .align = sizeof(llong), .name = "llong"},
+    [13] = &(TypeInfo){TYPE_ULLONG, .size = sizeof(ullong), .align = sizeof(ullong), .name = "ullong"},
+    [14] = &(TypeInfo){TYPE_FLOAT, .size = sizeof(float), .align = sizeof(float), .name = "float"},
+    [15] = &(TypeInfo){TYPE_DOUBLE, .size = sizeof(double), .align = sizeof(double), .name = "double"},
+    [16] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(1, TYPE_VOID)},
+    [17] = &(TypeInfo){TYPE_CONST, .size = sizeof(char const ), .align = alignof(char const ), .base = TYPEID(3, TYPE_CHAR, char)},
+    [18] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(17, TYPE_CONST, char const )},
+    [19] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(18, TYPE_PTR, char const (*))},
+    [20] = NULL, // Func
+    [21] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [6]), .align = alignof(char [6]), .base = TYPEID(3, TYPE_CHAR, char), .count = 6},
+    [22] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(3, TYPE_CHAR, char)},
+    [23] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [4]), .align = alignof(char [4]), .base = TYPEID(3, TYPE_CHAR, char), .count = 4},
+    [24] = NULL, // Enum
+    [25] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(TypeFieldInfo), .align = alignof(TypeFieldInfo), .name = "TypeFieldInfo", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(TypeFieldInfo, name)},
+        {"type", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(TypeFieldInfo, type)},
+        {"offset", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeFieldInfo, offset)},
+    }},
+    [26] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(TypeInfo), .align = alignof(TypeInfo), .name = "TypeInfo", .num_fields = 8, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(24, TYPE_NONE, TypeKind), .offset = offsetof(TypeInfo, kind)},
+        {"size", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, size)},
+        {"align", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, align)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(TypeInfo, name)},
+        {"count", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, count)},
+        {"base", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(TypeInfo, base)},
+        {"fields", .type = TYPEID(27, TYPE_PTR, TypeFieldInfo *), .offset = offsetof(TypeInfo, fields)},
+        {"num_fields", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, num_fields)},
+    }},
+    [27] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(25, TYPE_STRUCT, TypeFieldInfo)},
+    [28] = &(TypeInfo){TYPE_CONST, .size = sizeof(TypeInfo const ), .align = alignof(TypeInfo const ), .base = TYPEID(26, TYPE_STRUCT, TypeInfo)},
+    [29] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(28, TYPE_CONST, TypeInfo const )},
+    [30] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(29, TYPE_PTR, TypeInfo const (*))},
+    [31] = NULL, // Func
+    [32] = NULL, // Func
+    [33] = NULL, // Func
+    [34] = NULL, // Func
+    [35] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(Any), .align = alignof(Any), .name = "Any", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"ptr", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(Any, ptr)},
+        {"type", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(Any, type)},
+    }},
+    [36] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Arena), .align = alignof(std_Arena), .name = "std_Arena", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"ptr", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, ptr)},
+        {"end", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, end)},
+        {"blocks", .type = TYPEID(37, TYPE_PTR, char (**)), .offset = offsetof(std_Arena, blocks)},
+    }},
+    [37] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(22, TYPE_PTR, char *)},
+    [38] = NULL, // Func
+    [39] = &(TypeInfo){TYPE_CONST, .size = 0, .align = 0, .base = TYPEID0(1, TYPE_VOID)},
+    [40] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(39, TYPE_CONST)},
+    [41] = NULL, // Func
+    [42] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SrcPos), .align = alignof(src_pink_SrcPos), .name = "src_pink_SrcPos", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_SrcPos, name)},
+        {"line", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(src_pink_SrcPos, line)},
+    }},
+    [43] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_NoteArg), .align = alignof(src_pink_NoteArg), .name = "src_pink_NoteArg", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_NoteArg, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_NoteArg, name)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_NoteArg, expr)},
+    }},
+    [44] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(43, TYPE_STRUCT, src_pink_NoteArg)},
+    [45] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Note), .align = alignof(src_pink_Note), .name = "src_pink_Note", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Note, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Note, name)},
+        {"args", .type = TYPEID(44, TYPE_PTR, src_pink_NoteArg *), .offset = offsetof(src_pink_Note, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Note, num_args)},
+    }},
+    [46] = NULL, // Func
+    [47] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(45, TYPE_STRUCT, src_pink_Note)},
+    [48] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Notes), .align = alignof(src_pink_Notes), .name = "src_pink_Notes", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"notes", .type = TYPEID(47, TYPE_PTR, src_pink_Note *), .offset = offsetof(src_pink_Notes, notes)},
+        {"num_notes", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Notes, num_notes)},
+    }},
+    [49] = NULL, // Func
+    [50] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Stmt), .align = alignof(src_pink_Stmt), .name = "src_pink_Stmt", .num_fields = 14, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(120, TYPE_NONE, src_pink_StmtKind), .offset = offsetof(src_pink_Stmt, kind)},
+        {"notes", .type = TYPEID(48, TYPE_STRUCT, src_pink_Notes), .offset = offsetof(src_pink_Stmt, notes)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Stmt, pos)},
+        {"note", .type = TYPEID(45, TYPE_STRUCT, src_pink_Note), .offset = offsetof(src_pink_Stmt, note)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Stmt, expr)},
+        {"decl", .type = TYPEID(67, TYPE_PTR, src_pink_Decl *), .offset = offsetof(src_pink_Stmt, decl)},
+        {"if_stmt", .type = TYPEID(161, TYPE_STRUCT, src_pink_StmtIf), .offset = offsetof(src_pink_Stmt, if_stmt)},
+        {"while_stmt", .type = TYPEID(162, TYPE_STRUCT, src_pink_StmtWhile), .offset = offsetof(src_pink_Stmt, while_stmt)},
+        {"for_stmt", .type = TYPEID(163, TYPE_STRUCT, src_pink_StmtFor), .offset = offsetof(src_pink_Stmt, for_stmt)},
+        {"switch_stmt", .type = TYPEID(164, TYPE_STRUCT, src_pink_StmtSwitch), .offset = offsetof(src_pink_Stmt, switch_stmt)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_Stmt, block)},
+        {"assign", .type = TYPEID(165, TYPE_STRUCT, src_pink_StmtAssign), .offset = offsetof(src_pink_Stmt, assign)},
+        {"init", .type = TYPEID(166, TYPE_STRUCT, src_pink_StmtInit), .offset = offsetof(src_pink_Stmt, init)},
+        {"label", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Stmt, label)},
+    }},
+    [51] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(50, TYPE_STRUCT, src_pink_Stmt)},
+    [52] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(51, TYPE_PTR, src_pink_Stmt *)},
+    [53] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtList), .align = alignof(src_pink_StmtList), .name = "src_pink_StmtList", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_StmtList, pos)},
+        {"stmts", .type = TYPEID(52, TYPE_PTR, src_pink_Stmt (**)), .offset = offsetof(src_pink_StmtList, stmts)},
+        {"num_stmts", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtList, num_stmts)},
+    }},
+    [54] = NULL, // Func
+    [55] = NULL, // Enum
+    [56] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Typespec), .align = alignof(src_pink_Typespec), .name = "src_pink_Typespec", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(55, TYPE_NONE, src_pink_TypespecKind), .offset = offsetof(src_pink_Typespec, kind)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Typespec, pos)},
+        {"base", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Typespec, base)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Typespec, name)},
+        {"function", .type = TYPEID(138, TYPE_STRUCT, src_pink_TypespecFunc), .offset = offsetof(src_pink_Typespec, function)},
+        {"num_elems", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Typespec, num_elems)},
+    }},
+    [57] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(56, TYPE_STRUCT, src_pink_Typespec)},
+    [58] = NULL, // Func
+    [59] = NULL, // Func
+    [60] = NULL, // Func
+    [61] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Expr), .align = alignof(src_pink_Expr), .name = "src_pink_Expr", .num_fields = 23, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(95, TYPE_NONE, src_pink_ExprKind), .offset = offsetof(src_pink_Expr, kind)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Expr, pos)},
+        {"paren", .type = TYPEID(146, TYPE_STRUCT, src_pink_ExprParen), .offset = offsetof(src_pink_Expr, paren)},
+        {"int_lit", .type = TYPEID(147, TYPE_STRUCT, src_pink_ExprIntLit), .offset = offsetof(src_pink_Expr, int_lit)},
+        {"float_lit", .type = TYPEID(148, TYPE_STRUCT, src_pink_ExprFloatLit), .offset = offsetof(src_pink_Expr, float_lit)},
+        {"str_lit", .type = TYPEID(149, TYPE_STRUCT, src_pink_ExprStrLit), .offset = offsetof(src_pink_Expr, str_lit)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Expr, name)},
+        {"sizeof_expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, sizeof_expr)},
+        {"sizeof_type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, sizeof_type)},
+        {"typeof_expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, typeof_expr)},
+        {"typeof_type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, typeof_type)},
+        {"alignof_expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, alignof_expr)},
+        {"alignof_type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, alignof_type)},
+        {"offsetof_field", .type = TYPEID(150, TYPE_STRUCT, src_pink_ExprOffsetofField), .offset = offsetof(src_pink_Expr, offsetof_field)},
+        {"compound", .type = TYPEID(151, TYPE_STRUCT, src_pink_ExprCompound), .offset = offsetof(src_pink_Expr, compound)},
+        {"cast", .type = TYPEID(152, TYPE_STRUCT, src_pink_ExprCast), .offset = offsetof(src_pink_Expr, cast)},
+        {"modify", .type = TYPEID(153, TYPE_STRUCT, src_pink_ExprModify), .offset = offsetof(src_pink_Expr, modify)},
+        {"unary", .type = TYPEID(154, TYPE_STRUCT, src_pink_ExprUnary), .offset = offsetof(src_pink_Expr, unary)},
+        {"binary", .type = TYPEID(155, TYPE_STRUCT, src_pink_ExprBinary), .offset = offsetof(src_pink_Expr, binary)},
+        {"ternary", .type = TYPEID(156, TYPE_STRUCT, src_pink_ExprTernary), .offset = offsetof(src_pink_Expr, ternary)},
+        {"call", .type = TYPEID(157, TYPE_STRUCT, src_pink_ExprCall), .offset = offsetof(src_pink_Expr, call)},
+        {"index", .type = TYPEID(158, TYPE_STRUCT, src_pink_ExprIndex), .offset = offsetof(src_pink_Expr, index)},
+        {"field", .type = TYPEID(159, TYPE_STRUCT, src_pink_ExprField), .offset = offsetof(src_pink_Expr, field)},
+    }},
+    [62] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(61, TYPE_STRUCT, src_pink_Expr)},
+    [63] = NULL, // Func
+    [64] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(57, TYPE_PTR, src_pink_Typespec *)},
+    [65] = NULL, // Func
+    [66] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Decl), .align = alignof(src_pink_Decl), .name = "src_pink_Decl", .num_fields = 13, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(72, TYPE_NONE, src_pink_DeclKind), .offset = offsetof(src_pink_Decl, kind)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Decl, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Decl, name)},
+        {"notes", .type = TYPEID(48, TYPE_STRUCT, src_pink_Notes), .offset = offsetof(src_pink_Decl, notes)},
+        {"is_incomplete", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Decl, is_incomplete)},
+        {"note", .type = TYPEID(45, TYPE_STRUCT, src_pink_Note), .offset = offsetof(src_pink_Decl, note)},
+        {"enum_decl", .type = TYPEID(140, TYPE_STRUCT, src_pink_DeclEnum), .offset = offsetof(src_pink_Decl, enum_decl)},
+        {"aggregate", .type = TYPEID(83, TYPE_PTR, src_pink_Aggregate *), .offset = offsetof(src_pink_Decl, aggregate)},
+        {"function", .type = TYPEID(141, TYPE_STRUCT, src_pink_DeclFunc), .offset = offsetof(src_pink_Decl, function)},
+        {"typedef_decl", .type = TYPEID(142, TYPE_STRUCT, src_pink_DeclTypedef), .offset = offsetof(src_pink_Decl, typedef_decl)},
+        {"var_decl", .type = TYPEID(143, TYPE_STRUCT, src_pink_DeclVar), .offset = offsetof(src_pink_Decl, var_decl)},
+        {"const_decl", .type = TYPEID(143, TYPE_STRUCT, src_pink_DeclVar), .offset = offsetof(src_pink_Decl, const_decl)},
+        {"import_decl", .type = TYPEID(144, TYPE_STRUCT, src_pink_DeclImport), .offset = offsetof(src_pink_Decl, import_decl)},
+    }},
+    [67] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(66, TYPE_STRUCT, src_pink_Decl)},
+    [68] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(67, TYPE_PTR, src_pink_Decl *)},
+    [69] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Decls), .align = alignof(src_pink_Decls), .name = "src_pink_Decls", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"decls", .type = TYPEID(68, TYPE_PTR, src_pink_Decl (**)), .offset = offsetof(src_pink_Decls, decls)},
+        {"num_decls", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Decls, num_decls)},
+    }},
+    [70] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(69, TYPE_STRUCT, src_pink_Decls)},
+    [71] = NULL, // Func
+    [72] = NULL, // Enum
+    [73] = NULL, // Func
+    [74] = NULL, // Func
+    [75] = NULL, // Func
+    [76] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_EnumItem), .align = alignof(src_pink_EnumItem), .name = "src_pink_EnumItem", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_EnumItem, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_EnumItem, name)},
+        {"init", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_EnumItem, init)},
+    }},
+    [77] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(76, TYPE_STRUCT, src_pink_EnumItem)},
+    [78] = NULL, // Func
+    [79] = NULL, // Enum
+    [80] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_AggregateItem), .align = alignof(src_pink_AggregateItem), .name = "src_pink_AggregateItem", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_AggregateItem, pos)},
+        {"kind", .type = TYPEID(139, TYPE_NONE, src_pink_AggregateItemKind), .offset = offsetof(src_pink_AggregateItem, kind)},
+        {"names", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(src_pink_AggregateItem, names)},
+        {"num_names", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_AggregateItem, num_names)},
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_AggregateItem, type)},
+        {"subaggregate", .type = TYPEID(83, TYPE_PTR, src_pink_Aggregate *), .offset = offsetof(src_pink_AggregateItem, subaggregate)},
+    }},
+    [81] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(80, TYPE_STRUCT, src_pink_AggregateItem)},
+    [82] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Aggregate), .align = alignof(src_pink_Aggregate), .name = "src_pink_Aggregate", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Aggregate, pos)},
+        {"kind", .type = TYPEID(79, TYPE_NONE, src_pink_AggregateKind), .offset = offsetof(src_pink_Aggregate, kind)},
+        {"items", .type = TYPEID(81, TYPE_PTR, src_pink_AggregateItem *), .offset = offsetof(src_pink_Aggregate, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Aggregate, num_items)},
+    }},
+    [83] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(82, TYPE_STRUCT, src_pink_Aggregate)},
+    [84] = NULL, // Func
+    [85] = NULL, // Func
+    [86] = NULL, // Func
+    [87] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_FuncParam), .align = alignof(src_pink_FuncParam), .name = "src_pink_FuncParam", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_FuncParam, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_FuncParam, name)},
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_FuncParam, type)},
+    }},
+    [88] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(87, TYPE_STRUCT, src_pink_FuncParam)},
+    [89] = NULL, // Func
+    [90] = NULL, // Func
+    [91] = NULL, // Func
+    [92] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ImportItem), .align = alignof(src_pink_ImportItem), .name = "src_pink_ImportItem", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ImportItem, name)},
+        {"rename", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ImportItem, rename)},
+    }},
+    [93] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(92, TYPE_STRUCT, src_pink_ImportItem)},
+    [94] = NULL, // Func
+    [95] = NULL, // Enum
+    [96] = NULL, // Func
+    [97] = NULL, // Func
+    [98] = NULL, // Func
+    [99] = NULL, // Func
+    [100] = NULL, // Enum
+    [101] = NULL, // Func
+    [102] = NULL, // Enum
+    [103] = NULL, // Enum
+    [104] = NULL, // Func
+    [105] = NULL, // Func
+    [106] = NULL, // Func
+    [107] = NULL, // Func
+    [108] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CompoundField), .align = alignof(src_pink_CompoundField), .name = "src_pink_CompoundField", .num_fields = 5, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(145, TYPE_NONE, src_pink_CompoundFieldKind), .offset = offsetof(src_pink_CompoundField, kind)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_CompoundField, pos)},
+        {"init", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_CompoundField, init)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_CompoundField, name)},
+        {"index", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_CompoundField, index)},
+    }},
+    [109] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(108, TYPE_STRUCT, src_pink_CompoundField)},
+    [110] = NULL, // Func
+    [111] = NULL, // Func
+    [112] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(62, TYPE_PTR, src_pink_Expr *)},
+    [113] = NULL, // Func
+    [114] = NULL, // Func
+    [115] = NULL, // Func
+    [116] = NULL, // Func
+    [117] = NULL, // Func
+    [118] = NULL, // Func
+    [119] = NULL, // Func
+    [120] = NULL, // Enum
+    [121] = NULL, // Func
+    [122] = NULL, // Func
+    [123] = NULL, // Func
+    [124] = NULL, // Func
+    [125] = NULL, // Func
+    [126] = NULL, // Func
+    [127] = NULL, // Func
+    [128] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ElseIf), .align = alignof(src_pink_ElseIf), .name = "src_pink_ElseIf", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ElseIf, cond)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_ElseIf, block)},
+    }},
+    [129] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(128, TYPE_STRUCT, src_pink_ElseIf)},
+    [130] = NULL, // Func
+    [131] = NULL, // Func
+    [132] = NULL, // Func
+    [133] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SwitchCase), .align = alignof(src_pink_SwitchCase), .name = "src_pink_SwitchCase", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"patterns", .type = TYPEID(243, TYPE_PTR, src_pink_SwitchCasePattern *), .offset = offsetof(src_pink_SwitchCase, patterns)},
+        {"num_patterns", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_SwitchCase, num_patterns)},
+        {"is_default", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_SwitchCase, is_default)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_SwitchCase, block)},
+    }},
+    [134] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(133, TYPE_STRUCT, src_pink_SwitchCase)},
+    [135] = NULL, // Func
+    [136] = NULL, // Func
+    [137] = NULL, // Func
+    [138] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypespecFunc), .align = alignof(src_pink_TypespecFunc), .name = "src_pink_TypespecFunc", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"args", .type = TYPEID(64, TYPE_PTR, src_pink_Typespec (**)), .offset = offsetof(src_pink_TypespecFunc, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypespecFunc, num_args)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypespecFunc, has_varargs)},
+        {"ret", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_TypespecFunc, ret)},
+    }},
+    [139] = NULL, // Enum
+    [140] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclEnum), .align = alignof(src_pink_DeclEnum), .name = "src_pink_DeclEnum", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclEnum, type)},
+        {"items", .type = TYPEID(77, TYPE_PTR, src_pink_EnumItem *), .offset = offsetof(src_pink_DeclEnum, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclEnum, num_items)},
+    }},
+    [141] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclFunc), .align = alignof(src_pink_DeclFunc), .name = "src_pink_DeclFunc", .num_fields = 5, .fields = (TypeFieldInfo[]) {
+        {"params", .type = TYPEID(88, TYPE_PTR, src_pink_FuncParam *), .offset = offsetof(src_pink_DeclFunc, params)},
+        {"num_params", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclFunc, num_params)},
+        {"ret_type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclFunc, ret_type)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclFunc, has_varargs)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_DeclFunc, block)},
+    }},
+    [142] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclTypedef), .align = alignof(src_pink_DeclTypedef), .name = "src_pink_DeclTypedef", .num_fields = 1, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclTypedef, type)},
+    }},
+    [143] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclVar), .align = alignof(src_pink_DeclVar), .name = "src_pink_DeclVar", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclVar, type)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_DeclVar, expr)},
+    }},
+    [144] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclImport), .align = alignof(src_pink_DeclImport), .name = "src_pink_DeclImport", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"is_relative", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclImport, is_relative)},
+        {"names", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(src_pink_DeclImport, names)},
+        {"num_names", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclImport, num_names)},
+        {"import_all", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclImport, import_all)},
+        {"items", .type = TYPEID(93, TYPE_PTR, src_pink_ImportItem *), .offset = offsetof(src_pink_DeclImport, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclImport, num_items)},
+    }},
+    [145] = NULL, // Enum
+    [146] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprParen), .align = alignof(src_pink_ExprParen), .name = "src_pink_ExprParen", .num_fields = 1, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprParen, expr)},
+    }},
+    [147] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprIntLit), .align = alignof(src_pink_ExprIntLit), .name = "src_pink_ExprIntLit", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"val", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprIntLit, val)},
+        {"mod", .type = TYPEID(102, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_ExprIntLit, mod)},
+        {"suffix", .type = TYPEID(103, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_ExprIntLit, suffix)},
+    }},
+    [148] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprFloatLit), .align = alignof(src_pink_ExprFloatLit), .name = "src_pink_ExprFloatLit", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"start", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprFloatLit, start)},
+        {"end", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprFloatLit, end)},
+        {"val", .type = TYPEID(15, TYPE_DOUBLE, double), .offset = offsetof(src_pink_ExprFloatLit, val)},
+        {"suffix", .type = TYPEID(103, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_ExprFloatLit, suffix)},
+    }},
+    [149] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprStrLit), .align = alignof(src_pink_ExprStrLit), .name = "src_pink_ExprStrLit", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"val", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprStrLit, val)},
+        {"mod", .type = TYPEID(102, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_ExprStrLit, mod)},
+    }},
+    [150] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprOffsetofField), .align = alignof(src_pink_ExprOffsetofField), .name = "src_pink_ExprOffsetofField", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprOffsetofField, type)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprOffsetofField, name)},
+    }},
+    [151] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCompound), .align = alignof(src_pink_ExprCompound), .name = "src_pink_ExprCompound", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprCompound, type)},
+        {"fields", .type = TYPEID(109, TYPE_PTR, src_pink_CompoundField *), .offset = offsetof(src_pink_ExprCompound, fields)},
+        {"num_fields", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprCompound, num_fields)},
+    }},
+    [152] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCast), .align = alignof(src_pink_ExprCast), .name = "src_pink_ExprCast", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprCast, type)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprCast, expr)},
+    }},
+    [153] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprModify), .align = alignof(src_pink_ExprModify), .name = "src_pink_ExprModify", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprModify, op)},
+        {"post", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_ExprModify, post)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprModify, expr)},
+    }},
+    [154] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprUnary), .align = alignof(src_pink_ExprUnary), .name = "src_pink_ExprUnary", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprUnary, op)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprUnary, expr)},
+    }},
+    [155] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprBinary), .align = alignof(src_pink_ExprBinary), .name = "src_pink_ExprBinary", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprBinary, op)},
+        {"left", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprBinary, left)},
+        {"right", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprBinary, right)},
+    }},
+    [156] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprTernary), .align = alignof(src_pink_ExprTernary), .name = "src_pink_ExprTernary", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, cond)},
+        {"then_expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, then_expr)},
+        {"else_expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, else_expr)},
+    }},
+    [157] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCall), .align = alignof(src_pink_ExprCall), .name = "src_pink_ExprCall", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprCall, expr)},
+        {"args", .type = TYPEID(112, TYPE_PTR, src_pink_Expr (**)), .offset = offsetof(src_pink_ExprCall, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprCall, num_args)},
+    }},
+    [158] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprIndex), .align = alignof(src_pink_ExprIndex), .name = "src_pink_ExprIndex", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprIndex, expr)},
+        {"index", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprIndex, index)},
+    }},
+    [159] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprField), .align = alignof(src_pink_ExprField), .name = "src_pink_ExprField", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprField, expr)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprField, name)},
+    }},
+    [160] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SwitchCasePattern), .align = alignof(src_pink_SwitchCasePattern), .name = "src_pink_SwitchCasePattern", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"start", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_SwitchCasePattern, start)},
+        {"end", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_SwitchCasePattern, end)},
+    }},
+    [161] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtIf), .align = alignof(src_pink_StmtIf), .name = "src_pink_StmtIf", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"init", .type = TYPEID(51, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtIf, init)},
+        {"cond", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtIf, cond)},
+        {"then_block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtIf, then_block)},
+        {"elseifs", .type = TYPEID(129, TYPE_PTR, src_pink_ElseIf *), .offset = offsetof(src_pink_StmtIf, elseifs)},
+        {"num_elseifs", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtIf, num_elseifs)},
+        {"else_block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtIf, else_block)},
+    }},
+    [162] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtWhile), .align = alignof(src_pink_StmtWhile), .name = "src_pink_StmtWhile", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtWhile, cond)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtWhile, block)},
+    }},
+    [163] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtFor), .align = alignof(src_pink_StmtFor), .name = "src_pink_StmtFor", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"init", .type = TYPEID(51, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtFor, init)},
+        {"cond", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtFor, cond)},
+        {"next", .type = TYPEID(51, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtFor, next)},
+        {"block", .type = TYPEID(53, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtFor, block)},
+    }},
+    [164] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtSwitch), .align = alignof(src_pink_StmtSwitch), .name = "src_pink_StmtSwitch", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtSwitch, expr)},
+        {"cases", .type = TYPEID(134, TYPE_PTR, src_pink_SwitchCase *), .offset = offsetof(src_pink_StmtSwitch, cases)},
+        {"num_cases", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtSwitch, num_cases)},
+    }},
+    [165] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtAssign), .align = alignof(src_pink_StmtAssign), .name = "src_pink_StmtAssign", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_StmtAssign, op)},
+        {"left", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtAssign, left)},
+        {"right", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtAssign, right)},
+    }},
+    [166] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtInit), .align = alignof(src_pink_StmtInit), .name = "src_pink_StmtInit", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_StmtInit, name)},
+        {"type", .type = TYPEID(57, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_StmtInit, type)},
+        {"expr", .type = TYPEID(62, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtInit, expr)},
+    }},
+    [167] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [909]), .align = alignof(char [909]), .base = TYPEID(3, TYPE_CHAR, char), .count = 909},
+    [168] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [1513]), .align = alignof(char [1513]), .base = TYPEID(3, TYPE_CHAR, char), .count = 1513},
+    [169] = NULL, // Func
+    [170] = NULL, // Func
+    [171] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [256]), .align = alignof(char [256]), .base = TYPEID(3, TYPE_CHAR, char), .count = 256},
+    [172] = NULL, // Func
+    [173] = NULL, // Func
+    [174] = NULL, // Func
+    [175] = NULL, // Func
+    [176] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Type), .align = alignof(src_pink_Type), .name = "src_pink_Type", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(192, TYPE_NONE, src_pink_CompilerTypeKind), .offset = offsetof(src_pink_Type, kind)},
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, size)},
+        {"align", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, align)},
+        {"sym", .type = TYPEID(188, TYPE_PTR, src_pink_Sym *), .offset = offsetof(src_pink_Type, sym)},
+        {"base", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Type, base)},
+        {"typeid", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(src_pink_Type, typeid)},
+        {"nonmodifiable", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Type, nonmodifiable)},
+        {"num_elems", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, num_elems)},
+        {"aggregate", .type = TYPEID(341, TYPE_STRUCT, src_pink_TypeAggregate), .offset = offsetof(src_pink_Type, aggregate)},
+        {"function", .type = TYPEID(342, TYPE_STRUCT, src_pink_TypeFunc), .offset = offsetof(src_pink_Type, function)},
+    }},
+    [177] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(176, TYPE_STRUCT, src_pink_Type)},
+    [178] = NULL, // Func
+    [179] = NULL, // Func
+    [180] = NULL, // Func
+    [181] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Map), .align = alignof(std_Map), .name = "std_Map", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"keys", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(std_Map, keys)},
+        {"vals", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(std_Map, vals)},
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, cap)},
+    }},
+    [182] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(13, TYPE_ULLONG, ullong)},
+    [183] = NULL, // Func
+    [184] = NULL, // Func
+    [185] = NULL, // Func
+    [186] = NULL, // Func
+    [187] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Sym), .align = alignof(src_pink_Sym), .name = "src_pink_Sym", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Sym, name)},
+        {"home_package", .type = TYPEID(206, TYPE_PTR, src_pink_Package *), .offset = offsetof(src_pink_Sym, home_package)},
+        {"kind", .type = TYPEID(260, TYPE_NONE, src_pink_SymKind), .offset = offsetof(src_pink_Sym, kind)},
+        {"state", .type = TYPEID(261, TYPE_NONE, src_pink_SymState), .offset = offsetof(src_pink_Sym, state)},
+        {"reachable", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(src_pink_Sym, reachable)},
+        {"decl", .type = TYPEID(67, TYPE_PTR, src_pink_Decl *), .offset = offsetof(src_pink_Sym, decl)},
+        {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Sym, external_name)},
+        {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Sym, type)},
+        {"val", .type = TYPEID(266, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Sym, val)},
+        {"package", .type = TYPEID(206, TYPE_PTR, src_pink_Package *), .offset = offsetof(src_pink_Sym, package)},
+    }},
+    [188] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(187, TYPE_STRUCT, src_pink_Sym)},
+    [189] = NULL, // Func
+    [190] = NULL, // Func
+    [191] = NULL, // Func
+    [192] = NULL, // Enum
+    [193] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[25])), .align = alignof(char const (*[25])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 25},
+    [194] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [10]), .align = alignof(char [10]), .base = TYPEID(3, TYPE_CHAR, char), .count = 10},
+    [195] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [11]), .align = alignof(char [11]), .base = TYPEID(3, TYPE_CHAR, char), .count = 11},
+    [196] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [12]), .align = alignof(char [12]), .base = TYPEID(3, TYPE_CHAR, char), .count = 12},
+    [197] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [9]), .align = alignof(char [9]), .base = TYPEID(3, TYPE_CHAR, char), .count = 9},
+    [198] = NULL, // Func
+    [199] = NULL, // Func
+    [200] = NULL, // Func
+    [201] = NULL, // Func
+    [202] = NULL, // Func
+    [203] = NULL, // Func
+    [204] = NULL, // Func
+    [205] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Package), .align = alignof(src_pink_Package), .name = "src_pink_Package", .num_fields = 8, .fields = (TypeFieldInfo[]) {
+        {"path", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Package, path)},
+        {"full_path", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(src_pink_Package, full_path)},
+        {"decls", .type = TYPEID(68, TYPE_PTR, src_pink_Decl (**)), .offset = offsetof(src_pink_Package, decls)},
+        {"num_decls", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Package, num_decls)},
+        {"syms_map", .type = TYPEID(181, TYPE_STRUCT, std_Map), .offset = offsetof(src_pink_Package, syms_map)},
+        {"syms", .type = TYPEID(265, TYPE_PTR, src_pink_Sym (**)), .offset = offsetof(src_pink_Package, syms)},
+        {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Package, external_name)},
+        {"always_reachable", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Package, always_reachable)},
+    }},
+    [206] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(205, TYPE_STRUCT, src_pink_Package)},
+    [207] = NULL, // Func
+    [208] = NULL, // Func
+    [209] = NULL, // Func
+    [210] = NULL, // Func
+    [211] = NULL, // Func
+    [212] = NULL, // Incomplete array type
+    [213] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [1]), .align = alignof(char [1]), .base = TYPEID(3, TYPE_CHAR, char), .count = 1},
+    [214] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [2]), .align = alignof(char [2]), .base = TYPEID(3, TYPE_CHAR, char), .count = 2},
+    [215] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [3]), .align = alignof(char [3]), .base = TYPEID(3, TYPE_CHAR, char), .count = 3},
+    [216] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[7])), .align = alignof(char const (*[7])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 7},
+    [217] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [8]), .align = alignof(char [8]), .base = TYPEID(3, TYPE_CHAR, char), .count = 8},
+    [218] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [7]), .align = alignof(char [7]), .base = TYPEID(3, TYPE_CHAR, char), .count = 7},
+    [219] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [5]), .align = alignof(char [5]), .base = TYPEID(3, TYPE_CHAR, char), .count = 5},
+    [220] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[54])), .align = alignof(char const (*[54])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 54},
+    [221] = NULL, // Func
+    [222] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_TokenKind [54]), .align = alignof(src_pink_TokenKind [54]), .base = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .count = 54},
+    [223] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Token), .align = alignof(src_pink_Token), .name = "src_pink_Token", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(100, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_Token, kind)},
+        {"mod", .type = TYPEID(102, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_Token, mod)},
+        {"suffix", .type = TYPEID(103, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_Token, suffix)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Token, pos)},
+        {"start", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, start)},
+        {"end", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, end)},
+        {"int_val", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Token, int_val)},
+        {"float_val", .type = TYPEID(15, TYPE_DOUBLE, double), .offset = offsetof(src_pink_Token, float_val)},
+        {"str_val", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, str_val)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, name)},
+    }},
+    [224] = NULL, // No associated type
+    [225] = NULL, // Func
+    [226] = NULL, // Func
+    [227] = NULL, // Func
+    [228] = NULL, // Func
+    [229] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(uchar [256]), .align = alignof(uchar [256]), .base = TYPEID(4, TYPE_UCHAR, uchar), .count = 256},
+    [230] = NULL, // Func
+    [231] = NULL, // Func
+    [232] = NULL, // Func
+    [233] = NULL, // Func
+    [234] = NULL, // Func
+    [235] = NULL, // No associated type
+    [236] = NULL, // Func
+    [237] = NULL, // Func
+    [238] = NULL, // Func
+    [239] = NULL, // Func
+    [240] = NULL, // Func
+    [241] = NULL, // Func
+    [242] = NULL, // Func
+    [243] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(160, TYPE_STRUCT, src_pink_SwitchCasePattern)},
+    [244] = NULL, // Func
+    [245] = NULL, // Func
+    [246] = NULL, // Func
+    [247] = NULL, // No associated type
+    [248] = NULL, // No associated type
+    [249] = NULL, // Func
+    [250] = NULL, // Func
+    [251] = NULL, // Func
+    [252] = NULL, // Func
+    [253] = NULL, // Func
+    [254] = NULL, // Func
+    [255] = NULL, // Func
+    [256] = NULL, // Func
+    [257] = NULL, // Func
+    [258] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[256])), .align = alignof(char const (*[256])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 256},
+    [259] = NULL, // Func
+    [260] = NULL, // Enum
+    [261] = NULL, // Enum
+    [262] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(206, TYPE_PTR, src_pink_Package *)},
+    [263] = NULL, // Func
+    [264] = NULL, // Func
+    [265] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(188, TYPE_PTR, src_pink_Sym *)},
+    [266] = &(TypeInfo){TYPE_UNION, .size = sizeof(std_Val), .align = alignof(std_Val), .name = "std_Val", .num_fields = 13, .fields = (TypeFieldInfo[]) {
+        {"b", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_Val, b)},
+        {"c", .type = TYPEID(3, TYPE_CHAR, char), .offset = offsetof(std_Val, c)},
+        {"uc", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(std_Val, uc)},
+        {"sc", .type = TYPEID(5, TYPE_SCHAR, schar), .offset = offsetof(std_Val, sc)},
+        {"s", .type = TYPEID(6, TYPE_SHORT, short), .offset = offsetof(std_Val, s)},
+        {"us", .type = TYPEID(7, TYPE_USHORT, ushort), .offset = offsetof(std_Val, us)},
+        {"i", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_Val, i)},
+        {"u", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(std_Val, u)},
+        {"l", .type = TYPEID(10, TYPE_LONG, long), .offset = offsetof(std_Val, l)},
+        {"ul", .type = TYPEID(11, TYPE_ULONG, ulong), .offset = offsetof(std_Val, ul)},
+        {"ll", .type = TYPEID(12, TYPE_LLONG, llong), .offset = offsetof(std_Val, ll)},
+        {"ull", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, ull)},
+        {"p", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, p)},
+    }},
+    [267] = NULL, // No associated type
+    [268] = NULL, // No associated type
+    [269] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_Sym [1024]), .align = alignof(src_pink_Sym [1024]), .base = TYPEID(187, TYPE_STRUCT, src_pink_Sym), .count = 1024},
+    [270] = NULL, // Func
+    [271] = NULL, // Func
+    [272] = NULL, // Func
+    [273] = NULL, // Func
+    [274] = NULL, // Func
+    [275] = NULL, // Func
+    [276] = NULL, // Func
+    [277] = NULL, // Func
+    [278] = NULL, // Func
+    [279] = NULL, // Func
+    [280] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Operand), .align = alignof(src_pink_Operand), .name = "src_pink_Operand", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Operand, type)},
+        {"is_lvalue", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_lvalue)},
+        {"is_const", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_const)},
+        {"val", .type = TYPEID(266, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Operand, val)},
+    }},
+    [281] = NULL, // Func
+    [282] = NULL, // Func
+    [283] = NULL, // Func
+    [284] = NULL, // Func
+    [285] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(280, TYPE_STRUCT, src_pink_Operand)},
+    [286] = NULL, // Func
+    [287] = NULL, // Func
+    [288] = NULL, // Func
+    [289] = NULL, // Func
+    [290] = NULL, // Func
+    [291] = NULL, // Func
+    [292] = NULL, // Func
+    [293] = NULL, // Func
+    [294] = NULL, // Func
+    [295] = NULL, // Func
+    [296] = NULL, // Func
+    [297] = NULL, // Func
+    [298] = NULL, // Func
+    [299] = NULL, // Func
+    [300] = NULL, // Func
+    [301] = NULL, // Func
+    [302] = NULL, // Func
+    [303] = NULL, // Func
+    [304] = NULL, // Func
+    [305] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(266, TYPE_UNION, std_Val)},
+    [306] = NULL, // Func
+    [307] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtCtx), .align = alignof(src_pink_StmtCtx), .name = "src_pink_StmtCtx", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"is_break_legal", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_StmtCtx, is_break_legal)},
+        {"is_continue_legal", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_StmtCtx, is_continue_legal)},
+    }},
+    [308] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Label), .align = alignof(src_pink_Label), .name = "src_pink_Label", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Label, name)},
+        {"pos", .type = TYPEID(42, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Label, pos)},
+        {"referenced", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Label, referenced)},
+        {"defined", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Label, defined)},
+    }},
+    [309] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_Label [256]), .align = alignof(src_pink_Label [256]), .base = TYPEID(308, TYPE_STRUCT, src_pink_Label), .count = 256},
+    [310] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(308, TYPE_STRUCT, src_pink_Label)},
+    [311] = NULL, // Func
+    [312] = NULL, // Func
+    [313] = NULL, // Func
+    [314] = NULL, // Func
+    [315] = NULL, // Func
+    [316] = NULL, // Func
+    [317] = NULL, // Func
+    [318] = NULL, // Func
+    [319] = NULL, // Func
+    [320] = NULL, // Func
+    [321] = NULL, // Func
+    [322] = NULL, // Func
+    [323] = NULL, // Func
+    [324] = NULL, // Func
+    [325] = NULL, // Func
+    [326] = NULL, // Func
+    [327] = NULL, // Func
+    [328] = NULL, // Func
+    [329] = NULL, // Func
+    [330] = NULL, // Func
+    [331] = NULL, // Func
+    [332] = NULL, // Enum
+    [333] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[3])), .align = alignof(char const (*[3])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 3},
+    [334] = NULL, // Enum
+    [335] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[2])), .align = alignof(char const (*[2])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 2},
+    [336] = NULL, // Func
+    [337] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeMetrics), .align = alignof(src_pink_TypeMetrics), .name = "src_pink_TypeMetrics", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, size)},
+        {"align", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, align)},
+        {"sign", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypeMetrics, sign)},
+        {"max", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, max)},
+    }},
+    [338] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_TypeMetrics [25]), .align = alignof(src_pink_TypeMetrics [25]), .base = TYPEID(337, TYPE_STRUCT, src_pink_TypeMetrics), .count = 25},
+    [339] = NULL, // Func
+    [340] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeField), .align = alignof(src_pink_TypeField), .name = "src_pink_TypeField", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_TypeField, name)},
+        {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_TypeField, type)},
+        {"offset", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeField, offset)},
+    }},
+    [341] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeAggregate), .align = alignof(src_pink_TypeAggregate), .name = "src_pink_TypeAggregate", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"fields", .type = TYPEID(344, TYPE_PTR, src_pink_TypeField *), .offset = offsetof(src_pink_TypeAggregate, fields)},
+        {"num_fields", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeAggregate, num_fields)},
+    }},
+    [342] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeFunc), .align = alignof(src_pink_TypeFunc), .name = "src_pink_TypeFunc", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"params", .type = TYPEID(345, TYPE_PTR, src_pink_Type (**)), .offset = offsetof(src_pink_TypeFunc, params)},
+        {"num_params", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeFunc, num_params)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypeFunc, has_varargs)},
+        {"ret", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_TypeFunc, ret)},
+    }},
+    [343] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(337, TYPE_STRUCT, src_pink_TypeMetrics)},
+    [344] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(340, TYPE_STRUCT, src_pink_TypeField)},
+    [345] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(177, TYPE_PTR, src_pink_Type *)},
+    [346] = NULL, // No associated type
+    [347] = NULL, // Func
+    [348] = NULL, // Func
+    [349] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(int [25]), .align = alignof(int [25]), .base = TYPEID(8, TYPE_INT, int), .count = 25},
+    [350] = NULL, // Func
+    [351] = NULL, // Func
+    [352] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CachedArrayType), .align = alignof(src_pink_CachedArrayType), .name = "src_pink_CachedArrayType", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_CachedArrayType, type)},
+        {"next", .type = TYPEID(501, TYPE_PTR, src_pink_CachedArrayType *), .offset = offsetof(src_pink_CachedArrayType, next)},
+    }},
+    [353] = NULL, // Func
+    [354] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CachedFuncType), .align = alignof(src_pink_CachedFuncType), .name = "src_pink_CachedFuncType", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_CachedFuncType, type)},
+        {"next", .type = TYPEID(505, TYPE_PTR, src_pink_CachedFuncType *), .offset = offsetof(src_pink_CachedFuncType, next)},
+    }},
+    [355] = NULL, // Func
+    [356] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(344, TYPE_PTR, src_pink_TypeField *)},
+    [357] = NULL, // Func
+    [358] = NULL, // Func
+    [359] = NULL, // Func
+    [360] = NULL, // Func
+    [361] = NULL, // Func
+    [362] = NULL, // Func
+    [363] = NULL, // Func
+    [364] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(36, TYPE_STRUCT, std_Arena)},
+    [365] = NULL, // Func
+    [366] = NULL, // Func
+    [367] = NULL, // Func
+    [368] = NULL, // No associated type
+    [369] = NULL, // No associated type
+    [370] = NULL, // No associated type
+    [371] = NULL, // No associated type
+    [372] = NULL, // Func
+    [373] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [67]), .align = alignof(char [67]), .base = TYPEID(3, TYPE_CHAR, char), .count = 67},
+    [374] = NULL, // Func
+    [375] = NULL, // Func
+    [376] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(181, TYPE_STRUCT, std_Map)},
+    [377] = NULL, // Func
+    [378] = NULL, // Func
+    [379] = NULL, // Func
+    [380] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [18]), .align = alignof(char [18]), .base = TYPEID(3, TYPE_CHAR, char), .count = 18},
+    [381] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [16]), .align = alignof(char [16]), .base = TYPEID(3, TYPE_CHAR, char), .count = 16},
+    [382] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [19]), .align = alignof(char [19]), .base = TYPEID(3, TYPE_CHAR, char), .count = 19},
+    [383] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [17]), .align = alignof(char [17]), .base = TYPEID(3, TYPE_CHAR, char), .count = 17},
+    [384] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [64]), .align = alignof(char [64]), .base = TYPEID(3, TYPE_CHAR, char), .count = 64},
+    [385] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [55]), .align = alignof(char [55]), .base = TYPEID(3, TYPE_CHAR, char), .count = 55},
+    [386] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [13]), .align = alignof(char [13]), .base = TYPEID(3, TYPE_CHAR, char), .count = 13},
+    [387] = NULL, // Func
+    [388] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(16, TYPE_PTR, void *)},
+    [389] = NULL, // Func
+    [390] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(19, TYPE_PTR, char const ((**)))},
+    [391] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [24]), .align = alignof(char [24]), .base = TYPEID(3, TYPE_CHAR, char), .count = 24},
+    [392] = NULL, // Func
+    [393] = NULL, // Func
+    [394] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [35]), .align = alignof(char [35]), .base = TYPEID(3, TYPE_CHAR, char), .count = 35},
+    [395] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [37]), .align = alignof(char [37]), .base = TYPEID(3, TYPE_CHAR, char), .count = 37},
+    [396] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [38]), .align = alignof(char [38]), .base = TYPEID(3, TYPE_CHAR, char), .count = 38},
+    [397] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [57]), .align = alignof(char [57]), .base = TYPEID(3, TYPE_CHAR, char), .count = 57},
+    [398] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [31]), .align = alignof(char [31]), .base = TYPEID(3, TYPE_CHAR, char), .count = 31},
+    [399] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [77]), .align = alignof(char [77]), .base = TYPEID(3, TYPE_CHAR, char), .count = 77},
+    [400] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [80]), .align = alignof(char [80]), .base = TYPEID(3, TYPE_CHAR, char), .count = 80},
+    [401] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [83]), .align = alignof(char [83]), .base = TYPEID(3, TYPE_CHAR, char), .count = 83},
+    [402] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [74]), .align = alignof(char [74]), .base = TYPEID(3, TYPE_CHAR, char), .count = 74},
+    [403] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [63]), .align = alignof(char [63]), .base = TYPEID(3, TYPE_CHAR, char), .count = 63},
+    [404] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [81]), .align = alignof(char [81]), .base = TYPEID(3, TYPE_CHAR, char), .count = 81},
+    [405] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [50]), .align = alignof(char [50]), .base = TYPEID(3, TYPE_CHAR, char), .count = 50},
+    [406] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [14]), .align = alignof(char [14]), .base = TYPEID(3, TYPE_CHAR, char), .count = 14},
+    [407] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [72]), .align = alignof(char [72]), .base = TYPEID(3, TYPE_CHAR, char), .count = 72},
+    [408] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [114]), .align = alignof(char [114]), .base = TYPEID(3, TYPE_CHAR, char), .count = 114},
+    [409] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [28]), .align = alignof(char [28]), .base = TYPEID(3, TYPE_CHAR, char), .count = 28},
+    [410] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [39]), .align = alignof(char [39]), .base = TYPEID(3, TYPE_CHAR, char), .count = 39},
+    [411] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [20]), .align = alignof(char [20]), .base = TYPEID(3, TYPE_CHAR, char), .count = 20},
+    [412] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [21]), .align = alignof(char [21]), .base = TYPEID(3, TYPE_CHAR, char), .count = 21},
+    [413] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [23]), .align = alignof(char [23]), .base = TYPEID(3, TYPE_CHAR, char), .count = 23},
+    [414] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [15]), .align = alignof(char [15]), .base = TYPEID(3, TYPE_CHAR, char), .count = 15},
+    [415] = NULL, // Func
+    [416] = NULL, // Func
+    [417] = NULL, // Func
+    [418] = NULL, // Func
+    [419] = NULL, // Func
+    [420] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(4, TYPE_UCHAR, uchar)},
+    [421] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [36]), .align = alignof(char [36]), .base = TYPEID(3, TYPE_CHAR, char), .count = 36},
+    [422] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [25]), .align = alignof(char [25]), .base = TYPEID(3, TYPE_CHAR, char), .count = 25},
+    [423] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [33]), .align = alignof(char [33]), .base = TYPEID(3, TYPE_CHAR, char), .count = 33},
+    [424] = NULL, // Func
+    [425] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [30]), .align = alignof(char [30]), .base = TYPEID(3, TYPE_CHAR, char), .count = 30},
+    [426] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [29]), .align = alignof(char [29]), .base = TYPEID(3, TYPE_CHAR, char), .count = 29},
+    [427] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [34]), .align = alignof(char [34]), .base = TYPEID(3, TYPE_CHAR, char), .count = 34},
+    [428] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [56]), .align = alignof(char [56]), .base = TYPEID(3, TYPE_CHAR, char), .count = 56},
+    [429] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [45]), .align = alignof(char [45]), .base = TYPEID(3, TYPE_CHAR, char), .count = 45},
+    [430] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(8, TYPE_INT, int)},
+    [431] = NULL, // Func
+    [432] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [26]), .align = alignof(char [26]), .base = TYPEID(3, TYPE_CHAR, char), .count = 26},
+    [433] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [62]), .align = alignof(char [62]), .base = TYPEID(3, TYPE_CHAR, char), .count = 62},
+    [434] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [49]), .align = alignof(char [49]), .base = TYPEID(3, TYPE_CHAR, char), .count = 49},
+    [435] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(64, TYPE_PTR, src_pink_Typespec (**))},
+    [436] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [69]), .align = alignof(char [69]), .base = TYPEID(3, TYPE_CHAR, char), .count = 69},
+    [437] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(109, TYPE_PTR, src_pink_CompoundField *)},
+    [438] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(112, TYPE_PTR, src_pink_Expr (**))},
+    [439] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(52, TYPE_PTR, src_pink_Stmt (**))},
+    [440] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(129, TYPE_PTR, src_pink_ElseIf *)},
+    [441] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [59]), .align = alignof(char [59]), .base = TYPEID(3, TYPE_CHAR, char), .count = 59},
+    [442] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(243, TYPE_PTR, src_pink_SwitchCasePattern *)},
+    [443] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [47]), .align = alignof(char [47]), .base = TYPEID(3, TYPE_CHAR, char), .count = 47},
+    [444] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(134, TYPE_PTR, src_pink_SwitchCase *)},
+    [445] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(77, TYPE_PTR, src_pink_EnumItem *)},
+    [446] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(81, TYPE_PTR, src_pink_AggregateItem *)},
+    [447] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [42]), .align = alignof(char [42]), .base = TYPEID(3, TYPE_CHAR, char), .count = 42},
+    [448] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(88, TYPE_PTR, src_pink_FuncParam *)},
+    [449] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [51]), .align = alignof(char [51]), .base = TYPEID(3, TYPE_CHAR, char), .count = 51},
+    [450] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(44, TYPE_PTR, src_pink_NoteArg *)},
+    [451] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(47, TYPE_PTR, src_pink_Note *)},
+    [452] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(93, TYPE_PTR, src_pink_ImportItem *)},
+    [453] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(68, TYPE_PTR, src_pink_Decl (**))},
+    [454] = NULL, // Func
+    [455] = NULL, // Func
+    [456] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [101]), .align = alignof(char [101]), .base = TYPEID(3, TYPE_CHAR, char), .count = 101},
+    [457] = NULL, // Func
+    [458] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [44]), .align = alignof(char [44]), .base = TYPEID(3, TYPE_CHAR, char), .count = 44},
+    [459] = NULL, // Func
+    [460] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(2, TYPE_BOOL, bool)},
+    [461] = NULL, // Func
+    [462] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [52]), .align = alignof(char [52]), .base = TYPEID(3, TYPE_CHAR, char), .count = 52},
+    [463] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [58]), .align = alignof(char [58]), .base = TYPEID(3, TYPE_CHAR, char), .count = 58},
+    [464] = NULL, // Func
+    [465] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [54]), .align = alignof(char [54]), .base = TYPEID(3, TYPE_CHAR, char), .count = 54},
+    [466] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [48]), .align = alignof(char [48]), .base = TYPEID(3, TYPE_CHAR, char), .count = 48},
+    [467] = NULL, // Func
+    [468] = NULL, // Func
+    [469] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(262, TYPE_PTR, src_pink_Package (**))},
+    [470] = NULL, // Func
+    [471] = NULL, // Func
+    [472] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(265, TYPE_PTR, src_pink_Sym (**))},
+    [473] = NULL, // Func
+    [474] = NULL, // Func
+    [475] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [22]), .align = alignof(char [22]), .base = TYPEID(3, TYPE_CHAR, char), .count = 22},
+    [476] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(345, TYPE_PTR, src_pink_Type (**))},
+    [477] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [41]), .align = alignof(char [41]), .base = TYPEID(3, TYPE_CHAR, char), .count = 41},
+    [478] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [53]), .align = alignof(char [53]), .base = TYPEID(3, TYPE_CHAR, char), .count = 53},
+    [479] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(100, TYPE_NONE, src_pink_TokenKind)},
+    [480] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [32]), .align = alignof(char [32]), .base = TYPEID(3, TYPE_CHAR, char), .count = 32},
+    [481] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [27]), .align = alignof(char [27]), .base = TYPEID(3, TYPE_CHAR, char), .count = 27},
+    [482] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [60]), .align = alignof(char [60]), .base = TYPEID(3, TYPE_CHAR, char), .count = 60},
+    [483] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [46]), .align = alignof(char [46]), .base = TYPEID(3, TYPE_CHAR, char), .count = 46},
+    [484] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [43]), .align = alignof(char [43]), .base = TYPEID(3, TYPE_CHAR, char), .count = 43},
+    [485] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [100]), .align = alignof(char [100]), .base = TYPEID(3, TYPE_CHAR, char), .count = 100},
+    [486] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [68]), .align = alignof(char [68]), .base = TYPEID(3, TYPE_CHAR, char), .count = 68},
+    [487] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [73]), .align = alignof(char [73]), .base = TYPEID(3, TYPE_CHAR, char), .count = 73},
+    [488] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [70]), .align = alignof(char [70]), .base = TYPEID(3, TYPE_CHAR, char), .count = 70},
+    [489] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [66]), .align = alignof(char [66]), .base = TYPEID(3, TYPE_CHAR, char), .count = 66},
+    [490] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [92]), .align = alignof(char [92]), .base = TYPEID(3, TYPE_CHAR, char), .count = 92},
+    [491] = NULL, // Func
+    [492] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_DirListIter), .align = alignof(std_os_DirListIter), .name = "std_os_DirListIter", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"valid", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, valid)},
+        {"error", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, error)},
+        {"base", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, base)},
+        {"name", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, name)},
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_os_DirListIter, size)},
+        {"is_dir", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, is_dir)},
+        {"handle", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(std_os_DirListIter, handle)},
+    }},
+    [493] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(492, TYPE_STRUCT, std_os_DirListIter)},
+    [494] = NULL, // Func
+    [495] = NULL, // Func
+    [496] = NULL, // Func
+    [497] = NULL, // Func
+    [498] = NULL, // Func
+    [499] = NULL, // Func
+    [500] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [40]), .align = alignof(char [40]), .base = TYPEID(3, TYPE_CHAR, char), .count = 40},
+    [501] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(352, TYPE_STRUCT, src_pink_CachedArrayType)},
+    [502] = NULL, // Func
+    [503] = NULL, // Func
+    [504] = NULL, // Func
+    [505] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(354, TYPE_STRUCT, src_pink_CachedFuncType)},
+    [506] = NULL, // Func
+    [507] = NULL, // Func
+    [508] = NULL, // Func
+    [509] = NULL, // Func
+    [510] = NULL, // Func
+    [511] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_BufHdr), .align = alignof(std_BufHdr), .name = "std_BufHdr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, cap)},
+        {"buf", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(std_BufHdr, buf)},
+    }},
+    [512] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(511, TYPE_STRUCT, std_BufHdr)},
+    [513] = NULL, // Func
+    [514] = NULL, // Func
+    [515] = NULL, // Func
+    [516] = NULL, // Func
+    [517] = NULL, // Func
+    [518] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Intern), .align = alignof(std_Intern), .name = "std_Intern", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Intern, len)},
+        {"next", .type = TYPEID(519, TYPE_PTR, std_Intern *), .offset = offsetof(std_Intern, next)},
+        {"str", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(std_Intern, str)},
+    }},
+    [519] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(518, TYPE_STRUCT, std_Intern)},
+    [520] = NULL, // Func
+    [521] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDef), .align = alignof(std_os_FlagDef), .name = "std_os_FlagDef", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(522, TYPE_NONE, std_os_FlagKind), .offset = offsetof(std_os_FlagDef, kind)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, name)},
+        {"help", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, help)},
+        {"options", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDef, options)},
+        {"arg_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, arg_name)},
+        {"num_options", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_os_FlagDef, num_options)},
+        {"ptr", .type = TYPEID(523, TYPE_STRUCT, std_os_FlagDefPtr), .offset = offsetof(std_os_FlagDef, ptr)},
+    }},
+    [522] = NULL, // Enum
+    [523] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDefPtr), .align = alignof(std_os_FlagDefPtr), .name = "std_os_FlagDefPtr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"i", .type = TYPEID(430, TYPE_PTR, int *), .offset = offsetof(std_os_FlagDefPtr, i)},
+        {"b", .type = TYPEID(460, TYPE_PTR, bool *), .offset = offsetof(std_os_FlagDefPtr, b)},
+        {"s", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDefPtr, s)},
+    }},
+    [524] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(521, TYPE_STRUCT, std_os_FlagDef)},
+    [525] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(524, TYPE_PTR, std_os_FlagDef *)},
+    [526] = NULL, // Func
+    [527] = NULL, // Incomplete: FILE
+    [528] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(527, TYPE_NONE)},
+    [529] = NULL, // Func
+    [530] = NULL, // Func
+    [531] = NULL, // Func
+    [532] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(FindData), .align = alignof(FindData), .name = "FindData", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"attrib", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(FindData, attrib)},
+        {"size", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(FindData, size)},
+        {"name", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(FindData, name)},
+    }},
+    [533] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(532, TYPE_STRUCT, FindData)},
+    [534] = NULL, // Func
+    [535] = NULL, // Func
+    [536] = NULL, // Func
+    [537] = NULL, // Func
+    [538] = NULL, // Func
+    [539] = NULL, // Func
+    [540] = NULL, // Func
+    [541] = NULL, // Func
+    [542] = NULL, // Func
+    [543] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(37, TYPE_PTR, char (**))},
+    [544] = NULL, // Func
+    [545] = NULL, // Func
+    [546] = NULL, // Func
+    [547] = NULL, // Func
+    [548] = NULL, // Func
+    [549] = NULL, // Func
+    [550] = NULL, // Func
+    [551] = NULL, // Func
+    [552] = NULL, // Func
+    [553] = NULL, // Func
+    [554] = NULL, // Func
+    [555] = NULL, // Func
+    [556] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(14, TYPE_FLOAT, float)},
+    [557] = NULL, // Func
+    [558] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(15, TYPE_DOUBLE, double)},
+    [559] = NULL, // Func
+    [560] = NULL, // Func
+    [561] = NULL, // Func
+    [562] = NULL, // Func
+    [563] = NULL, // Func
+    [564] = NULL, // Func
+    [565] = NULL, // Func
+    [566] = NULL, // Func
+    [567] = NULL, // Func
+    [568] = NULL, // Func
+    [569] = NULL, // Func
+    [570] = NULL, // Func
+    [571] = NULL, // Func
+    [572] = NULL, // Func
+    [573] = &(TypeInfo){TYPE_CONST, .size = sizeof(char (*const )), .align = alignof(char (*const )), .base = TYPEID(22, TYPE_PTR, char *)},
+    [574] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(573, TYPE_CONST, char (*const ))},
+    [575] = NULL, // Func
+    [576] = NULL, // No associated type
+    [577] = NULL, // Func
+    [578] = NULL, // Func
+    [579] = NULL, // Func
+    [580] = NULL, // Func
+    [581] = NULL, // Func
+    [582] = NULL, // Func
+    [583] = NULL, // Func
+    [584] = NULL, // Func
+    [585] = NULL, // Func
+    [586] = NULL, // Func
+    [587] = NULL, // Func
+    [588] = NULL, // Func
+    [589] = NULL, // Func
+    [590] = NULL, // Func
+    [591] = NULL, // No associated type
+    [592] = NULL, // Func
+    [593] = NULL, // Func
+    [594] = NULL, // No associated type
+    [595] = NULL, // No associated type
+    [596] = NULL, // No associated type
+    [597] = NULL, // Func
+    [598] = NULL, // Func
+    [599] = NULL, // Func
+    [600] = NULL, // Func
+    [601] = NULL, // Func
+    [602] = NULL, // Func
+    [603] = NULL, // Func
+    [604] = NULL, // Func
+    [605] = NULL, // Func
+    [606] = NULL, // Func
+    [607] = NULL, // Func
+    [608] = NULL, // Func
+    [609] = NULL, // Func
+    [610] = NULL, // Func
+    [611] = NULL, // Func
+    [612] = NULL, // Func
+    [613] = NULL, // Func
+    [614] = NULL, // Func
+    [615] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(6, TYPE_SHORT, short)},
+    [616] = NULL, // Func
+    [617] = NULL, // Func
+    [618] = NULL, // Func
+    [619] = &(TypeInfo){TYPE_CONST, .size = sizeof(short const ), .align = alignof(short const ), .base = TYPEID(6, TYPE_SHORT, short)},
+    [620] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(619, TYPE_CONST, short const )},
+    [621] = NULL, // Func
+    [622] = NULL, // Func
+    [623] = NULL, // Func
+    [624] = NULL, // Func
+    [625] = NULL, // Func
+    [626] = NULL, // Func
+    [627] = NULL, // Func
+    [628] = NULL, // No associated type
+    [629] = NULL, // Func
+    [630] = NULL, // Func
+    [631] = NULL, // No associated type
+    [632] = NULL, // Func
+    [633] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(12, TYPE_LLONG, llong)},
+    [634] = NULL, // Func
+    [635] = NULL, // No associated type
+    [636] = NULL, // No associated type
+    [637] = NULL, // Func
+    [638] = &(TypeInfo){TYPE_CONST, .size = sizeof(llong const ), .align = alignof(llong const ), .base = TYPEID(12, TYPE_LLONG, llong)},
+    [639] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(638, TYPE_CONST, llong const )},
+    [640] = NULL, // Func
+    [641] = NULL, // Func
+    [642] = NULL, // Func
+    [643] = NULL, // Func
+    [644] = NULL, // Func
+    [645] = NULL, // Func
+};
+
+int num_typeinfos = 646;
+const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;
 
 // Definitions
 int main(int argc, char const ((*(*argv)))) {

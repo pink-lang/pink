@@ -5,14 +5,8 @@ set PINK_HOME=%~dp0\src
 set PINK_OS=win32
 
 call vs\vsenv -arch=x64
-
-if exist dist\bin\pink.exe (
-  dist\bin\pink.exe -nosourcemap -notypeinfo -o src\c\out_pink_win32.c src/pink
-) else (
-  echo.
-  echo -- No pink binary found; using previously built src\c\out_pink_win32.c --
-  echo.
-)
+  
+dist\bin\pink.exe -nosourcemap -o src\c\out_pink_win32.c src/pink
 
 md dist\bin
 
