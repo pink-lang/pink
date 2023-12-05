@@ -9,3 +9,7 @@ func main() {
     printf("Hello, Pink");
 }
 ```
+
+## Building
+
+see [`BUILDING.md`](./BUILDING.md)

@@ -1,0 +1,25 @@
+name: Pink Build CI
+
+on:
+  push:
+   branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+    - uses: TheMrMilchmann/setup-msvc-dev@v3
+      with:
+        arch: x64
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Try building for windows 0
+      run: cmd /c make.bat
+    - name: Try building for windows 1
+      run: cmd /c make.bat
+    - name: Try building for windows 2
+      run: cmd /c make.bat
