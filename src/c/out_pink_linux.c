@@ -128,7 +128,7 @@ typedef struct std_BufHdr std_BufHdr;
 typedef struct std_Intern std_Intern;
 
 // Sorted declarations
-int main(int argc, char const ((*(*argv))));
+int main(int argc, char** argv);
 
 extern char const ((*current_os));
 
@@ -3216,7 +3216,7 @@ int num_typeinfos = 645;
 const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;
 
 // Definitions
-int main(int argc, char const ((*(*argv)))) {
+int main(int argc, char** argv) {
     return src_pink_pink_entry(argc, argv, src_pink_gen_all, "c");
 }
 
