@@ -1,0 +1,2 @@
+PINK=pink
+CC=clang
