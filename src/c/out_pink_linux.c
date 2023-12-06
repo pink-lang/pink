@@ -47,24 +47,33 @@ typedef struct dirent dirent;
 // Foreign header files
 #include <limits.h>
 #include <stdint.h>
-#include <ctype.h>
-#include <errno.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <math.h>
+#include <ctype.h>
 #include <dirent.h>
 
 // Forward declarations
 typedef struct TypeInfo TypeInfo;
-typedef struct std_Arena std_Arena;
 typedef struct src_pink_SrcPos src_pink_SrcPos;
+typedef struct src_pink_Token src_pink_Token;
+typedef struct src_pink_TypeAggregate src_pink_TypeAggregate;
+typedef struct src_pink_TypeFunc src_pink_TypeFunc;
+typedef struct src_pink_Type src_pink_Type;
+typedef struct std_Map std_Map;
+typedef struct std_Arena std_Arena;
 typedef struct src_pink_Note src_pink_Note;
 typedef struct src_pink_Notes src_pink_Notes;
 typedef struct src_pink_StmtList src_pink_StmtList;
-typedef struct std_Map std_Map;
-typedef struct src_pink_Token src_pink_Token;
+typedef union std_Val std_Val;
+typedef struct src_pink_Sym src_pink_Sym;
+typedef struct src_pink_Operand src_pink_Operand;
+typedef struct src_pink_Label src_pink_Label;
+typedef struct src_pink_StmtCtx src_pink_StmtCtx;
+typedef struct src_pink_TypeMetrics src_pink_TypeMetrics;
 typedef struct src_pink_CompoundField src_pink_CompoundField;
 typedef struct src_pink_SwitchCasePattern src_pink_SwitchCasePattern;
 typedef struct src_pink_SwitchCase src_pink_SwitchCase;
@@ -72,26 +81,23 @@ typedef struct src_pink_EnumItem src_pink_EnumItem;
 typedef struct src_pink_AggregateItem src_pink_AggregateItem;
 typedef struct src_pink_FuncParam src_pink_FuncParam;
 typedef struct src_pink_NoteArg src_pink_NoteArg;
-typedef union std_Val std_Val;
-typedef struct src_pink_Sym src_pink_Sym;
-typedef struct src_pink_Operand src_pink_Operand;
-typedef struct src_pink_Label src_pink_Label;
-typedef struct src_pink_StmtCtx src_pink_StmtCtx;
-typedef struct src_pink_TypeMetrics src_pink_TypeMetrics;
-typedef struct src_pink_TypeAggregate src_pink_TypeAggregate;
-typedef struct src_pink_TypeFunc src_pink_TypeFunc;
-typedef struct src_pink_Type src_pink_Type;
 typedef struct TypeFieldInfo TypeFieldInfo;
 typedef struct Any Any;
-typedef struct src_pink_StmtIf src_pink_StmtIf;
-typedef struct src_pink_StmtWhile src_pink_StmtWhile;
-typedef struct src_pink_StmtFor src_pink_StmtFor;
-typedef struct src_pink_StmtSwitch src_pink_StmtSwitch;
-typedef struct src_pink_StmtAssign src_pink_StmtAssign;
-typedef struct src_pink_StmtInit src_pink_StmtInit;
-typedef struct src_pink_Stmt src_pink_Stmt;
+typedef struct src_pink_Package src_pink_Package;
+typedef struct src_pink_TypeField src_pink_TypeField;
+typedef struct src_pink_CachedArrayType src_pink_CachedArrayType;
+typedef struct src_pink_CachedFuncType src_pink_CachedFuncType;
 typedef struct src_pink_TypespecFunc src_pink_TypespecFunc;
 typedef struct src_pink_Typespec src_pink_Typespec;
+typedef struct src_pink_ImportItem src_pink_ImportItem;
+typedef struct src_pink_Aggregate src_pink_Aggregate;
+typedef struct src_pink_DeclEnum src_pink_DeclEnum;
+typedef struct src_pink_DeclFunc src_pink_DeclFunc;
+typedef struct src_pink_DeclTypedef src_pink_DeclTypedef;
+typedef struct src_pink_DeclVar src_pink_DeclVar;
+typedef struct src_pink_DeclImport src_pink_DeclImport;
+typedef struct src_pink_Decl src_pink_Decl;
+typedef struct src_pink_Decls src_pink_Decls;
 typedef struct src_pink_ExprParen src_pink_ExprParen;
 typedef struct src_pink_ExprIntLit src_pink_ExprIntLit;
 typedef struct src_pink_ExprFloatLit src_pink_ExprFloatLit;
@@ -107,32 +113,46 @@ typedef struct src_pink_ExprCall src_pink_ExprCall;
 typedef struct src_pink_ExprIndex src_pink_ExprIndex;
 typedef struct src_pink_ExprField src_pink_ExprField;
 typedef struct src_pink_Expr src_pink_Expr;
-typedef struct src_pink_Decls src_pink_Decls;
-typedef struct src_pink_DeclEnum src_pink_DeclEnum;
-typedef struct src_pink_DeclFunc src_pink_DeclFunc;
-typedef struct src_pink_DeclTypedef src_pink_DeclTypedef;
-typedef struct src_pink_DeclVar src_pink_DeclVar;
-typedef struct src_pink_DeclImport src_pink_DeclImport;
-typedef struct src_pink_Decl src_pink_Decl;
-typedef struct src_pink_Aggregate src_pink_Aggregate;
-typedef struct src_pink_ImportItem src_pink_ImportItem;
 typedef struct src_pink_ElseIf src_pink_ElseIf;
-typedef struct src_pink_Package src_pink_Package;
-typedef struct src_pink_TypeField src_pink_TypeField;
+typedef struct src_pink_StmtIf src_pink_StmtIf;
+typedef struct src_pink_StmtWhile src_pink_StmtWhile;
+typedef struct src_pink_StmtFor src_pink_StmtFor;
+typedef struct src_pink_StmtSwitch src_pink_StmtSwitch;
+typedef struct src_pink_StmtAssign src_pink_StmtAssign;
+typedef struct src_pink_StmtInit src_pink_StmtInit;
+typedef struct src_pink_Stmt src_pink_Stmt;
 typedef struct std_os_DirListIter std_os_DirListIter;
-typedef struct src_pink_CachedArrayType src_pink_CachedArrayType;
-typedef struct src_pink_CachedFuncType src_pink_CachedFuncType;
-typedef struct std_BufHdr std_BufHdr;
-typedef struct std_Intern std_Intern;
 typedef struct std_os_FlagDefPtr std_os_FlagDefPtr;
 typedef struct std_os_FlagDef std_os_FlagDef;
+typedef struct std_BufHdr std_BufHdr;
+typedef struct std_Intern std_Intern;
 
 // Sorted declarations
 int main(int argc, char const ((*(*argv))));
 
 extern char const ((*current_os));
 
-extern char const ((*current_arch));
+#define ULLONG_MIN ((ullong)(0))
+
+#define UINT64_MIN (ULLONG_MIN)
+
+#define USIZE_MIN (UINT64_MIN)
+
+#define UINTPTR_MIN (UINT64_MIN)
+
+#define UCHAR_MIN ((uchar)(0))
+
+#define USHORT_MIN ((short)(0))
+
+#define UINT_MIN ((uint)(0))
+
+#define UINT8_MIN (UCHAR_MIN)
+
+#define UINT16_MIN (USHORT_MIN)
+
+#define UINT32_MIN (UINT_MIN)
+
+#define ULONG_MIN ((ulong)(INT64_MIN))
 
 typedef ullong typeid;
 
@@ -201,517 +221,27 @@ size_t typeid_size(typeid type);
 
 TypeInfo const ((*get_typeinfo(typeid type)));
 
-#define UCHAR_MIN ((uchar)(0))
+extern char const ((*current_arch));
 
-#define USHORT_MIN ((short)(0))
+#define SRC_PINK_MAX_SEARCH_PATHS ((int)(256))
 
-#define UINT_MIN ((uint)(0))
+extern char const ((*(src_pink_static_package_search_paths[SRC_PINK_MAX_SEARCH_PATHS])));
 
-#define ULLONG_MIN ((ullong)(0))
+extern char const ((*(*src_pink_package_search_paths)));
 
-#define UINT8_MIN (UCHAR_MIN)
+extern int src_pink_num_package_search_paths;
 
-#define UINT16_MIN (USHORT_MIN)
+void src_pink_add_package_search_path(char const ((*path)));
 
-#define UINT32_MIN (UINT_MIN)
+void src_pink_add_package_search_path_range(char const ((*start)), char const ((*end)));
 
-#define UINT64_MIN (ULLONG_MIN)
+void src_pink_init_package_search_paths(void);
 
-#define ULONG_MIN ((ulong)(INT64_MIN))
+void src_pink_init_compiler(void);
 
-#define USIZE_MIN (UINT64_MIN)
+void src_pink_parse_env_vars(void);
 
-#define UINTPTR_MIN (UINT64_MIN)
-
-struct std_Arena {
-    char (*ptr);
-    char (*end);
-    char (*(*blocks));
-};
-
-extern std_Arena src_pink_ast_arena;
-
-void (*src_pink_ast_alloc(size_t size));
-
-void (*src_pink_ast_dup(void const ((*src)), size_t size));
-
-struct src_pink_SrcPos {
-    char const ((*name));
-    int line;
-};
-
-struct src_pink_Note {
-    src_pink_SrcPos pos;
-    char const ((*name));
-    src_pink_NoteArg (*args);
-    size_t num_args;
-};
-
-src_pink_Note src_pink_new_note(src_pink_SrcPos pos, char const ((*name)), src_pink_NoteArg (*args), size_t num_args);
-
-struct src_pink_Notes {
-    src_pink_Note (*notes);
-    size_t num_notes;
-};
-
-src_pink_Notes src_pink_new_notes(src_pink_Note (*notes), size_t num_notes);
-
-struct src_pink_StmtList {
-    src_pink_SrcPos pos;
-    src_pink_Stmt (*(*stmts));
-    size_t num_stmts;
-};
-
-src_pink_StmtList src_pink_new_stmt_list(src_pink_SrcPos pos, src_pink_Stmt (*(*stmts)), size_t num_stmts);
-
-typedef int src_pink_TypespecKind;
-
-src_pink_Typespec (*src_pink_new_typespec(src_pink_TypespecKind kind, src_pink_SrcPos pos));
-
-src_pink_Typespec (*src_pink_new_typespec_name(src_pink_SrcPos pos, char const ((*name))));
-
-src_pink_Typespec (*src_pink_new_typespec_ptr(src_pink_SrcPos pos, src_pink_Typespec (*base)));
-
-src_pink_Typespec (*src_pink_new_typespec_const(src_pink_SrcPos pos, src_pink_Typespec (*base)));
-
-src_pink_Typespec (*src_pink_new_typespec_array(src_pink_SrcPos pos, src_pink_Typespec (*elem), src_pink_Expr (*size)));
-
-src_pink_Typespec (*src_pink_new_typespec_func(src_pink_SrcPos pos, src_pink_Typespec (*(*args)), size_t num_args, src_pink_Typespec (*ret), bool has_varargs));
-
-src_pink_Decls (*src_pink_new_decls(src_pink_Decl (*(*decls)), size_t num_decls));
-
-typedef int src_pink_DeclKind;
-
-src_pink_Decl (*src_pink_new_decl(src_pink_DeclKind kind, src_pink_SrcPos pos, char const ((*name))));
-
-src_pink_Note (*src_pink_get_decl_note(src_pink_Decl (*decl), char const ((*name))));
-
-bool src_pink_is_decl_foreign(src_pink_Decl (*decl));
-
-src_pink_Decl (*src_pink_new_decl_enum(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_EnumItem (*items), size_t num_items));
-
-typedef int src_pink_AggregateKind;
-
-src_pink_Aggregate (*src_pink_new_aggregate(src_pink_SrcPos pos, src_pink_AggregateKind kind, src_pink_AggregateItem (*items), size_t num_items));
-
-src_pink_Decl (*src_pink_new_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind, char const ((*name)), src_pink_Aggregate (*aggregate)));
-
-src_pink_Decl (*src_pink_new_decl_var(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
-
-src_pink_Decl (*src_pink_new_decl_func(src_pink_SrcPos pos, char const ((*name)), src_pink_FuncParam (*params), size_t num_params, src_pink_Typespec (*ret_type), bool has_varargs, src_pink_StmtList block));
-
-src_pink_Decl (*src_pink_new_decl_const(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
-
-src_pink_Decl (*src_pink_new_decl_typedef(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type)));
-
-src_pink_Decl (*src_pink_new_decl_note(src_pink_SrcPos pos, src_pink_Note note));
-
-src_pink_Decl (*src_pink_new_decl_import(src_pink_SrcPos pos, char const ((*rename_name)), bool is_relative, char const ((*(*names))), size_t num_names, bool import_all, src_pink_ImportItem (*items), size_t num_items));
-
-typedef int src_pink_ExprKind;
-
-src_pink_Expr (*src_pink_new_expr(src_pink_ExprKind kind, src_pink_SrcPos pos));
-
-src_pink_Expr (*src_pink_new_expr_paren(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_sizeof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_sizeof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
-
-src_pink_Expr (*src_pink_new_expr_typeof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_typeof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
-
-src_pink_Expr (*src_pink_new_expr_alignof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_alignof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
-
-src_pink_Expr (*src_pink_new_expr_offsetof(src_pink_SrcPos pos, src_pink_Typespec (*type), char const ((*name))));
-
-typedef int src_pink_TokenKind;
-
-src_pink_Expr (*src_pink_new_expr_modify(src_pink_SrcPos pos, src_pink_TokenKind op, bool post, src_pink_Expr (*expr)));
-
-typedef int src_pink_TokenMod;
-
-typedef int src_pink_TokenSuffix;
-
-src_pink_Expr (*src_pink_new_expr_int(src_pink_SrcPos pos, ullong val, src_pink_TokenMod mod, src_pink_TokenSuffix suffix));
-
-src_pink_Expr (*src_pink_new_expr_float(src_pink_SrcPos pos, char const ((*start)), char const ((*end)), double val, src_pink_TokenSuffix suffix));
-
-src_pink_Expr (*src_pink_new_expr_str(src_pink_SrcPos pos, char const ((*val)), src_pink_TokenMod mod));
-
-src_pink_Expr (*src_pink_new_expr_name(src_pink_SrcPos pos, char const ((*name))));
-
-src_pink_Expr (*src_pink_new_expr_compound(src_pink_SrcPos pos, src_pink_Typespec (*type), src_pink_CompoundField (*fields), size_t num_fields));
-
-src_pink_Expr (*src_pink_new_expr_cast(src_pink_SrcPos pos, src_pink_Typespec (*type), src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_call(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_Expr (*(*args)), size_t num_args));
-
-src_pink_Expr (*src_pink_new_expr_index(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_Expr (*index)));
-
-src_pink_Expr (*src_pink_new_expr_field(src_pink_SrcPos pos, src_pink_Expr (*expr), char const ((*name))));
-
-src_pink_Expr (*src_pink_new_expr_unary(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*expr)));
-
-src_pink_Expr (*src_pink_new_expr_binary(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*left), src_pink_Expr (*right)));
-
-src_pink_Expr (*src_pink_new_expr_ternary(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_Expr (*then_expr), src_pink_Expr (*else_expr)));
-
-src_pink_Note (*src_pink_get_stmt_note(src_pink_Stmt (*stmt), char const ((*name))));
-
-typedef int src_pink_StmtKind;
-
-src_pink_Stmt (*src_pink_new_stmt(src_pink_StmtKind kind, src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_new_stmt_label(src_pink_SrcPos pos, char const ((*label))));
-
-src_pink_Stmt (*src_pink_new_stmt_goto(src_pink_SrcPos pos, char const ((*label))));
-
-src_pink_Stmt (*src_pink_new_stmt_note(src_pink_SrcPos pos, src_pink_Note note));
-
-src_pink_Stmt (*src_pink_new_stmt_decl(src_pink_SrcPos pos, src_pink_Decl (*decl)));
-
-src_pink_Stmt (*src_pink_new_stmt_return(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-src_pink_Stmt (*src_pink_new_stmt_break(src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_new_stmt_continue(src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_new_stmt_block(src_pink_SrcPos pos, src_pink_StmtList block));
-
-src_pink_Stmt (*src_pink_new_stmt_if(src_pink_SrcPos pos, src_pink_Stmt (*init), src_pink_Expr (*cond), src_pink_StmtList then_block, src_pink_ElseIf (*elseifs), size_t num_elseifs, src_pink_StmtList else_block));
-
-src_pink_Stmt (*src_pink_new_stmt_while(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_StmtList block));
-
-src_pink_Stmt (*src_pink_new_stmt_do_while(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_StmtList block));
-
-src_pink_Stmt (*src_pink_new_stmt_for(src_pink_SrcPos pos, src_pink_Stmt (*init), src_pink_Expr (*cond), src_pink_Stmt (*next), src_pink_StmtList block));
-
-src_pink_Stmt (*src_pink_new_stmt_switch(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_SwitchCase (*cases), size_t num_cases));
-
-src_pink_Stmt (*src_pink_new_stmt_assign(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*left), src_pink_Expr (*right)));
-
-src_pink_Stmt (*src_pink_new_stmt_init(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
-
-src_pink_Stmt (*src_pink_new_stmt_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
-
-#define SRC_PINK_TYPESPEC_NONE ((src_pink_TypespecKind)(0))
-
-#define SRC_PINK_TYPESPEC_NAME ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_NONE) + (1)))
-
-#define SRC_PINK_TYPESPEC_FUNC ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_NAME) + (1)))
-
-#define SRC_PINK_TYPESPEC_ARRAY ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_FUNC) + (1)))
-
-#define SRC_PINK_TYPESPEC_PTR ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_ARRAY) + (1)))
-
-#define SRC_PINK_TYPESPEC_CONST ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_PTR) + (1)))
-
-typedef int src_pink_AggregateItemKind;
-
-#define SRC_PINK_AGGREGATE_ITEM_NONE ((src_pink_AggregateItemKind)(0))
-
-#define SRC_PINK_AGGREGATE_ITEM_FIELD ((src_pink_AggregateItemKind)((SRC_PINK_AGGREGATE_ITEM_NONE) + (1)))
-
-#define SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE ((src_pink_AggregateItemKind)((SRC_PINK_AGGREGATE_ITEM_FIELD) + (1)))
-
-#define SRC_PINK_DECL_NONE ((src_pink_DeclKind)(0))
-
-#define SRC_PINK_DECL_ENUM ((src_pink_DeclKind)((SRC_PINK_DECL_NONE) + (1)))
-
-#define SRC_PINK_DECL_STRUCT ((src_pink_DeclKind)((SRC_PINK_DECL_ENUM) + (1)))
-
-#define SRC_PINK_DECL_UNION ((src_pink_DeclKind)((SRC_PINK_DECL_STRUCT) + (1)))
-
-#define SRC_PINK_DECL_VAR ((src_pink_DeclKind)((SRC_PINK_DECL_UNION) + (1)))
-
-#define SRC_PINK_DECL_CONST ((src_pink_DeclKind)((SRC_PINK_DECL_VAR) + (1)))
-
-#define SRC_PINK_DECL_TYPEDEF ((src_pink_DeclKind)((SRC_PINK_DECL_CONST) + (1)))
-
-#define SRC_PINK_DECL_FUNC ((src_pink_DeclKind)((SRC_PINK_DECL_TYPEDEF) + (1)))
-
-#define SRC_PINK_DECL_NOTE ((src_pink_DeclKind)((SRC_PINK_DECL_FUNC) + (1)))
-
-#define SRC_PINK_DECL_IMPORT ((src_pink_DeclKind)((SRC_PINK_DECL_NOTE) + (1)))
-
-#define SRC_PINK_AGGREGATE_NONE ((src_pink_AggregateKind)(0))
-
-#define SRC_PINK_AGGREGATE_STRUCT ((src_pink_AggregateKind)((SRC_PINK_AGGREGATE_NONE) + (1)))
-
-#define SRC_PINK_AGGREGATE_UNION ((src_pink_AggregateKind)((SRC_PINK_AGGREGATE_STRUCT) + (1)))
-
-#define SRC_PINK_EXPR_NONE ((src_pink_ExprKind)(0))
-
-#define SRC_PINK_EXPR_PAREN ((src_pink_ExprKind)((SRC_PINK_EXPR_NONE) + (1)))
-
-#define SRC_PINK_EXPR_INT ((src_pink_ExprKind)((SRC_PINK_EXPR_PAREN) + (1)))
-
-#define SRC_PINK_EXPR_FLOAT ((src_pink_ExprKind)((SRC_PINK_EXPR_INT) + (1)))
-
-#define SRC_PINK_EXPR_STR ((src_pink_ExprKind)((SRC_PINK_EXPR_FLOAT) + (1)))
-
-#define SRC_PINK_EXPR_NAME ((src_pink_ExprKind)((SRC_PINK_EXPR_STR) + (1)))
-
-#define SRC_PINK_EXPR_CAST ((src_pink_ExprKind)((SRC_PINK_EXPR_NAME) + (1)))
-
-#define SRC_PINK_EXPR_CALL ((src_pink_ExprKind)((SRC_PINK_EXPR_CAST) + (1)))
-
-#define SRC_PINK_EXPR_INDEX ((src_pink_ExprKind)((SRC_PINK_EXPR_CALL) + (1)))
-
-#define SRC_PINK_EXPR_FIELD ((src_pink_ExprKind)((SRC_PINK_EXPR_INDEX) + (1)))
-
-#define SRC_PINK_EXPR_COMPOUND ((src_pink_ExprKind)((SRC_PINK_EXPR_FIELD) + (1)))
-
-#define SRC_PINK_EXPR_UNARY ((src_pink_ExprKind)((SRC_PINK_EXPR_COMPOUND) + (1)))
-
-#define SRC_PINK_EXPR_BINARY ((src_pink_ExprKind)((SRC_PINK_EXPR_UNARY) + (1)))
-
-#define SRC_PINK_EXPR_TERNARY ((src_pink_ExprKind)((SRC_PINK_EXPR_BINARY) + (1)))
-
-#define SRC_PINK_EXPR_MODIFY ((src_pink_ExprKind)((SRC_PINK_EXPR_TERNARY) + (1)))
-
-#define SRC_PINK_EXPR_SIZEOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_MODIFY) + (1)))
-
-#define SRC_PINK_EXPR_SIZEOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_SIZEOF_EXPR) + (1)))
-
-#define SRC_PINK_EXPR_TYPEOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_SIZEOF_TYPE) + (1)))
-
-#define SRC_PINK_EXPR_TYPEOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_TYPEOF_EXPR) + (1)))
-
-#define SRC_PINK_EXPR_ALIGNOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_TYPEOF_TYPE) + (1)))
-
-#define SRC_PINK_EXPR_ALIGNOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_ALIGNOF_EXPR) + (1)))
-
-#define SRC_PINK_EXPR_OFFSETOF ((src_pink_ExprKind)((SRC_PINK_EXPR_ALIGNOF_TYPE) + (1)))
-
-typedef int src_pink_CompoundFieldKind;
-
-#define SRC_PINK_FIELD_DEFAULT ((src_pink_CompoundFieldKind)(0))
-
-#define SRC_PINK_FIELD_NAME ((src_pink_CompoundFieldKind)((SRC_PINK_FIELD_DEFAULT) + (1)))
-
-#define SRC_PINK_FIELD_INDEX ((src_pink_CompoundFieldKind)((SRC_PINK_FIELD_NAME) + (1)))
-
-#define SRC_PINK_STMT_NONE ((src_pink_StmtKind)(0))
-
-#define SRC_PINK_STMT_DECL ((src_pink_StmtKind)((SRC_PINK_STMT_NONE) + (1)))
-
-#define SRC_PINK_STMT_RETURN ((src_pink_StmtKind)((SRC_PINK_STMT_DECL) + (1)))
-
-#define SRC_PINK_STMT_BREAK ((src_pink_StmtKind)((SRC_PINK_STMT_RETURN) + (1)))
-
-#define SRC_PINK_STMT_CONTINUE ((src_pink_StmtKind)((SRC_PINK_STMT_BREAK) + (1)))
-
-#define SRC_PINK_STMT_BLOCK ((src_pink_StmtKind)((SRC_PINK_STMT_CONTINUE) + (1)))
-
-#define SRC_PINK_STMT_IF ((src_pink_StmtKind)((SRC_PINK_STMT_BLOCK) + (1)))
-
-#define SRC_PINK_STMT_WHILE ((src_pink_StmtKind)((SRC_PINK_STMT_IF) + (1)))
-
-#define SRC_PINK_STMT_DO_WHILE ((src_pink_StmtKind)((SRC_PINK_STMT_WHILE) + (1)))
-
-#define SRC_PINK_STMT_FOR ((src_pink_StmtKind)((SRC_PINK_STMT_DO_WHILE) + (1)))
-
-#define SRC_PINK_STMT_SWITCH ((src_pink_StmtKind)((SRC_PINK_STMT_FOR) + (1)))
-
-#define SRC_PINK_STMT_ASSIGN ((src_pink_StmtKind)((SRC_PINK_STMT_SWITCH) + (1)))
-
-#define SRC_PINK_STMT_INIT ((src_pink_StmtKind)((SRC_PINK_STMT_ASSIGN) + (1)))
-
-#define SRC_PINK_STMT_EXPR ((src_pink_StmtKind)((SRC_PINK_STMT_INIT) + (1)))
-
-#define SRC_PINK_STMT_NOTE ((src_pink_StmtKind)((SRC_PINK_STMT_EXPR) + (1)))
-
-#define SRC_PINK_STMT_LABEL ((src_pink_StmtKind)((SRC_PINK_STMT_NOTE) + (1)))
-
-#define SRC_PINK_STMT_GOTO ((src_pink_StmtKind)((SRC_PINK_STMT_LABEL) + (1)))
-
-extern char (*src_pink_gen_buf);
-
-extern int src_pink_gen_indent;
-
-extern src_pink_SrcPos src_pink_gen_pos;
-
-extern char const ((*(*src_pink_gen_headers_buf)));
-
-extern char (*src_pink_gen_preamble_str);
-
-extern char (*src_pink_gen_postamble_str);
-
-void src_pink_genln(void);
-
-bool src_pink_is_incomplete_array_typespec(src_pink_Typespec (*typespec));
-
-extern char (src_pink_char_to_escape[256]);
-
-void src_pink_gen_char(char c);
-
-void src_pink_gen_str(char const ((*str)), bool multiline);
-
-void src_pink_gen_sync_pos(src_pink_SrcPos pos);
-
-char const ((*src_pink_cdecl_paren(char const ((*str)), char c)));
-
-char const ((*src_pink_cdecl_name(src_pink_Type (*type))));
-
-char (*src_pink_type_to_cdecl(src_pink_Type (*type), char const ((*str))));
-
-char const ((*src_pink_gen_expr_str(src_pink_Expr (*expr))));
-
-struct std_Map {
-    uint64_t (*keys);
-    uint64_t (*vals);
-    size_t len;
-    size_t cap;
-};
-
-extern std_Map src_pink_gen_name_map;
-
-char const ((*src_pink_get_gen_name_or_default(void const ((*ptr)), char const ((*default_name)))));
-
-char const ((*src_pink_get_gen_name(void const ((*ptr)))));
-
-char (*src_pink_typespec_to_cdecl(src_pink_Typespec (*typespec), char const ((*str))));
-
-void src_pink_gen_func_decl(src_pink_Decl (*decl));
-
-bool src_pink_gen_reachable(src_pink_Sym (*sym));
-
-void src_pink_gen_forward_decls(void);
-
-void src_pink_gen_aggregate_items(src_pink_Aggregate (*aggregate));
-
-void src_pink_gen_aggregate(src_pink_Decl (*decl));
-
-void src_pink_gen_paren_expr(src_pink_Expr (*expr));
-
-void src_pink_gen_expr_compound(src_pink_Expr (*expr));
-
-typedef int src_pink_CompilerTypeKind;
-
-#define SRC_PINK_CMPL_TYPE_NONE ((src_pink_CompilerTypeKind)(0))
-
-#define SRC_PINK_CMPL_TYPE_INCOMPLETE ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_NONE) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_COMPLETING ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_INCOMPLETE) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_VOID ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_COMPLETING) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_BOOL ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_VOID) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_CHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_BOOL) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_SCHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_CHAR) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_UCHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_SCHAR) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_SHORT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UCHAR) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_USHORT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_SHORT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_INT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_USHORT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_UINT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_INT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_LONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UINT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_ULONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_LONG) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_LLONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ULONG) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_ULLONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_LLONG) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_ENUM ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ULLONG) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_FLOAT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ENUM) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_DOUBLE ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_FLOAT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_PTR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_DOUBLE) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_FUNC ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_PTR) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_ARRAY ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_FUNC) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_STRUCT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ARRAY) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_UNION ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_STRUCT) + (1)))
-
-#define SRC_PINK_CMPL_TYPE_CONST ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UNION) + (1)))
-
-#define SRC_PINK_NUM_CMPL_TYPE_KINDS ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_CONST) + (1)))
-
-extern char const ((*(src_pink_typeid_kind_names[SRC_PINK_NUM_CMPL_TYPE_KINDS])));
-
-char const ((*src_pink_typeid_kind_name(src_pink_Type (*type))));
-
-bool src_pink_is_excluded_typeinfo(src_pink_Type (*type));
-
-void src_pink_gen_typeid(src_pink_Type (*type));
-
-void src_pink_gen_expr(src_pink_Expr (*expr));
-
-void src_pink_gen_stmt_block(src_pink_StmtList block);
-
-void src_pink_gen_simple_stmt(src_pink_Stmt (*stmt));
-
-bool src_pink_is_char_lit(src_pink_Expr (*expr));
-
-void src_pink_gen_stmt(src_pink_Stmt (*stmt));
-
-void src_pink_gen_decl(src_pink_Sym (*sym));
-
-void src_pink_gen_sorted_decls(void);
-
-void src_pink_gen_defs(void);
-
-extern std_Map src_pink_gen_foreign_headers_map;
-
-extern char const ((*(*src_pink_gen_foreign_headers_buf)));
-
-void src_pink_add_foreign_header(char const ((*name)));
-
-extern char const ((*(*src_pink_gen_foreign_sources_buf)));
-
-void src_pink_add_foreign_source(char const ((*name)));
-
-void src_pink_gen_include(char const ((*path)));
-
-void src_pink_gen_foreign_headers(void);
-
-void src_pink_gen_foreign_sources(void);
-
-extern char const ((*(*src_pink_gen_sources_buf)));
-
-void src_pink_put_include_path(char (path[MAX_PATH]), src_pink_Package (*package), char const ((*filename)));
-
-extern char (*src_pink_gen_preamble_buf);
-
-extern char (*src_pink_gen_postamble_buf);
-
-void src_pink_preprocess_package(src_pink_Package (*package));
-
-void src_pink_preprocess_packages(void);
-
-void src_pink_gen_typeinfo_header(char const ((*kind)), src_pink_Type (*type));
-
-void src_pink_gen_typeinfo_fields(src_pink_Type (*type));
-
-void src_pink_gen_typeinfo(src_pink_Type (*type));
-
-void src_pink_gen_typeinfos(void);
-
-void src_pink_gen_package_external_names(void);
-
-void src_pink_gen_preamble(void);
-
-void src_pink_gen_postamble(void);
-
-void src_pink_gen_all(void);
+int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void), char const ((*extension)));
 
 extern char const ((*src_pink_typedef_keyword));
 
@@ -786,6 +316,8 @@ extern bool src_pink_keywords_inited;
 void src_pink_init_keywords(void);
 
 bool src_pink_is_keyword_name(char const ((*name)));
+
+typedef int src_pink_TokenKind;
 
 #define SRC_PINK_TOKEN_EOF ((src_pink_TokenKind)(0))
 
@@ -913,6 +445,8 @@ bool src_pink_is_keyword_name(char const ((*name)));
 
 #define SRC_PINK_NUM_TOKEN_KINDS ((src_pink_TokenKind)((SRC_PINK_TOKEN_COLON_ASSIGN) + (1)))
 
+typedef int src_pink_TokenMod;
+
 #define SRC_PINK_MOD_NONE ((src_pink_TokenMod)(0))
 
 #define SRC_PINK_MOD_HEX ((src_pink_TokenMod)((SRC_PINK_MOD_NONE) + (1)))
@@ -924,6 +458,8 @@ bool src_pink_is_keyword_name(char const ((*name)));
 #define SRC_PINK_MOD_CHAR ((src_pink_TokenMod)((SRC_PINK_MOD_OCT) + (1)))
 
 #define SRC_PINK_MOD_MULTILINE ((src_pink_TokenMod)((SRC_PINK_MOD_CHAR) + (1)))
+
+typedef int src_pink_TokenSuffix;
 
 #define SRC_PINK_SUFFIX_NONE ((src_pink_TokenSuffix)(0))
 
@@ -946,6 +482,11 @@ extern char const ((*(src_pink_token_kind_names[54])));
 char const ((*src_pink_token_kind_name(src_pink_TokenKind kind)));
 
 extern src_pink_TokenKind (src_pink_assign_token_to_binary_token[SRC_PINK_NUM_TOKEN_KINDS]);
+
+struct src_pink_SrcPos {
+    char const ((*name));
+    int line;
+};
 
 extern src_pink_SrcPos src_pink_pos_builtin;
 
@@ -1014,6 +555,360 @@ bool src_pink_match_token(src_pink_TokenKind kind);
 
 bool src_pink_expect_token(src_pink_TokenKind kind);
 
+typedef int src_pink_CompilerTypeKind;
+
+#define SRC_PINK_CMPL_TYPE_NONE ((src_pink_CompilerTypeKind)(0))
+
+#define SRC_PINK_CMPL_TYPE_INCOMPLETE ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_NONE) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_COMPLETING ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_INCOMPLETE) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_VOID ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_COMPLETING) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_BOOL ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_VOID) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_CHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_BOOL) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_SCHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_CHAR) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_UCHAR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_SCHAR) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_SHORT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UCHAR) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_USHORT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_SHORT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_INT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_USHORT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_UINT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_INT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_LONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UINT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_ULONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_LONG) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_LLONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ULONG) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_ULLONG ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_LLONG) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_ENUM ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ULLONG) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_FLOAT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ENUM) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_DOUBLE ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_FLOAT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_PTR ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_DOUBLE) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_FUNC ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_PTR) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_ARRAY ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_FUNC) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_STRUCT ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_ARRAY) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_UNION ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_STRUCT) + (1)))
+
+#define SRC_PINK_CMPL_TYPE_CONST ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_UNION) + (1)))
+
+#define SRC_PINK_NUM_CMPL_TYPE_KINDS ((src_pink_CompilerTypeKind)((SRC_PINK_CMPL_TYPE_CONST) + (1)))
+
+extern src_pink_TypeMetrics (*src_pink_type_metrics);
+
+struct src_pink_TypeAggregate {
+    src_pink_TypeField (*fields);
+    size_t num_fields;
+};
+
+struct src_pink_TypeFunc {
+    src_pink_Type (*(*params));
+    size_t num_params;
+    bool has_varargs;
+    src_pink_Type (*ret);
+};
+
+struct src_pink_Type {
+    src_pink_CompilerTypeKind kind;
+    size_t size;
+    size_t align;
+    src_pink_Sym (*sym);
+    src_pink_Type (*base);
+    int typeid;
+    bool nonmodifiable;
+    union {
+        size_t num_elems;
+        src_pink_TypeAggregate aggregate;
+        src_pink_TypeFunc function;
+    };
+};
+
+extern src_pink_Type (*src_pink_type_void);
+
+extern src_pink_Type (*src_pink_type_bool);
+
+extern src_pink_Type (*src_pink_type_char);
+
+extern src_pink_Type (*src_pink_type_uchar);
+
+extern src_pink_Type (*src_pink_type_schar);
+
+extern src_pink_Type (*src_pink_type_short);
+
+extern src_pink_Type (*src_pink_type_ushort);
+
+extern src_pink_Type (*src_pink_type_int);
+
+extern src_pink_Type (*src_pink_type_uint);
+
+extern src_pink_Type (*src_pink_type_long);
+
+extern src_pink_Type (*src_pink_type_ulong);
+
+extern src_pink_Type (*src_pink_type_llong);
+
+extern src_pink_Type (*src_pink_type_ullong);
+
+extern src_pink_Type (*src_pink_type_float);
+
+extern src_pink_Type (*src_pink_type_double);
+
+extern int src_pink_next_typeid;
+
+extern src_pink_Type (*src_pink_type_uintptr);
+
+extern src_pink_Type (*src_pink_type_usize);
+
+extern src_pink_Type (*src_pink_type_ssize);
+
+struct std_Map {
+    uint64_t (*keys);
+    uint64_t (*vals);
+    size_t len;
+    size_t cap;
+};
+
+extern std_Map src_pink_typeid_map;
+
+src_pink_Type (*src_pink_get_type_from_typeid(int typeid));
+
+void src_pink_register_typeid(src_pink_Type (*type));
+
+src_pink_Type (*src_pink_type_alloc(TypeKind kind));
+
+bool src_pink_is_ptr_type(src_pink_Type (*type));
+
+bool src_pink_is_func_type(src_pink_Type (*type));
+
+bool src_pink_is_ptr_like_type(src_pink_Type (*type));
+
+bool src_pink_is_const_type(src_pink_Type (*type));
+
+bool src_pink_is_array_type(src_pink_Type (*type));
+
+bool src_pink_is_incomplete_array_type(src_pink_Type (*type));
+
+bool src_pink_is_integer_type(src_pink_Type (*type));
+
+bool src_pink_is_floating_type(src_pink_Type (*type));
+
+bool src_pink_is_arithmetic_type(src_pink_Type (*type));
+
+bool src_pink_is_scalar_type(src_pink_Type (*type));
+
+bool src_pink_is_aggregate_type(src_pink_Type (*type));
+
+bool src_pink_is_signed_type(src_pink_Type (*type));
+
+extern char const ((*(src_pink_type_names[SRC_PINK_NUM_CMPL_TYPE_KINDS])));
+
+extern int (src_pink_type_ranks[SRC_PINK_NUM_CMPL_TYPE_KINDS]);
+
+int src_pink_type_rank(src_pink_Type (*type));
+
+src_pink_Type (*src_pink_unsigned_type(src_pink_Type (*type)));
+
+size_t src_pink_type_sizeof(src_pink_Type (*type));
+
+size_t src_pink_type_alignof(src_pink_Type (*type));
+
+extern std_Map src_pink_cached_ptr_types;
+
+src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base)));
+
+extern std_Map src_pink_cached_const_types;
+
+src_pink_Type (*src_pink_type_const(src_pink_Type (*base)));
+
+src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type)));
+
+extern std_Map src_pink_cached_array_types;
+
+src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems));
+
+extern std_Map src_pink_cached_func_types;
+
+src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs));
+
+bool src_pink_has_duplicate_fields(src_pink_Type (*type));
+
+void src_pink_add_type_fields(src_pink_TypeField (*(*fields)), src_pink_Type (*type), size_t offset);
+
+void src_pink_type_complete_struct(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields);
+
+void src_pink_type_complete_union(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields);
+
+src_pink_Type (*src_pink_type_incomplete(src_pink_Sym (*sym)));
+
+src_pink_Type (*src_pink_type_enum(src_pink_Sym (*sym), src_pink_Type (*base)));
+
+void src_pink_init_builtin_type(src_pink_Type (*type));
+
+void src_pink_init_builtin_types(void);
+
+int src_pink_aggregate_item_field_index(src_pink_Type (*type), char const ((*name)));
+
+src_pink_Type (*src_pink_aggregate_item_field_type_from_index(src_pink_Type (*type), int index));
+
+src_pink_Type (*src_pink_aggregate_item_field_type_from_name(src_pink_Type (*type), char const ((*name))));
+
+typedef int src_pink_TypespecKind;
+
+#define SRC_PINK_TYPESPEC_NONE ((src_pink_TypespecKind)(0))
+
+#define SRC_PINK_TYPESPEC_NAME ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_NONE) + (1)))
+
+#define SRC_PINK_TYPESPEC_FUNC ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_NAME) + (1)))
+
+#define SRC_PINK_TYPESPEC_ARRAY ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_FUNC) + (1)))
+
+#define SRC_PINK_TYPESPEC_PTR ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_ARRAY) + (1)))
+
+#define SRC_PINK_TYPESPEC_CONST ((src_pink_TypespecKind)((SRC_PINK_TYPESPEC_PTR) + (1)))
+
+typedef int src_pink_AggregateItemKind;
+
+#define SRC_PINK_AGGREGATE_ITEM_NONE ((src_pink_AggregateItemKind)(0))
+
+#define SRC_PINK_AGGREGATE_ITEM_FIELD ((src_pink_AggregateItemKind)((SRC_PINK_AGGREGATE_ITEM_NONE) + (1)))
+
+#define SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE ((src_pink_AggregateItemKind)((SRC_PINK_AGGREGATE_ITEM_FIELD) + (1)))
+
+typedef int src_pink_DeclKind;
+
+#define SRC_PINK_DECL_NONE ((src_pink_DeclKind)(0))
+
+#define SRC_PINK_DECL_ENUM ((src_pink_DeclKind)((SRC_PINK_DECL_NONE) + (1)))
+
+#define SRC_PINK_DECL_STRUCT ((src_pink_DeclKind)((SRC_PINK_DECL_ENUM) + (1)))
+
+#define SRC_PINK_DECL_UNION ((src_pink_DeclKind)((SRC_PINK_DECL_STRUCT) + (1)))
+
+#define SRC_PINK_DECL_VAR ((src_pink_DeclKind)((SRC_PINK_DECL_UNION) + (1)))
+
+#define SRC_PINK_DECL_CONST ((src_pink_DeclKind)((SRC_PINK_DECL_VAR) + (1)))
+
+#define SRC_PINK_DECL_TYPEDEF ((src_pink_DeclKind)((SRC_PINK_DECL_CONST) + (1)))
+
+#define SRC_PINK_DECL_FUNC ((src_pink_DeclKind)((SRC_PINK_DECL_TYPEDEF) + (1)))
+
+#define SRC_PINK_DECL_NOTE ((src_pink_DeclKind)((SRC_PINK_DECL_FUNC) + (1)))
+
+#define SRC_PINK_DECL_IMPORT ((src_pink_DeclKind)((SRC_PINK_DECL_NOTE) + (1)))
+
+typedef int src_pink_AggregateKind;
+
+#define SRC_PINK_AGGREGATE_NONE ((src_pink_AggregateKind)(0))
+
+#define SRC_PINK_AGGREGATE_STRUCT ((src_pink_AggregateKind)((SRC_PINK_AGGREGATE_NONE) + (1)))
+
+#define SRC_PINK_AGGREGATE_UNION ((src_pink_AggregateKind)((SRC_PINK_AGGREGATE_STRUCT) + (1)))
+
+typedef int src_pink_ExprKind;
+
+#define SRC_PINK_EXPR_NONE ((src_pink_ExprKind)(0))
+
+#define SRC_PINK_EXPR_PAREN ((src_pink_ExprKind)((SRC_PINK_EXPR_NONE) + (1)))
+
+#define SRC_PINK_EXPR_INT ((src_pink_ExprKind)((SRC_PINK_EXPR_PAREN) + (1)))
+
+#define SRC_PINK_EXPR_FLOAT ((src_pink_ExprKind)((SRC_PINK_EXPR_INT) + (1)))
+
+#define SRC_PINK_EXPR_STR ((src_pink_ExprKind)((SRC_PINK_EXPR_FLOAT) + (1)))
+
+#define SRC_PINK_EXPR_NAME ((src_pink_ExprKind)((SRC_PINK_EXPR_STR) + (1)))
+
+#define SRC_PINK_EXPR_CAST ((src_pink_ExprKind)((SRC_PINK_EXPR_NAME) + (1)))
+
+#define SRC_PINK_EXPR_CALL ((src_pink_ExprKind)((SRC_PINK_EXPR_CAST) + (1)))
+
+#define SRC_PINK_EXPR_INDEX ((src_pink_ExprKind)((SRC_PINK_EXPR_CALL) + (1)))
+
+#define SRC_PINK_EXPR_FIELD ((src_pink_ExprKind)((SRC_PINK_EXPR_INDEX) + (1)))
+
+#define SRC_PINK_EXPR_COMPOUND ((src_pink_ExprKind)((SRC_PINK_EXPR_FIELD) + (1)))
+
+#define SRC_PINK_EXPR_UNARY ((src_pink_ExprKind)((SRC_PINK_EXPR_COMPOUND) + (1)))
+
+#define SRC_PINK_EXPR_BINARY ((src_pink_ExprKind)((SRC_PINK_EXPR_UNARY) + (1)))
+
+#define SRC_PINK_EXPR_TERNARY ((src_pink_ExprKind)((SRC_PINK_EXPR_BINARY) + (1)))
+
+#define SRC_PINK_EXPR_MODIFY ((src_pink_ExprKind)((SRC_PINK_EXPR_TERNARY) + (1)))
+
+#define SRC_PINK_EXPR_SIZEOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_MODIFY) + (1)))
+
+#define SRC_PINK_EXPR_SIZEOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_SIZEOF_EXPR) + (1)))
+
+#define SRC_PINK_EXPR_TYPEOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_SIZEOF_TYPE) + (1)))
+
+#define SRC_PINK_EXPR_TYPEOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_TYPEOF_EXPR) + (1)))
+
+#define SRC_PINK_EXPR_ALIGNOF_EXPR ((src_pink_ExprKind)((SRC_PINK_EXPR_TYPEOF_TYPE) + (1)))
+
+#define SRC_PINK_EXPR_ALIGNOF_TYPE ((src_pink_ExprKind)((SRC_PINK_EXPR_ALIGNOF_EXPR) + (1)))
+
+#define SRC_PINK_EXPR_OFFSETOF ((src_pink_ExprKind)((SRC_PINK_EXPR_ALIGNOF_TYPE) + (1)))
+
+typedef int src_pink_CompoundFieldKind;
+
+#define SRC_PINK_FIELD_DEFAULT ((src_pink_CompoundFieldKind)(0))
+
+#define SRC_PINK_FIELD_NAME ((src_pink_CompoundFieldKind)((SRC_PINK_FIELD_DEFAULT) + (1)))
+
+#define SRC_PINK_FIELD_INDEX ((src_pink_CompoundFieldKind)((SRC_PINK_FIELD_NAME) + (1)))
+
+typedef int src_pink_StmtKind;
+
+#define SRC_PINK_STMT_NONE ((src_pink_StmtKind)(0))
+
+#define SRC_PINK_STMT_DECL ((src_pink_StmtKind)((SRC_PINK_STMT_NONE) + (1)))
+
+#define SRC_PINK_STMT_RETURN ((src_pink_StmtKind)((SRC_PINK_STMT_DECL) + (1)))
+
+#define SRC_PINK_STMT_BREAK ((src_pink_StmtKind)((SRC_PINK_STMT_RETURN) + (1)))
+
+#define SRC_PINK_STMT_CONTINUE ((src_pink_StmtKind)((SRC_PINK_STMT_BREAK) + (1)))
+
+#define SRC_PINK_STMT_BLOCK ((src_pink_StmtKind)((SRC_PINK_STMT_CONTINUE) + (1)))
+
+#define SRC_PINK_STMT_IF ((src_pink_StmtKind)((SRC_PINK_STMT_BLOCK) + (1)))
+
+#define SRC_PINK_STMT_WHILE ((src_pink_StmtKind)((SRC_PINK_STMT_IF) + (1)))
+
+#define SRC_PINK_STMT_DO_WHILE ((src_pink_StmtKind)((SRC_PINK_STMT_WHILE) + (1)))
+
+#define SRC_PINK_STMT_FOR ((src_pink_StmtKind)((SRC_PINK_STMT_DO_WHILE) + (1)))
+
+#define SRC_PINK_STMT_SWITCH ((src_pink_StmtKind)((SRC_PINK_STMT_FOR) + (1)))
+
+#define SRC_PINK_STMT_ASSIGN ((src_pink_StmtKind)((SRC_PINK_STMT_SWITCH) + (1)))
+
+#define SRC_PINK_STMT_INIT ((src_pink_StmtKind)((SRC_PINK_STMT_ASSIGN) + (1)))
+
+#define SRC_PINK_STMT_EXPR ((src_pink_StmtKind)((SRC_PINK_STMT_INIT) + (1)))
+
+#define SRC_PINK_STMT_NOTE ((src_pink_StmtKind)((SRC_PINK_STMT_EXPR) + (1)))
+
+#define SRC_PINK_STMT_LABEL ((src_pink_StmtKind)((SRC_PINK_STMT_NOTE) + (1)))
+
+#define SRC_PINK_STMT_GOTO ((src_pink_StmtKind)((SRC_PINK_STMT_LABEL) + (1)))
+
 extern bool src_pink_flag_verbose;
 
 extern bool src_pink_flag_lazy;
@@ -1024,182 +919,281 @@ extern bool src_pink_flag_notypeinfo;
 
 extern bool src_pink_flag_fullgen;
 
-src_pink_Typespec (*src_pink_parse_type_func_param(void));
-
-src_pink_Typespec (*src_pink_parse_type_func(void));
-
-src_pink_Typespec (*src_pink_parse_type_base(void));
-
-src_pink_Typespec (*src_pink_parse_type(void));
-
-struct src_pink_CompoundField {
-    src_pink_CompoundFieldKind kind;
-    src_pink_SrcPos pos;
-    src_pink_Expr (*init);
-    union {
-        char const ((*name));
-        src_pink_Expr (*index);
-    };
+struct std_Arena {
+    char (*ptr);
+    char (*end);
+    char (*(*blocks));
 };
 
-src_pink_CompoundField src_pink_parse_expr_compound_field(void);
+extern std_Arena src_pink_ast_arena;
 
-src_pink_Expr (*src_pink_parse_expr_compound(src_pink_Typespec (*type)));
+void (*src_pink_ast_alloc(size_t size));
 
-src_pink_Expr (*src_pink_parse_expr_operand(void));
+void (*src_pink_ast_dup(void const ((*src)), size_t size));
 
-src_pink_Expr (*src_pink_parse_expr_base(void));
-
-bool src_pink_is_unary_op(void);
-
-src_pink_Expr (*src_pink_parse_expr_unary(void));
-
-bool src_pink_is_mul_op(void);
-
-src_pink_Expr (*src_pink_parse_expr_mul(void));
-
-bool src_pink_is_add_op(void);
-
-src_pink_Expr (*src_pink_parse_expr_add(void));
-
-bool src_pink_is_cmp_op(void);
-
-src_pink_Expr (*src_pink_parse_expr_cmp(void));
-
-src_pink_Expr (*src_pink_parse_expr_and(void));
-
-src_pink_Expr (*src_pink_parse_expr_or(void));
-
-src_pink_Expr (*src_pink_parse_expr_ternary(void));
-
-src_pink_Expr (*src_pink_parse_expr(void));
-
-src_pink_Expr (*src_pink_parse_paren_expr(void));
-
-src_pink_StmtList src_pink_parse_stmt_block(void);
-
-src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_parse_stmt_while(src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_parse_stmt_do_while(src_pink_SrcPos pos));
-
-bool src_pink_is_assign_op(void);
-
-src_pink_Stmt (*src_pink_parse_init_stmt(src_pink_Expr (*left)));
-
-src_pink_Stmt (*src_pink_parse_simple_stmt(void));
-
-src_pink_Stmt (*src_pink_parse_stmt_for(src_pink_SrcPos pos));
-
-struct src_pink_SwitchCasePattern {
-    src_pink_Expr (*start);
-    src_pink_Expr (*end);
-};
-
-src_pink_SwitchCasePattern src_pink_parse_switch_case_pattern(void);
-
-struct src_pink_SwitchCase {
-    src_pink_SwitchCasePattern (*patterns);
-    size_t num_patterns;
-    bool is_default;
-    src_pink_StmtList block;
-};
-
-src_pink_SwitchCase src_pink_parse_stmt_switch_case(void);
-
-src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos));
-
-src_pink_Stmt (*src_pink_parse_stmt(void));
-
-char const ((*src_pink_parse_name(void)));
-
-struct src_pink_EnumItem {
+struct src_pink_Note {
     src_pink_SrcPos pos;
     char const ((*name));
-    src_pink_Expr (*init);
+    src_pink_NoteArg (*args);
+    size_t num_args;
 };
 
-src_pink_EnumItem src_pink_parse_decl_enum_item(void);
+src_pink_Note src_pink_new_note(src_pink_SrcPos pos, char const ((*name)), src_pink_NoteArg (*args), size_t num_args);
 
-src_pink_Decl (*src_pink_parse_decl_enum(src_pink_SrcPos pos));
+struct src_pink_Notes {
+    src_pink_Note (*notes);
+    size_t num_notes;
+};
 
-struct src_pink_AggregateItem {
+src_pink_Notes src_pink_new_notes(src_pink_Note (*notes), size_t num_notes);
+
+struct src_pink_StmtList {
     src_pink_SrcPos pos;
-    src_pink_AggregateItemKind kind;
-    union {
-        struct {
-            char const ((*(*names)));
-            size_t num_names;
-            src_pink_Typespec (*type);
-        };
-        src_pink_Aggregate (*subaggregate);
-    };
+    src_pink_Stmt (*(*stmts));
+    size_t num_stmts;
 };
 
-src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void);
+src_pink_StmtList src_pink_new_stmt_list(src_pink_SrcPos pos, src_pink_Stmt (*(*stmts)), size_t num_stmts);
 
-src_pink_Aggregate (*src_pink_parse_aggregate(src_pink_AggregateKind kind));
+src_pink_Typespec (*src_pink_new_typespec(src_pink_TypespecKind kind, src_pink_SrcPos pos));
 
-src_pink_Decl (*src_pink_parse_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind));
+src_pink_Typespec (*src_pink_new_typespec_name(src_pink_SrcPos pos, char const ((*name))));
 
-src_pink_Decl (*src_pink_parse_decl_var(src_pink_SrcPos pos));
+src_pink_Typespec (*src_pink_new_typespec_ptr(src_pink_SrcPos pos, src_pink_Typespec (*base)));
 
-src_pink_Decl (*src_pink_parse_decl_const(src_pink_SrcPos pos));
+src_pink_Typespec (*src_pink_new_typespec_const(src_pink_SrcPos pos, src_pink_Typespec (*base)));
 
-src_pink_Decl (*src_pink_parse_decl_typedef(src_pink_SrcPos pos));
+src_pink_Typespec (*src_pink_new_typespec_array(src_pink_SrcPos pos, src_pink_Typespec (*elem), src_pink_Expr (*size)));
 
-struct src_pink_FuncParam {
-    src_pink_SrcPos pos;
-    char const ((*name));
-    src_pink_Typespec (*type);
-};
+src_pink_Typespec (*src_pink_new_typespec_func(src_pink_SrcPos pos, src_pink_Typespec (*(*args)), size_t num_args, src_pink_Typespec (*ret), bool has_varargs));
 
-src_pink_FuncParam src_pink_parse_decl_func_param(void);
+src_pink_Decls (*src_pink_new_decls(src_pink_Decl (*(*decls)), size_t num_decls));
 
-src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos));
+src_pink_Decl (*src_pink_new_decl(src_pink_DeclKind kind, src_pink_SrcPos pos, char const ((*name))));
 
-struct src_pink_NoteArg {
-    src_pink_SrcPos pos;
-    char const ((*name));
-    src_pink_Expr (*expr);
-};
+src_pink_Note (*src_pink_get_decl_note(src_pink_Decl (*decl), char const ((*name))));
 
-src_pink_NoteArg src_pink_parse_note_arg(void);
+bool src_pink_is_decl_foreign(src_pink_Decl (*decl));
 
-src_pink_Note src_pink_parse_note(void);
+src_pink_Decl (*src_pink_new_decl_enum(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_EnumItem (*items), size_t num_items));
 
-src_pink_Notes src_pink_parse_notes(void);
+src_pink_Aggregate (*src_pink_new_aggregate(src_pink_SrcPos pos, src_pink_AggregateKind kind, src_pink_AggregateItem (*items), size_t num_items));
 
-src_pink_Decl (*src_pink_parse_decl_note(src_pink_SrcPos pos));
+src_pink_Decl (*src_pink_new_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind, char const ((*name)), src_pink_Aggregate (*aggregate)));
 
-src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos));
+src_pink_Decl (*src_pink_new_decl_var(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
 
-src_pink_Decl (*src_pink_parse_decl_opt(void));
+src_pink_Decl (*src_pink_new_decl_func(src_pink_SrcPos pos, char const ((*name)), src_pink_FuncParam (*params), size_t num_params, src_pink_Typespec (*ret_type), bool has_varargs, src_pink_StmtList block));
 
-src_pink_Decl (*src_pink_parse_decl(void));
+src_pink_Decl (*src_pink_new_decl_const(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
 
-src_pink_Decls (*src_pink_parse_decls(void));
+src_pink_Decl (*src_pink_new_decl_typedef(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type)));
 
-#define SRC_PINK_MAX_SEARCH_PATHS ((int)(256))
+src_pink_Decl (*src_pink_new_decl_note(src_pink_SrcPos pos, src_pink_Note note));
 
-extern char const ((*(src_pink_static_package_search_paths[SRC_PINK_MAX_SEARCH_PATHS])));
+src_pink_Decl (*src_pink_new_decl_import(src_pink_SrcPos pos, char const ((*rename_name)), bool is_relative, char const ((*(*names))), size_t num_names, bool import_all, src_pink_ImportItem (*items), size_t num_items));
 
-extern char const ((*(*src_pink_package_search_paths)));
+src_pink_Expr (*src_pink_new_expr(src_pink_ExprKind kind, src_pink_SrcPos pos));
 
-extern int src_pink_num_package_search_paths;
+src_pink_Expr (*src_pink_new_expr_paren(src_pink_SrcPos pos, src_pink_Expr (*expr)));
 
-void src_pink_add_package_search_path(char const ((*path)));
+src_pink_Expr (*src_pink_new_expr_sizeof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
 
-void src_pink_add_package_search_path_range(char const ((*start)), char const ((*end)));
+src_pink_Expr (*src_pink_new_expr_sizeof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
 
-void src_pink_init_package_search_paths(void);
+src_pink_Expr (*src_pink_new_expr_typeof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
 
-void src_pink_init_compiler(void);
+src_pink_Expr (*src_pink_new_expr_typeof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
 
-void src_pink_parse_env_vars(void);
+src_pink_Expr (*src_pink_new_expr_alignof_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
 
-int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void), char const ((*extension)));
+src_pink_Expr (*src_pink_new_expr_alignof_type(src_pink_SrcPos pos, src_pink_Typespec (*type)));
+
+src_pink_Expr (*src_pink_new_expr_offsetof(src_pink_SrcPos pos, src_pink_Typespec (*type), char const ((*name))));
+
+src_pink_Expr (*src_pink_new_expr_modify(src_pink_SrcPos pos, src_pink_TokenKind op, bool post, src_pink_Expr (*expr)));
+
+src_pink_Expr (*src_pink_new_expr_int(src_pink_SrcPos pos, ullong val, src_pink_TokenMod mod, src_pink_TokenSuffix suffix));
+
+src_pink_Expr (*src_pink_new_expr_float(src_pink_SrcPos pos, char const ((*start)), char const ((*end)), double val, src_pink_TokenSuffix suffix));
+
+src_pink_Expr (*src_pink_new_expr_str(src_pink_SrcPos pos, char const ((*val)), src_pink_TokenMod mod));
+
+src_pink_Expr (*src_pink_new_expr_name(src_pink_SrcPos pos, char const ((*name))));
+
+src_pink_Expr (*src_pink_new_expr_compound(src_pink_SrcPos pos, src_pink_Typespec (*type), src_pink_CompoundField (*fields), size_t num_fields));
+
+src_pink_Expr (*src_pink_new_expr_cast(src_pink_SrcPos pos, src_pink_Typespec (*type), src_pink_Expr (*expr)));
+
+src_pink_Expr (*src_pink_new_expr_call(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_Expr (*(*args)), size_t num_args));
+
+src_pink_Expr (*src_pink_new_expr_index(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_Expr (*index)));
+
+src_pink_Expr (*src_pink_new_expr_field(src_pink_SrcPos pos, src_pink_Expr (*expr), char const ((*name))));
+
+src_pink_Expr (*src_pink_new_expr_unary(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*expr)));
+
+src_pink_Expr (*src_pink_new_expr_binary(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*left), src_pink_Expr (*right)));
+
+src_pink_Expr (*src_pink_new_expr_ternary(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_Expr (*then_expr), src_pink_Expr (*else_expr)));
+
+src_pink_Note (*src_pink_get_stmt_note(src_pink_Stmt (*stmt), char const ((*name))));
+
+src_pink_Stmt (*src_pink_new_stmt(src_pink_StmtKind kind, src_pink_SrcPos pos));
+
+src_pink_Stmt (*src_pink_new_stmt_label(src_pink_SrcPos pos, char const ((*label))));
+
+src_pink_Stmt (*src_pink_new_stmt_goto(src_pink_SrcPos pos, char const ((*label))));
+
+src_pink_Stmt (*src_pink_new_stmt_note(src_pink_SrcPos pos, src_pink_Note note));
+
+src_pink_Stmt (*src_pink_new_stmt_decl(src_pink_SrcPos pos, src_pink_Decl (*decl)));
+
+src_pink_Stmt (*src_pink_new_stmt_return(src_pink_SrcPos pos, src_pink_Expr (*expr)));
+
+src_pink_Stmt (*src_pink_new_stmt_break(src_pink_SrcPos pos));
+
+src_pink_Stmt (*src_pink_new_stmt_continue(src_pink_SrcPos pos));
+
+src_pink_Stmt (*src_pink_new_stmt_block(src_pink_SrcPos pos, src_pink_StmtList block));
+
+src_pink_Stmt (*src_pink_new_stmt_if(src_pink_SrcPos pos, src_pink_Stmt (*init), src_pink_Expr (*cond), src_pink_StmtList then_block, src_pink_ElseIf (*elseifs), size_t num_elseifs, src_pink_StmtList else_block));
+
+src_pink_Stmt (*src_pink_new_stmt_while(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_StmtList block));
+
+src_pink_Stmt (*src_pink_new_stmt_do_while(src_pink_SrcPos pos, src_pink_Expr (*cond), src_pink_StmtList block));
+
+src_pink_Stmt (*src_pink_new_stmt_for(src_pink_SrcPos pos, src_pink_Stmt (*init), src_pink_Expr (*cond), src_pink_Stmt (*next), src_pink_StmtList block));
+
+src_pink_Stmt (*src_pink_new_stmt_switch(src_pink_SrcPos pos, src_pink_Expr (*expr), src_pink_SwitchCase (*cases), size_t num_cases));
+
+src_pink_Stmt (*src_pink_new_stmt_assign(src_pink_SrcPos pos, src_pink_TokenKind op, src_pink_Expr (*left), src_pink_Expr (*right)));
+
+src_pink_Stmt (*src_pink_new_stmt_init(src_pink_SrcPos pos, char const ((*name)), src_pink_Typespec (*type), src_pink_Expr (*expr)));
+
+src_pink_Stmt (*src_pink_new_stmt_expr(src_pink_SrcPos pos, src_pink_Expr (*expr)));
+
+extern char (*src_pink_gen_buf);
+
+extern int src_pink_gen_indent;
+
+extern src_pink_SrcPos src_pink_gen_pos;
+
+extern char const ((*(*src_pink_gen_headers_buf)));
+
+extern char (*src_pink_gen_preamble_str);
+
+extern char (*src_pink_gen_postamble_str);
+
+void src_pink_genln(void);
+
+bool src_pink_is_incomplete_array_typespec(src_pink_Typespec (*typespec));
+
+extern char (src_pink_char_to_escape[256]);
+
+void src_pink_gen_char(char c);
+
+void src_pink_gen_str(char const ((*str)), bool multiline);
+
+void src_pink_gen_sync_pos(src_pink_SrcPos pos);
+
+char const ((*src_pink_cdecl_paren(char const ((*str)), char c)));
+
+char const ((*src_pink_cdecl_name(src_pink_Type (*type))));
+
+char (*src_pink_type_to_cdecl(src_pink_Type (*type), char const ((*str))));
+
+char const ((*src_pink_gen_expr_str(src_pink_Expr (*expr))));
+
+extern std_Map src_pink_gen_name_map;
+
+char const ((*src_pink_get_gen_name_or_default(void const ((*ptr)), char const ((*default_name)))));
+
+char const ((*src_pink_get_gen_name(void const ((*ptr)))));
+
+char (*src_pink_typespec_to_cdecl(src_pink_Typespec (*typespec), char const ((*str))));
+
+void src_pink_gen_func_decl(src_pink_Decl (*decl));
+
+bool src_pink_gen_reachable(src_pink_Sym (*sym));
+
+void src_pink_gen_forward_decls(void);
+
+void src_pink_gen_aggregate_items(src_pink_Aggregate (*aggregate));
+
+void src_pink_gen_aggregate(src_pink_Decl (*decl));
+
+void src_pink_gen_paren_expr(src_pink_Expr (*expr));
+
+void src_pink_gen_expr_compound(src_pink_Expr (*expr));
+
+extern char const ((*(src_pink_typeid_kind_names[SRC_PINK_NUM_CMPL_TYPE_KINDS])));
+
+char const ((*src_pink_typeid_kind_name(src_pink_Type (*type))));
+
+bool src_pink_is_excluded_typeinfo(src_pink_Type (*type));
+
+void src_pink_gen_typeid(src_pink_Type (*type));
+
+void src_pink_gen_expr(src_pink_Expr (*expr));
+
+void src_pink_gen_stmt_block(src_pink_StmtList block);
+
+void src_pink_gen_simple_stmt(src_pink_Stmt (*stmt));
+
+bool src_pink_is_char_lit(src_pink_Expr (*expr));
+
+void src_pink_gen_stmt(src_pink_Stmt (*stmt));
+
+void src_pink_gen_decl(src_pink_Sym (*sym));
+
+void src_pink_gen_sorted_decls(void);
+
+void src_pink_gen_defs(void);
+
+extern std_Map src_pink_gen_foreign_headers_map;
+
+extern char const ((*(*src_pink_gen_foreign_headers_buf)));
+
+void src_pink_add_foreign_header(char const ((*name)));
+
+extern char const ((*(*src_pink_gen_foreign_sources_buf)));
+
+void src_pink_add_foreign_source(char const ((*name)));
+
+void src_pink_gen_include(char const ((*path)));
+
+void src_pink_gen_foreign_headers(void);
+
+void src_pink_gen_foreign_sources(void);
+
+extern char const ((*(*src_pink_gen_sources_buf)));
+
+void src_pink_put_include_path(char (path[MAX_PATH]), src_pink_Package (*package), char const ((*filename)));
+
+extern char (*src_pink_gen_preamble_buf);
+
+extern char (*src_pink_gen_postamble_buf);
+
+void src_pink_preprocess_package(src_pink_Package (*package));
+
+void src_pink_preprocess_packages(void);
+
+void src_pink_gen_typeinfo_header(char const ((*kind)), src_pink_Type (*type));
+
+void src_pink_gen_typeinfo_fields(src_pink_Type (*type));
+
+void src_pink_gen_typeinfo(src_pink_Type (*type));
+
+void src_pink_gen_typeinfos(void);
+
+void src_pink_gen_package_external_names(void);
+
+void src_pink_gen_preamble(void);
+
+void src_pink_gen_postamble(void);
+
+void src_pink_gen_all(void);
 
 typedef int src_pink_SymKind;
 
@@ -1570,156 +1564,162 @@ void src_pink_init_target(void);
 
 bool src_pink_is_excluded_target_filename(char const ((*name)));
 
-extern src_pink_TypeMetrics (*src_pink_type_metrics);
+src_pink_Typespec (*src_pink_parse_type_func_param(void));
 
-struct src_pink_TypeAggregate {
-    src_pink_TypeField (*fields);
-    size_t num_fields;
-};
+src_pink_Typespec (*src_pink_parse_type_func(void));
 
-struct src_pink_TypeFunc {
-    src_pink_Type (*(*params));
-    size_t num_params;
-    bool has_varargs;
-    src_pink_Type (*ret);
-};
+src_pink_Typespec (*src_pink_parse_type_base(void));
 
-struct src_pink_Type {
-    src_pink_CompilerTypeKind kind;
-    size_t size;
-    size_t align;
-    src_pink_Sym (*sym);
-    src_pink_Type (*base);
-    int typeid;
-    bool nonmodifiable;
+src_pink_Typespec (*src_pink_parse_type(void));
+
+struct src_pink_CompoundField {
+    src_pink_CompoundFieldKind kind;
+    src_pink_SrcPos pos;
+    src_pink_Expr (*init);
     union {
-        size_t num_elems;
-        src_pink_TypeAggregate aggregate;
-        src_pink_TypeFunc function;
+        char const ((*name));
+        src_pink_Expr (*index);
     };
 };
 
-extern src_pink_Type (*src_pink_type_void);
+src_pink_CompoundField src_pink_parse_expr_compound_field(void);
 
-extern src_pink_Type (*src_pink_type_bool);
+src_pink_Expr (*src_pink_parse_expr_compound(src_pink_Typespec (*type)));
 
-extern src_pink_Type (*src_pink_type_char);
+src_pink_Expr (*src_pink_parse_expr_operand(void));
 
-extern src_pink_Type (*src_pink_type_uchar);
+src_pink_Expr (*src_pink_parse_expr_base(void));
 
-extern src_pink_Type (*src_pink_type_schar);
+bool src_pink_is_unary_op(void);
 
-extern src_pink_Type (*src_pink_type_short);
+src_pink_Expr (*src_pink_parse_expr_unary(void));
 
-extern src_pink_Type (*src_pink_type_ushort);
+bool src_pink_is_mul_op(void);
 
-extern src_pink_Type (*src_pink_type_int);
+src_pink_Expr (*src_pink_parse_expr_mul(void));
 
-extern src_pink_Type (*src_pink_type_uint);
+bool src_pink_is_add_op(void);
 
-extern src_pink_Type (*src_pink_type_long);
+src_pink_Expr (*src_pink_parse_expr_add(void));
 
-extern src_pink_Type (*src_pink_type_ulong);
+bool src_pink_is_cmp_op(void);
 
-extern src_pink_Type (*src_pink_type_llong);
+src_pink_Expr (*src_pink_parse_expr_cmp(void));
 
-extern src_pink_Type (*src_pink_type_ullong);
+src_pink_Expr (*src_pink_parse_expr_and(void));
 
-extern src_pink_Type (*src_pink_type_float);
+src_pink_Expr (*src_pink_parse_expr_or(void));
 
-extern src_pink_Type (*src_pink_type_double);
+src_pink_Expr (*src_pink_parse_expr_ternary(void));
 
-extern int src_pink_next_typeid;
+src_pink_Expr (*src_pink_parse_expr(void));
 
-extern src_pink_Type (*src_pink_type_uintptr);
+src_pink_Expr (*src_pink_parse_paren_expr(void));
 
-extern src_pink_Type (*src_pink_type_usize);
+src_pink_StmtList src_pink_parse_stmt_block(void);
 
-extern src_pink_Type (*src_pink_type_ssize);
+src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos));
 
-extern std_Map src_pink_typeid_map;
+src_pink_Stmt (*src_pink_parse_stmt_while(src_pink_SrcPos pos));
 
-src_pink_Type (*src_pink_get_type_from_typeid(int typeid));
+src_pink_Stmt (*src_pink_parse_stmt_do_while(src_pink_SrcPos pos));
 
-void src_pink_register_typeid(src_pink_Type (*type));
+bool src_pink_is_assign_op(void);
 
-src_pink_Type (*src_pink_type_alloc(TypeKind kind));
+src_pink_Stmt (*src_pink_parse_init_stmt(src_pink_Expr (*left)));
 
-bool src_pink_is_ptr_type(src_pink_Type (*type));
+src_pink_Stmt (*src_pink_parse_simple_stmt(void));
 
-bool src_pink_is_func_type(src_pink_Type (*type));
+src_pink_Stmt (*src_pink_parse_stmt_for(src_pink_SrcPos pos));
 
-bool src_pink_is_ptr_like_type(src_pink_Type (*type));
+struct src_pink_SwitchCasePattern {
+    src_pink_Expr (*start);
+    src_pink_Expr (*end);
+};
 
-bool src_pink_is_const_type(src_pink_Type (*type));
+src_pink_SwitchCasePattern src_pink_parse_switch_case_pattern(void);
 
-bool src_pink_is_array_type(src_pink_Type (*type));
+struct src_pink_SwitchCase {
+    src_pink_SwitchCasePattern (*patterns);
+    size_t num_patterns;
+    bool is_default;
+    src_pink_StmtList block;
+};
 
-bool src_pink_is_incomplete_array_type(src_pink_Type (*type));
+src_pink_SwitchCase src_pink_parse_stmt_switch_case(void);
 
-bool src_pink_is_integer_type(src_pink_Type (*type));
+src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos));
 
-bool src_pink_is_floating_type(src_pink_Type (*type));
+src_pink_Stmt (*src_pink_parse_stmt(void));
 
-bool src_pink_is_arithmetic_type(src_pink_Type (*type));
+char const ((*src_pink_parse_name(void)));
 
-bool src_pink_is_scalar_type(src_pink_Type (*type));
+struct src_pink_EnumItem {
+    src_pink_SrcPos pos;
+    char const ((*name));
+    src_pink_Expr (*init);
+};
 
-bool src_pink_is_aggregate_type(src_pink_Type (*type));
+src_pink_EnumItem src_pink_parse_decl_enum_item(void);
 
-bool src_pink_is_signed_type(src_pink_Type (*type));
+src_pink_Decl (*src_pink_parse_decl_enum(src_pink_SrcPos pos));
 
-extern char const ((*(src_pink_type_names[SRC_PINK_NUM_CMPL_TYPE_KINDS])));
+struct src_pink_AggregateItem {
+    src_pink_SrcPos pos;
+    src_pink_AggregateItemKind kind;
+    union {
+        struct {
+            char const ((*(*names)));
+            size_t num_names;
+            src_pink_Typespec (*type);
+        };
+        src_pink_Aggregate (*subaggregate);
+    };
+};
 
-extern int (src_pink_type_ranks[SRC_PINK_NUM_CMPL_TYPE_KINDS]);
+src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void);
 
-int src_pink_type_rank(src_pink_Type (*type));
+src_pink_Aggregate (*src_pink_parse_aggregate(src_pink_AggregateKind kind));
 
-src_pink_Type (*src_pink_unsigned_type(src_pink_Type (*type)));
+src_pink_Decl (*src_pink_parse_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind));
 
-size_t src_pink_type_sizeof(src_pink_Type (*type));
+src_pink_Decl (*src_pink_parse_decl_var(src_pink_SrcPos pos));
 
-size_t src_pink_type_alignof(src_pink_Type (*type));
+src_pink_Decl (*src_pink_parse_decl_const(src_pink_SrcPos pos));
 
-extern std_Map src_pink_cached_ptr_types;
+src_pink_Decl (*src_pink_parse_decl_typedef(src_pink_SrcPos pos));
 
-src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base)));
+struct src_pink_FuncParam {
+    src_pink_SrcPos pos;
+    char const ((*name));
+    src_pink_Typespec (*type);
+};
 
-extern std_Map src_pink_cached_const_types;
+src_pink_FuncParam src_pink_parse_decl_func_param(void);
 
-src_pink_Type (*src_pink_type_const(src_pink_Type (*base)));
+src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos));
 
-src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type)));
+struct src_pink_NoteArg {
+    src_pink_SrcPos pos;
+    char const ((*name));
+    src_pink_Expr (*expr);
+};
 
-extern std_Map src_pink_cached_array_types;
+src_pink_NoteArg src_pink_parse_note_arg(void);
 
-src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems));
+src_pink_Note src_pink_parse_note(void);
 
-extern std_Map src_pink_cached_func_types;
+src_pink_Notes src_pink_parse_notes(void);
 
-src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs));
+src_pink_Decl (*src_pink_parse_decl_note(src_pink_SrcPos pos));
 
-bool src_pink_has_duplicate_fields(src_pink_Type (*type));
+src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos));
 
-void src_pink_add_type_fields(src_pink_TypeField (*(*fields)), src_pink_Type (*type), size_t offset);
+src_pink_Decl (*src_pink_parse_decl_opt(void));
 
-void src_pink_type_complete_struct(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields);
+src_pink_Decl (*src_pink_parse_decl(void));
 
-void src_pink_type_complete_union(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields);
-
-src_pink_Type (*src_pink_type_incomplete(src_pink_Sym (*sym)));
-
-src_pink_Type (*src_pink_type_enum(src_pink_Sym (*sym), src_pink_Type (*base)));
-
-void src_pink_init_builtin_type(src_pink_Type (*type));
-
-void src_pink_init_builtin_types(void);
-
-int src_pink_aggregate_item_field_index(src_pink_Type (*type), char const ((*name)));
-
-src_pink_Type (*src_pink_aggregate_item_field_type_from_index(src_pink_Type (*type), int index));
-
-src_pink_Type (*src_pink_aggregate_item_field_type_from_name(src_pink_Type (*type), char const ((*name))));
+src_pink_Decls (*src_pink_parse_decls(void));
 
 
 
@@ -1735,65 +1735,86 @@ struct Any {
     typeid type;
 };
 
-void (*std_arena_alloc(std_Arena (*arena), size_t size));
+char const ((*std_str_intern(char const ((*str)))));
 
-struct src_pink_StmtIf {
-    src_pink_Stmt (*init);
-    src_pink_Expr (*cond);
-    src_pink_StmtList then_block;
-    src_pink_ElseIf (*elseifs);
-    size_t num_elseifs;
-    src_pink_StmtList else_block;
+size_t std_clamp_max(size_t x, size_t max);
+
+void std_os_path_copy(char (path[MAX_PATH]), char const ((*src)));
+
+void std_os_path_join(char (path[MAX_PATH]), char const ((*src)));
+
+void std_map_put(std_Map (*map), void const ((*key)), void (*val));
+
+void std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help)));
+
+void std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options);
+
+void std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help)));
+
+char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr)))))));
+
+void std_os_print_flags_usage(void);
+
+struct src_pink_Package {
+    char const ((*path));
+    char (full_path[MAX_PATH]);
+    src_pink_Decl (*(*decls));
+    size_t num_decls;
+    std_Map syms_map;
+    src_pink_Sym (*(*syms));
+    char const ((*external_name));
+    bool always_reachable;
 };
 
-struct src_pink_StmtWhile {
-    src_pink_Expr (*cond);
-    src_pink_StmtList block;
-};
+size_t std_buf_len(void (*b));
 
-struct src_pink_StmtFor {
-    src_pink_Stmt (*init);
-    src_pink_Expr (*cond);
-    src_pink_Stmt (*next);
-    src_pink_StmtList block;
-};
+bool std_write_file(char const ((*path)), char const ((*buf)), size_t len);
 
-struct src_pink_StmtSwitch {
-    src_pink_Expr (*expr);
-    src_pink_SwitchCase (*cases);
-    size_t num_cases;
-};
+void std_buf_push(void (*(*b)), void (*elem), size_t elem_size);
 
-struct src_pink_StmtAssign {
-    src_pink_TokenKind op;
-    src_pink_Expr (*left);
-    src_pink_Expr (*right);
-};
+extern std_Arena std_intern_arena;
 
-struct src_pink_StmtInit {
+char const ((*std_str_intern_range(char const ((*start)), char const ((*end)))));
+
+struct src_pink_TypeField {
     char const ((*name));
-    src_pink_Typespec (*type);
-    src_pink_Expr (*expr);
+    src_pink_Type (*type);
+    size_t offset;
 };
 
-struct src_pink_Stmt {
-    src_pink_StmtKind kind;
-    src_pink_Notes notes;
-    src_pink_SrcPos pos;
-    union {
-        src_pink_Note note;
-        src_pink_Expr (*expr);
-        src_pink_Decl (*decl);
-        src_pink_StmtIf if_stmt;
-        src_pink_StmtWhile while_stmt;
-        src_pink_StmtFor for_stmt;
-        src_pink_StmtSwitch switch_stmt;
-        src_pink_StmtList block;
-        src_pink_StmtAssign assign;
-        src_pink_StmtInit init;
-        char const ((*label));
-    };
+void (*std_map_get(std_Map (*map), void const ((*key))));
+
+void (*std_xcalloc(size_t num_elems, size_t elem_size));
+
+struct src_pink_CachedArrayType {
+    src_pink_Type (*type);
+    src_pink_CachedArrayType (*next);
 };
+
+uint64_t std_hash_mix(uint64_t x, uint64_t y);
+
+uint64_t std_hash_ptr(void const ((*ptr)));
+
+uint64_t std_hash_uint64(uint64_t x);
+
+void (*std_map_get_from_uint64(std_Map (*map), uint64_t key));
+
+void (*std_xmalloc(size_t num_bytes));
+
+void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val));
+
+struct src_pink_CachedFuncType {
+    src_pink_Type (*type);
+    src_pink_CachedFuncType (*next);
+};
+
+uint64_t std_hash_bytes(void const ((*ptr)), size_t len);
+
+void (*std_memdup(void (*src), size_t size));
+
+size_t std_max(size_t x, size_t y);
+
+uintptr_t std_align_up(uintptr_t n, size_t a);
 
 struct src_pink_TypespecFunc {
     src_pink_Typespec (*(*args));
@@ -1811,6 +1832,73 @@ struct src_pink_Typespec {
         src_pink_TypespecFunc function;
         src_pink_Expr (*num_elems);
     };
+};
+
+struct src_pink_ImportItem {
+    char const ((*name));
+    char const ((*rename));
+};
+
+struct src_pink_Aggregate {
+    src_pink_SrcPos pos;
+    src_pink_AggregateKind kind;
+    src_pink_AggregateItem (*items);
+    size_t num_items;
+};
+
+struct src_pink_DeclEnum {
+    src_pink_Typespec (*type);
+    src_pink_EnumItem (*items);
+    size_t num_items;
+};
+
+struct src_pink_DeclFunc {
+    src_pink_FuncParam (*params);
+    size_t num_params;
+    src_pink_Typespec (*ret_type);
+    bool has_varargs;
+    src_pink_StmtList block;
+};
+
+struct src_pink_DeclTypedef {
+    src_pink_Typespec (*type);
+};
+
+struct src_pink_DeclVar {
+    src_pink_Typespec (*type);
+    src_pink_Expr (*expr);
+};
+
+struct src_pink_DeclImport {
+    bool is_relative;
+    char const ((*(*names)));
+    size_t num_names;
+    bool import_all;
+    src_pink_ImportItem (*items);
+    size_t num_items;
+};
+
+struct src_pink_Decl {
+    src_pink_DeclKind kind;
+    src_pink_SrcPos pos;
+    char const ((*name));
+    src_pink_Notes notes;
+    bool is_incomplete;
+    union {
+        src_pink_Note note;
+        src_pink_DeclEnum enum_decl;
+        src_pink_Aggregate (*aggregate);
+        src_pink_DeclFunc function;
+        src_pink_DeclTypedef typedef_decl;
+        src_pink_DeclVar var_decl;
+        src_pink_DeclVar const_decl;
+        src_pink_DeclImport import_decl;
+    };
+};
+
+struct src_pink_Decls {
+    src_pink_Decl (*(*decls));
+    size_t num_decls;
 };
 
 struct src_pink_ExprParen {
@@ -1918,144 +2006,84 @@ struct src_pink_Expr {
     };
 };
 
-struct src_pink_Decls {
-    src_pink_Decl (*(*decls));
-    size_t num_decls;
-};
-
-struct src_pink_DeclEnum {
-    src_pink_Typespec (*type);
-    src_pink_EnumItem (*items);
-    size_t num_items;
-};
-
-struct src_pink_DeclFunc {
-    src_pink_FuncParam (*params);
-    size_t num_params;
-    src_pink_Typespec (*ret_type);
-    bool has_varargs;
-    src_pink_StmtList block;
-};
-
-struct src_pink_DeclTypedef {
-    src_pink_Typespec (*type);
-};
-
-struct src_pink_DeclVar {
-    src_pink_Typespec (*type);
-    src_pink_Expr (*expr);
-};
-
-struct src_pink_DeclImport {
-    bool is_relative;
-    char const ((*(*names)));
-    size_t num_names;
-    bool import_all;
-    src_pink_ImportItem (*items);
-    size_t num_items;
-};
-
-struct src_pink_Decl {
-    src_pink_DeclKind kind;
-    src_pink_SrcPos pos;
-    char const ((*name));
-    src_pink_Notes notes;
-    bool is_incomplete;
-    union {
-        src_pink_Note note;
-        src_pink_DeclEnum enum_decl;
-        src_pink_Aggregate (*aggregate);
-        src_pink_DeclFunc function;
-        src_pink_DeclTypedef typedef_decl;
-        src_pink_DeclVar var_decl;
-        src_pink_DeclVar const_decl;
-        src_pink_DeclImport import_decl;
-    };
-};
-
-struct src_pink_Aggregate {
-    src_pink_SrcPos pos;
-    src_pink_AggregateKind kind;
-    src_pink_AggregateItem (*items);
-    size_t num_items;
-};
-
-struct src_pink_ImportItem {
-    char const ((*name));
-    char const ((*rename));
-};
-
 struct src_pink_ElseIf {
     src_pink_Expr (*cond);
     src_pink_StmtList block;
 };
 
+struct src_pink_StmtIf {
+    src_pink_Stmt (*init);
+    src_pink_Expr (*cond);
+    src_pink_StmtList then_block;
+    src_pink_ElseIf (*elseifs);
+    size_t num_elseifs;
+    src_pink_StmtList else_block;
+};
+
+struct src_pink_StmtWhile {
+    src_pink_Expr (*cond);
+    src_pink_StmtList block;
+};
+
+struct src_pink_StmtFor {
+    src_pink_Stmt (*init);
+    src_pink_Expr (*cond);
+    src_pink_Stmt (*next);
+    src_pink_StmtList block;
+};
+
+struct src_pink_StmtSwitch {
+    src_pink_Expr (*expr);
+    src_pink_SwitchCase (*cases);
+    size_t num_cases;
+};
+
+struct src_pink_StmtAssign {
+    src_pink_TokenKind op;
+    src_pink_Expr (*left);
+    src_pink_Expr (*right);
+};
+
+struct src_pink_StmtInit {
+    char const ((*name));
+    src_pink_Typespec (*type);
+    src_pink_Expr (*expr);
+};
+
+struct src_pink_Stmt {
+    src_pink_StmtKind kind;
+    src_pink_Notes notes;
+    src_pink_SrcPos pos;
+    union {
+        src_pink_Note note;
+        src_pink_Expr (*expr);
+        src_pink_Decl (*decl);
+        src_pink_StmtIf if_stmt;
+        src_pink_StmtWhile while_stmt;
+        src_pink_StmtFor for_stmt;
+        src_pink_StmtSwitch switch_stmt;
+        src_pink_StmtList block;
+        src_pink_StmtAssign assign;
+        src_pink_StmtInit init;
+        char const ((*label));
+    };
+};
+
+void (*std_arena_alloc(std_Arena (*arena), size_t size));
+
 void std_buf_printf(char (*(*buf)), char const ((*fmt)), ...);
 
 char (*std_strf(char const ((*fmt)), ...));
 
-void (*std_map_get(std_Map (*map), void const ((*key))));
-
-struct src_pink_Package {
-    char const ((*path));
-    char (full_path[MAX_PATH]);
-    src_pink_Decl (*(*decls));
-    size_t num_decls;
-    std_Map syms_map;
-    src_pink_Sym (*(*syms));
-    char const ((*external_name));
-    bool always_reachable;
-};
-
-void std_map_put(std_Map (*map), void const ((*key)), void (*val));
-
 void (*std_buf_end(void (*b), size_t elem_size));
 
-size_t std_buf_len(void (*b));
-
-char const ((*std_str_intern(char const ((*str)))));
-
-void std_buf_push(void (*(*b)), void (*elem), size_t elem_size);
-
-void std_os_path_copy(char (path[MAX_PATH]), char const ((*src)));
-
-void std_os_path_join(char (path[MAX_PATH]), char const ((*src)));
-
 void std_os_path_absolute(char (path[MAX_PATH]));
-
-struct src_pink_TypeField {
-    char const ((*name));
-    src_pink_Type (*type);
-    size_t offset;
-};
-
-extern std_Arena std_intern_arena;
-
-char const ((*std_str_intern_range(char const ((*start)), char const ((*end)))));
-
-size_t std_clamp_max(size_t x, size_t max);
-
-void std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help)));
-
-void std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options);
-
-void std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help)));
-
-char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr)))))));
-
-void std_os_print_flags_usage(void);
-
-bool std_write_file(char const ((*path)), char const ((*buf)), size_t len);
-
-void (*std_xcalloc(size_t num_elems, size_t elem_size));
 
 void std_fatal(char const ((*fmt)), ...);
 
 uint64_t std_map_get_uint64(std_Map (*map), void (*key));
 
 void std_map_put_uint64(std_Map (*map), void (*key), uint64_t val);
-
-size_t std_max(size_t x, size_t y);
 
 struct std_os_DirListIter {
     bool valid;
@@ -2081,67 +2109,11 @@ void std_buf_free(void (*(*b)));
 
 char (*std_read_file(char const ((*path))));
 
-struct src_pink_CachedArrayType {
-    src_pink_Type (*type);
-    src_pink_CachedArrayType (*next);
-};
-
-uint64_t std_hash_mix(uint64_t x, uint64_t y);
-
-uint64_t std_hash_ptr(void const ((*ptr)));
-
-uint64_t std_hash_uint64(uint64_t x);
-
-void (*std_map_get_from_uint64(std_Map (*map), uint64_t key));
-
-void (*std_xmalloc(size_t num_bytes));
-
-void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val));
-
-struct src_pink_CachedFuncType {
-    src_pink_Type (*type);
-    src_pink_CachedFuncType (*next);
-};
-
-uint64_t std_hash_bytes(void const ((*ptr)), size_t len);
-
-void (*std_memdup(void (*src), size_t size));
-
-uintptr_t std_align_up(uintptr_t n, size_t a);
-
-void std_arena_grow(std_Arena (*arena), size_t min_size);
-
-void (*std_align_up_ptr(void (*p), size_t a));
-
-#define STD_ARENA_ALIGNMENT (8)
-
-size_t std_buf_cap(void const ((*b)));
-
-void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size);
-
-std_BufHdr (*std_buf__hdr(void (*b)));
-
-struct std_BufHdr {
-    size_t len;
-    size_t cap;
-    char (buf[1]);
-};
-
-uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key);
-
-void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val);
+size_t std_min(size_t x, size_t y);
 
 void std_os_path_normalize(char (*path));
 
-extern std_Map std_interns;
-
-struct std_Intern {
-    size_t len;
-    std_Intern (*next);
-    char (str[1]);
-};
-
-size_t std_min(size_t x, size_t y);
+void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val);
 
 typedef int std_os_FlagKind;
 
@@ -2173,17 +2145,45 @@ std_os_FlagDef (*std_os_get_flag_def(char const ((*name))));
 
 char (*std_os_path_file(char (path[MAX_PATH])));
 
-bool std_os_dir_excluded(std_os_DirListIter (*iter));
+std_BufHdr (*std_buf__hdr(void (*b)));
+
+struct std_BufHdr {
+    size_t len;
+    size_t cap;
+    char (buf[1]);
+};
+
+void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size);
+
+extern std_Map std_interns;
+
+struct std_Intern {
+    size_t len;
+    std_Intern (*next);
+    char (str[1]);
+};
+
+uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key);
 
 uintptr_t std_align_down(uintptr_t n, size_t a);
+
+void std_arena_grow(std_Arena (*arena), size_t min_size);
+
+void (*std_align_up_ptr(void (*p), size_t a));
+
+#define STD_ARENA_ALIGNMENT (8)
+
+size_t std_buf_cap(void const ((*b)));
+
+bool std_os_dir_excluded(std_os_DirListIter (*iter));
+
+void std_map_grow(std_Map (*map), size_t new_cap);
+
+void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size));
 
 size_t std_clamp_min(size_t x, size_t min);
 
 #define STD_ARENA_BLOCK_SIZE ((1024) * (1024))
-
-void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size));
-
-void std_map_grow(std_Map (*map), size_t new_cap);
 
 void (*std_xrealloc(void (*ptr), size_t num_bytes));
 
@@ -2191,8 +2191,1029 @@ void (*std_xrealloc(void (*ptr), size_t num_bytes));
 #define TYPEID0(index, kind) ((ullong)(index) | ((ullong)(kind) << 24))
 #define TYPEID(index, kind, ...) ((ullong)(index) | ((ullong)sizeof(__VA_ARGS__) << 32) | ((ullong)(kind) << 24))
 
-int num_typeinfos;
-const TypeInfo **typeinfos;
+const TypeInfo *typeinfo_table[645] = {
+    [0] = NULL, // No associated type
+    [1] = &(TypeInfo){TYPE_VOID, .name = "void", .size = 0, .align = 0},
+    [2] = &(TypeInfo){TYPE_BOOL, .size = sizeof(bool), .align = sizeof(bool), .name = "bool"},
+    [3] = &(TypeInfo){TYPE_CHAR, .size = sizeof(char), .align = sizeof(char), .name = "char"},
+    [4] = &(TypeInfo){TYPE_UCHAR, .size = sizeof(uchar), .align = sizeof(uchar), .name = "uchar"},
+    [5] = &(TypeInfo){TYPE_SCHAR, .size = sizeof(schar), .align = sizeof(schar), .name = "schar"},
+    [6] = &(TypeInfo){TYPE_SHORT, .size = sizeof(short), .align = sizeof(short), .name = "short"},
+    [7] = &(TypeInfo){TYPE_USHORT, .size = sizeof(ushort), .align = sizeof(ushort), .name = "ushort"},
+    [8] = &(TypeInfo){TYPE_INT, .size = sizeof(int), .align = sizeof(int), .name = "int"},
+    [9] = &(TypeInfo){TYPE_UINT, .size = sizeof(uint), .align = sizeof(uint), .name = "uint"},
+    [10] = &(TypeInfo){TYPE_LONG, .size = sizeof(long), .align = sizeof(long), .name = "long"},
+    [11] = &(TypeInfo){TYPE_ULONG, .size = sizeof(ulong), .align = sizeof(ulong), .name = "ulong"},
+    [12] = &(TypeInfo){TYPE_LLONG, .size = sizeof(llong), .align = sizeof(llong), .name = "llong"},
+    [13] = &(TypeInfo){TYPE_ULLONG, .size = sizeof(ullong), .align = sizeof(ullong), .name = "ullong"},
+    [14] = &(TypeInfo){TYPE_FLOAT, .size = sizeof(float), .align = sizeof(float), .name = "float"},
+    [15] = &(TypeInfo){TYPE_DOUBLE, .size = sizeof(double), .align = sizeof(double), .name = "double"},
+    [16] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(1, TYPE_VOID)},
+    [17] = &(TypeInfo){TYPE_CONST, .size = sizeof(char const ), .align = alignof(char const ), .base = TYPEID(3, TYPE_CHAR, char)},
+    [18] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(17, TYPE_CONST, char const )},
+    [19] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(18, TYPE_PTR, char const (*))},
+    [20] = NULL, // Func
+    [21] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [6]), .align = alignof(char [6]), .base = TYPEID(3, TYPE_CHAR, char), .count = 6},
+    [22] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(3, TYPE_CHAR, char)},
+    [23] = NULL, // Enum
+    [24] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(TypeFieldInfo), .align = alignof(TypeFieldInfo), .name = "TypeFieldInfo", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(TypeFieldInfo, name)},
+        {"type", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(TypeFieldInfo, type)},
+        {"offset", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeFieldInfo, offset)},
+    }},
+    [25] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(TypeInfo), .align = alignof(TypeInfo), .name = "TypeInfo", .num_fields = 8, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(23, TYPE_NONE, TypeKind), .offset = offsetof(TypeInfo, kind)},
+        {"size", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, size)},
+        {"align", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, align)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(TypeInfo, name)},
+        {"count", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, count)},
+        {"base", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(TypeInfo, base)},
+        {"fields", .type = TYPEID(26, TYPE_PTR, TypeFieldInfo *), .offset = offsetof(TypeInfo, fields)},
+        {"num_fields", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(TypeInfo, num_fields)},
+    }},
+    [26] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(24, TYPE_STRUCT, TypeFieldInfo)},
+    [27] = &(TypeInfo){TYPE_CONST, .size = sizeof(TypeInfo const ), .align = alignof(TypeInfo const ), .base = TYPEID(25, TYPE_STRUCT, TypeInfo)},
+    [28] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(27, TYPE_CONST, TypeInfo const )},
+    [29] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(28, TYPE_PTR, TypeInfo const (*))},
+    [30] = NULL, // Func
+    [31] = NULL, // Func
+    [32] = NULL, // Func
+    [33] = NULL, // Func
+    [34] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(Any), .align = alignof(Any), .name = "Any", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"ptr", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(Any, ptr)},
+        {"type", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(Any, type)},
+    }},
+    [35] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [4]), .align = alignof(char [4]), .base = TYPEID(3, TYPE_CHAR, char), .count = 4},
+    [36] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[256])), .align = alignof(char const (*[256])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 256},
+    [37] = NULL, // Func
+    [38] = NULL, // Func
+    [39] = NULL, // Func
+    [40] = NULL, // Func
+    [41] = NULL, // Func
+    [42] = NULL, // Func
+    [43] = NULL, // Enum
+    [44] = NULL, // Enum
+    [45] = NULL, // Enum
+    [46] = NULL, // Incomplete array type
+    [47] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [1]), .align = alignof(char [1]), .base = TYPEID(3, TYPE_CHAR, char), .count = 1},
+    [48] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [2]), .align = alignof(char [2]), .base = TYPEID(3, TYPE_CHAR, char), .count = 2},
+    [49] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [3]), .align = alignof(char [3]), .base = TYPEID(3, TYPE_CHAR, char), .count = 3},
+    [50] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[7])), .align = alignof(char const (*[7])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 7},
+    [51] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [8]), .align = alignof(char [8]), .base = TYPEID(3, TYPE_CHAR, char), .count = 8},
+    [52] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [7]), .align = alignof(char [7]), .base = TYPEID(3, TYPE_CHAR, char), .count = 7},
+    [53] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [5]), .align = alignof(char [5]), .base = TYPEID(3, TYPE_CHAR, char), .count = 5},
+    [54] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[54])), .align = alignof(char const (*[54])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 54},
+    [55] = NULL, // Func
+    [56] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_TokenKind [54]), .align = alignof(src_pink_TokenKind [54]), .base = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .count = 54},
+    [57] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SrcPos), .align = alignof(src_pink_SrcPos), .name = "src_pink_SrcPos", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_SrcPos, name)},
+        {"line", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(src_pink_SrcPos, line)},
+    }},
+    [58] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [10]), .align = alignof(char [10]), .base = TYPEID(3, TYPE_CHAR, char), .count = 10},
+    [59] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Token), .align = alignof(src_pink_Token), .name = "src_pink_Token", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_Token, kind)},
+        {"mod", .type = TYPEID(44, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_Token, mod)},
+        {"suffix", .type = TYPEID(45, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_Token, suffix)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Token, pos)},
+        {"start", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, start)},
+        {"end", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, end)},
+        {"int_val", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Token, int_val)},
+        {"float_val", .type = TYPEID(15, TYPE_DOUBLE, double), .offset = offsetof(src_pink_Token, float_val)},
+        {"str_val", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, str_val)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Token, name)},
+    }},
+    [60] = NULL, // No associated type
+    [61] = NULL, // Func
+    [62] = NULL, // Func
+    [63] = NULL, // Func
+    [64] = NULL, // Func
+    [65] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(uchar [256]), .align = alignof(uchar [256]), .base = TYPEID(4, TYPE_UCHAR, uchar), .count = 256},
+    [66] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [256]), .align = alignof(char [256]), .base = TYPEID(3, TYPE_CHAR, char), .count = 256},
+    [67] = NULL, // Func
+    [68] = NULL, // Func
+    [69] = NULL, // Func
+    [70] = NULL, // Enum
+    [71] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeField), .align = alignof(src_pink_TypeField), .name = "src_pink_TypeField", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_TypeField, name)},
+        {"type", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_TypeField, type)},
+        {"offset", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeField, offset)},
+    }},
+    [72] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Type), .align = alignof(src_pink_Type), .name = "src_pink_Type", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(70, TYPE_NONE, src_pink_CompilerTypeKind), .offset = offsetof(src_pink_Type, kind)},
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, size)},
+        {"align", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, align)},
+        {"sym", .type = TYPEID(79, TYPE_PTR, src_pink_Sym *), .offset = offsetof(src_pink_Type, sym)},
+        {"base", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Type, base)},
+        {"typeid", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(src_pink_Type, typeid)},
+        {"nonmodifiable", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Type, nonmodifiable)},
+        {"num_elems", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Type, num_elems)},
+        {"aggregate", .type = TYPEID(73, TYPE_STRUCT, src_pink_TypeAggregate), .offset = offsetof(src_pink_Type, aggregate)},
+        {"function", .type = TYPEID(74, TYPE_STRUCT, src_pink_TypeFunc), .offset = offsetof(src_pink_Type, function)},
+    }},
+    [73] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeAggregate), .align = alignof(src_pink_TypeAggregate), .name = "src_pink_TypeAggregate", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"fields", .type = TYPEID(80, TYPE_PTR, src_pink_TypeField *), .offset = offsetof(src_pink_TypeAggregate, fields)},
+        {"num_fields", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeAggregate, num_fields)},
+    }},
+    [74] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeFunc), .align = alignof(src_pink_TypeFunc), .name = "src_pink_TypeFunc", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"params", .type = TYPEID(81, TYPE_PTR, src_pink_Type (**)), .offset = offsetof(src_pink_TypeFunc, params)},
+        {"num_params", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeFunc, num_params)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypeFunc, has_varargs)},
+        {"ret", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_TypeFunc, ret)},
+    }},
+    [75] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypeMetrics), .align = alignof(src_pink_TypeMetrics), .name = "src_pink_TypeMetrics", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, size)},
+        {"align", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, align)},
+        {"sign", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypeMetrics, sign)},
+        {"max", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypeMetrics, max)},
+    }},
+    [76] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(75, TYPE_STRUCT, src_pink_TypeMetrics)},
+    [77] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(72, TYPE_STRUCT, src_pink_Type)},
+    [78] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Sym), .align = alignof(src_pink_Sym), .name = "src_pink_Sym", .num_fields = 10, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Sym, name)},
+        {"home_package", .type = TYPEID(258, TYPE_PTR, src_pink_Package *), .offset = offsetof(src_pink_Sym, home_package)},
+        {"kind", .type = TYPEID(262, TYPE_NONE, src_pink_SymKind), .offset = offsetof(src_pink_Sym, kind)},
+        {"state", .type = TYPEID(263, TYPE_NONE, src_pink_SymState), .offset = offsetof(src_pink_Sym, state)},
+        {"reachable", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(src_pink_Sym, reachable)},
+        {"decl", .type = TYPEID(178, TYPE_PTR, src_pink_Decl *), .offset = offsetof(src_pink_Sym, decl)},
+        {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Sym, external_name)},
+        {"type", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Sym, type)},
+        {"val", .type = TYPEID(268, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Sym, val)},
+        {"package", .type = TYPEID(258, TYPE_PTR, src_pink_Package *), .offset = offsetof(src_pink_Sym, package)},
+    }},
+    [79] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(78, TYPE_STRUCT, src_pink_Sym)},
+    [80] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(71, TYPE_STRUCT, src_pink_TypeField)},
+    [81] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(77, TYPE_PTR, src_pink_Type *)},
+    [82] = NULL, // No associated type
+    [83] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Map), .align = alignof(std_Map), .name = "std_Map", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"keys", .type = TYPEID(84, TYPE_PTR, ullong *), .offset = offsetof(std_Map, keys)},
+        {"vals", .type = TYPEID(84, TYPE_PTR, ullong *), .offset = offsetof(std_Map, vals)},
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, cap)},
+    }},
+    [84] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(13, TYPE_ULLONG, ullong)},
+    [85] = NULL, // Func
+    [86] = NULL, // Func
+    [87] = NULL, // Func
+    [88] = NULL, // Func
+    [89] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[25])), .align = alignof(char const (*[25])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 25},
+    [90] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(int [25]), .align = alignof(int [25]), .base = TYPEID(8, TYPE_INT, int), .count = 25},
+    [91] = NULL, // Func
+    [92] = NULL, // Func
+    [93] = NULL, // Func
+    [94] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CachedArrayType), .align = alignof(src_pink_CachedArrayType), .name = "src_pink_CachedArrayType", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_CachedArrayType, type)},
+        {"next", .type = TYPEID(421, TYPE_PTR, src_pink_CachedArrayType *), .offset = offsetof(src_pink_CachedArrayType, next)},
+    }},
+    [95] = NULL, // Func
+    [96] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CachedFuncType), .align = alignof(src_pink_CachedFuncType), .name = "src_pink_CachedFuncType", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_CachedFuncType, type)},
+        {"next", .type = TYPEID(425, TYPE_PTR, src_pink_CachedFuncType *), .offset = offsetof(src_pink_CachedFuncType, next)},
+    }},
+    [97] = NULL, // Func
+    [98] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(80, TYPE_PTR, src_pink_TypeField *)},
+    [99] = NULL, // Func
+    [100] = NULL, // Func
+    [101] = NULL, // Func
+    [102] = NULL, // Func
+    [103] = NULL, // Func
+    [104] = NULL, // Func
+    [105] = NULL, // Func
+    [106] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_NoteArg), .align = alignof(src_pink_NoteArg), .name = "src_pink_NoteArg", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_NoteArg, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_NoteArg, name)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_NoteArg, expr)},
+    }},
+    [107] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Note), .align = alignof(src_pink_Note), .name = "src_pink_Note", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Note, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Note, name)},
+        {"args", .type = TYPEID(163, TYPE_PTR, src_pink_NoteArg *), .offset = offsetof(src_pink_Note, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Note, num_args)},
+    }},
+    [108] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Notes), .align = alignof(src_pink_Notes), .name = "src_pink_Notes", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"notes", .type = TYPEID(165, TYPE_PTR, src_pink_Note *), .offset = offsetof(src_pink_Notes, notes)},
+        {"num_notes", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Notes, num_notes)},
+    }},
+    [109] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtList), .align = alignof(src_pink_StmtList), .name = "src_pink_StmtList", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_StmtList, pos)},
+        {"stmts", .type = TYPEID(168, TYPE_PTR, src_pink_Stmt (**)), .offset = offsetof(src_pink_StmtList, stmts)},
+        {"num_stmts", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtList, num_stmts)},
+    }},
+    [110] = NULL, // Enum
+    [111] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Typespec), .align = alignof(src_pink_Typespec), .name = "src_pink_Typespec", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(110, TYPE_NONE, src_pink_TypespecKind), .offset = offsetof(src_pink_Typespec, kind)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Typespec, pos)},
+        {"base", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Typespec, base)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Typespec, name)},
+        {"function", .type = TYPEID(112, TYPE_STRUCT, src_pink_TypespecFunc), .offset = offsetof(src_pink_Typespec, function)},
+        {"num_elems", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Typespec, num_elems)},
+    }},
+    [112] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_TypespecFunc), .align = alignof(src_pink_TypespecFunc), .name = "src_pink_TypespecFunc", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"args", .type = TYPEID(176, TYPE_PTR, src_pink_Typespec (**)), .offset = offsetof(src_pink_TypespecFunc, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_TypespecFunc, num_args)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_TypespecFunc, has_varargs)},
+        {"ret", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_TypespecFunc, ret)},
+    }},
+    [113] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_FuncParam), .align = alignof(src_pink_FuncParam), .name = "src_pink_FuncParam", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_FuncParam, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_FuncParam, name)},
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_FuncParam, type)},
+    }},
+    [114] = NULL, // Enum
+    [115] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_AggregateItem), .align = alignof(src_pink_AggregateItem), .name = "src_pink_AggregateItem", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_AggregateItem, pos)},
+        {"kind", .type = TYPEID(114, TYPE_NONE, src_pink_AggregateItemKind), .offset = offsetof(src_pink_AggregateItem, kind)},
+        {"names", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(src_pink_AggregateItem, names)},
+        {"num_names", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_AggregateItem, num_names)},
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_AggregateItem, type)},
+        {"subaggregate", .type = TYPEID(188, TYPE_PTR, src_pink_Aggregate *), .offset = offsetof(src_pink_AggregateItem, subaggregate)},
+    }},
+    [116] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_EnumItem), .align = alignof(src_pink_EnumItem), .name = "src_pink_EnumItem", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_EnumItem, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_EnumItem, name)},
+        {"init", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_EnumItem, init)},
+    }},
+    [117] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ImportItem), .align = alignof(src_pink_ImportItem), .name = "src_pink_ImportItem", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ImportItem, name)},
+        {"rename", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ImportItem, rename)},
+    }},
+    [118] = NULL, // Enum
+    [119] = NULL, // Enum
+    [120] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Aggregate), .align = alignof(src_pink_Aggregate), .name = "src_pink_Aggregate", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Aggregate, pos)},
+        {"kind", .type = TYPEID(119, TYPE_NONE, src_pink_AggregateKind), .offset = offsetof(src_pink_Aggregate, kind)},
+        {"items", .type = TYPEID(187, TYPE_PTR, src_pink_AggregateItem *), .offset = offsetof(src_pink_Aggregate, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Aggregate, num_items)},
+    }},
+    [121] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Decl), .align = alignof(src_pink_Decl), .name = "src_pink_Decl", .num_fields = 13, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(118, TYPE_NONE, src_pink_DeclKind), .offset = offsetof(src_pink_Decl, kind)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Decl, pos)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Decl, name)},
+        {"notes", .type = TYPEID(108, TYPE_STRUCT, src_pink_Notes), .offset = offsetof(src_pink_Decl, notes)},
+        {"is_incomplete", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Decl, is_incomplete)},
+        {"note", .type = TYPEID(107, TYPE_STRUCT, src_pink_Note), .offset = offsetof(src_pink_Decl, note)},
+        {"enum_decl", .type = TYPEID(122, TYPE_STRUCT, src_pink_DeclEnum), .offset = offsetof(src_pink_Decl, enum_decl)},
+        {"aggregate", .type = TYPEID(188, TYPE_PTR, src_pink_Aggregate *), .offset = offsetof(src_pink_Decl, aggregate)},
+        {"function", .type = TYPEID(123, TYPE_STRUCT, src_pink_DeclFunc), .offset = offsetof(src_pink_Decl, function)},
+        {"typedef_decl", .type = TYPEID(124, TYPE_STRUCT, src_pink_DeclTypedef), .offset = offsetof(src_pink_Decl, typedef_decl)},
+        {"var_decl", .type = TYPEID(125, TYPE_STRUCT, src_pink_DeclVar), .offset = offsetof(src_pink_Decl, var_decl)},
+        {"const_decl", .type = TYPEID(125, TYPE_STRUCT, src_pink_DeclVar), .offset = offsetof(src_pink_Decl, const_decl)},
+        {"import_decl", .type = TYPEID(126, TYPE_STRUCT, src_pink_DeclImport), .offset = offsetof(src_pink_Decl, import_decl)},
+    }},
+    [122] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclEnum), .align = alignof(src_pink_DeclEnum), .name = "src_pink_DeclEnum", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclEnum, type)},
+        {"items", .type = TYPEID(185, TYPE_PTR, src_pink_EnumItem *), .offset = offsetof(src_pink_DeclEnum, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclEnum, num_items)},
+    }},
+    [123] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclFunc), .align = alignof(src_pink_DeclFunc), .name = "src_pink_DeclFunc", .num_fields = 5, .fields = (TypeFieldInfo[]) {
+        {"params", .type = TYPEID(192, TYPE_PTR, src_pink_FuncParam *), .offset = offsetof(src_pink_DeclFunc, params)},
+        {"num_params", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclFunc, num_params)},
+        {"ret_type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclFunc, ret_type)},
+        {"has_varargs", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclFunc, has_varargs)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_DeclFunc, block)},
+    }},
+    [124] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclTypedef), .align = alignof(src_pink_DeclTypedef), .name = "src_pink_DeclTypedef", .num_fields = 1, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclTypedef, type)},
+    }},
+    [125] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclVar), .align = alignof(src_pink_DeclVar), .name = "src_pink_DeclVar", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_DeclVar, type)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_DeclVar, expr)},
+    }},
+    [126] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_DeclImport), .align = alignof(src_pink_DeclImport), .name = "src_pink_DeclImport", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"is_relative", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclImport, is_relative)},
+        {"names", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(src_pink_DeclImport, names)},
+        {"num_names", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclImport, num_names)},
+        {"import_all", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_DeclImport, import_all)},
+        {"items", .type = TYPEID(196, TYPE_PTR, src_pink_ImportItem *), .offset = offsetof(src_pink_DeclImport, items)},
+        {"num_items", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_DeclImport, num_items)},
+    }},
+    [127] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Decls), .align = alignof(src_pink_Decls), .name = "src_pink_Decls", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"decls", .type = TYPEID(179, TYPE_PTR, src_pink_Decl (**)), .offset = offsetof(src_pink_Decls, decls)},
+        {"num_decls", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Decls, num_decls)},
+    }},
+    [128] = NULL, // Enum
+    [129] = NULL, // Enum
+    [130] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_CompoundField), .align = alignof(src_pink_CompoundField), .name = "src_pink_CompoundField", .num_fields = 5, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(129, TYPE_NONE, src_pink_CompoundFieldKind), .offset = offsetof(src_pink_CompoundField, kind)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_CompoundField, pos)},
+        {"init", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_CompoundField, init)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_CompoundField, name)},
+        {"index", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_CompoundField, index)},
+    }},
+    [131] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Expr), .align = alignof(src_pink_Expr), .name = "src_pink_Expr", .num_fields = 23, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(128, TYPE_NONE, src_pink_ExprKind), .offset = offsetof(src_pink_Expr, kind)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Expr, pos)},
+        {"paren", .type = TYPEID(132, TYPE_STRUCT, src_pink_ExprParen), .offset = offsetof(src_pink_Expr, paren)},
+        {"int_lit", .type = TYPEID(133, TYPE_STRUCT, src_pink_ExprIntLit), .offset = offsetof(src_pink_Expr, int_lit)},
+        {"float_lit", .type = TYPEID(134, TYPE_STRUCT, src_pink_ExprFloatLit), .offset = offsetof(src_pink_Expr, float_lit)},
+        {"str_lit", .type = TYPEID(135, TYPE_STRUCT, src_pink_ExprStrLit), .offset = offsetof(src_pink_Expr, str_lit)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Expr, name)},
+        {"sizeof_expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, sizeof_expr)},
+        {"sizeof_type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, sizeof_type)},
+        {"typeof_expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, typeof_expr)},
+        {"typeof_type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, typeof_type)},
+        {"alignof_expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Expr, alignof_expr)},
+        {"alignof_type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_Expr, alignof_type)},
+        {"offsetof_field", .type = TYPEID(136, TYPE_STRUCT, src_pink_ExprOffsetofField), .offset = offsetof(src_pink_Expr, offsetof_field)},
+        {"compound", .type = TYPEID(137, TYPE_STRUCT, src_pink_ExprCompound), .offset = offsetof(src_pink_Expr, compound)},
+        {"cast", .type = TYPEID(138, TYPE_STRUCT, src_pink_ExprCast), .offset = offsetof(src_pink_Expr, cast)},
+        {"modify", .type = TYPEID(139, TYPE_STRUCT, src_pink_ExprModify), .offset = offsetof(src_pink_Expr, modify)},
+        {"unary", .type = TYPEID(140, TYPE_STRUCT, src_pink_ExprUnary), .offset = offsetof(src_pink_Expr, unary)},
+        {"binary", .type = TYPEID(141, TYPE_STRUCT, src_pink_ExprBinary), .offset = offsetof(src_pink_Expr, binary)},
+        {"ternary", .type = TYPEID(142, TYPE_STRUCT, src_pink_ExprTernary), .offset = offsetof(src_pink_Expr, ternary)},
+        {"call", .type = TYPEID(143, TYPE_STRUCT, src_pink_ExprCall), .offset = offsetof(src_pink_Expr, call)},
+        {"index", .type = TYPEID(144, TYPE_STRUCT, src_pink_ExprIndex), .offset = offsetof(src_pink_Expr, index)},
+        {"field", .type = TYPEID(145, TYPE_STRUCT, src_pink_ExprField), .offset = offsetof(src_pink_Expr, field)},
+    }},
+    [132] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprParen), .align = alignof(src_pink_ExprParen), .name = "src_pink_ExprParen", .num_fields = 1, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprParen, expr)},
+    }},
+    [133] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprIntLit), .align = alignof(src_pink_ExprIntLit), .name = "src_pink_ExprIntLit", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"val", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprIntLit, val)},
+        {"mod", .type = TYPEID(44, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_ExprIntLit, mod)},
+        {"suffix", .type = TYPEID(45, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_ExprIntLit, suffix)},
+    }},
+    [134] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprFloatLit), .align = alignof(src_pink_ExprFloatLit), .name = "src_pink_ExprFloatLit", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"start", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprFloatLit, start)},
+        {"end", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprFloatLit, end)},
+        {"val", .type = TYPEID(15, TYPE_DOUBLE, double), .offset = offsetof(src_pink_ExprFloatLit, val)},
+        {"suffix", .type = TYPEID(45, TYPE_NONE, src_pink_TokenSuffix), .offset = offsetof(src_pink_ExprFloatLit, suffix)},
+    }},
+    [135] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprStrLit), .align = alignof(src_pink_ExprStrLit), .name = "src_pink_ExprStrLit", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"val", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprStrLit, val)},
+        {"mod", .type = TYPEID(44, TYPE_NONE, src_pink_TokenMod), .offset = offsetof(src_pink_ExprStrLit, mod)},
+    }},
+    [136] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprOffsetofField), .align = alignof(src_pink_ExprOffsetofField), .name = "src_pink_ExprOffsetofField", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprOffsetofField, type)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprOffsetofField, name)},
+    }},
+    [137] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCompound), .align = alignof(src_pink_ExprCompound), .name = "src_pink_ExprCompound", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprCompound, type)},
+        {"fields", .type = TYPEID(207, TYPE_PTR, src_pink_CompoundField *), .offset = offsetof(src_pink_ExprCompound, fields)},
+        {"num_fields", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprCompound, num_fields)},
+    }},
+    [138] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCast), .align = alignof(src_pink_ExprCast), .name = "src_pink_ExprCast", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_ExprCast, type)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprCast, expr)},
+    }},
+    [139] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprModify), .align = alignof(src_pink_ExprModify), .name = "src_pink_ExprModify", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprModify, op)},
+        {"post", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_ExprModify, post)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprModify, expr)},
+    }},
+    [140] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprUnary), .align = alignof(src_pink_ExprUnary), .name = "src_pink_ExprUnary", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprUnary, op)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprUnary, expr)},
+    }},
+    [141] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprBinary), .align = alignof(src_pink_ExprBinary), .name = "src_pink_ExprBinary", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_ExprBinary, op)},
+        {"left", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprBinary, left)},
+        {"right", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprBinary, right)},
+    }},
+    [142] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprTernary), .align = alignof(src_pink_ExprTernary), .name = "src_pink_ExprTernary", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, cond)},
+        {"then_expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, then_expr)},
+        {"else_expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprTernary, else_expr)},
+    }},
+    [143] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprCall), .align = alignof(src_pink_ExprCall), .name = "src_pink_ExprCall", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprCall, expr)},
+        {"args", .type = TYPEID(210, TYPE_PTR, src_pink_Expr (**)), .offset = offsetof(src_pink_ExprCall, args)},
+        {"num_args", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_ExprCall, num_args)},
+    }},
+    [144] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprIndex), .align = alignof(src_pink_ExprIndex), .name = "src_pink_ExprIndex", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprIndex, expr)},
+        {"index", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprIndex, index)},
+    }},
+    [145] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ExprField), .align = alignof(src_pink_ExprField), .name = "src_pink_ExprField", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ExprField, expr)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_ExprField, name)},
+    }},
+    [146] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_ElseIf), .align = alignof(src_pink_ElseIf), .name = "src_pink_ElseIf", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_ElseIf, cond)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_ElseIf, block)},
+    }},
+    [147] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SwitchCasePattern), .align = alignof(src_pink_SwitchCasePattern), .name = "src_pink_SwitchCasePattern", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"start", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_SwitchCasePattern, start)},
+        {"end", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_SwitchCasePattern, end)},
+    }},
+    [148] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_SwitchCase), .align = alignof(src_pink_SwitchCase), .name = "src_pink_SwitchCase", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"patterns", .type = TYPEID(349, TYPE_PTR, src_pink_SwitchCasePattern *), .offset = offsetof(src_pink_SwitchCase, patterns)},
+        {"num_patterns", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_SwitchCase, num_patterns)},
+        {"is_default", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_SwitchCase, is_default)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_SwitchCase, block)},
+    }},
+    [149] = NULL, // Enum
+    [150] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Stmt), .align = alignof(src_pink_Stmt), .name = "src_pink_Stmt", .num_fields = 14, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(149, TYPE_NONE, src_pink_StmtKind), .offset = offsetof(src_pink_Stmt, kind)},
+        {"notes", .type = TYPEID(108, TYPE_STRUCT, src_pink_Notes), .offset = offsetof(src_pink_Stmt, notes)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Stmt, pos)},
+        {"note", .type = TYPEID(107, TYPE_STRUCT, src_pink_Note), .offset = offsetof(src_pink_Stmt, note)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_Stmt, expr)},
+        {"decl", .type = TYPEID(178, TYPE_PTR, src_pink_Decl *), .offset = offsetof(src_pink_Stmt, decl)},
+        {"if_stmt", .type = TYPEID(151, TYPE_STRUCT, src_pink_StmtIf), .offset = offsetof(src_pink_Stmt, if_stmt)},
+        {"while_stmt", .type = TYPEID(152, TYPE_STRUCT, src_pink_StmtWhile), .offset = offsetof(src_pink_Stmt, while_stmt)},
+        {"for_stmt", .type = TYPEID(153, TYPE_STRUCT, src_pink_StmtFor), .offset = offsetof(src_pink_Stmt, for_stmt)},
+        {"switch_stmt", .type = TYPEID(154, TYPE_STRUCT, src_pink_StmtSwitch), .offset = offsetof(src_pink_Stmt, switch_stmt)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_Stmt, block)},
+        {"assign", .type = TYPEID(155, TYPE_STRUCT, src_pink_StmtAssign), .offset = offsetof(src_pink_Stmt, assign)},
+        {"init", .type = TYPEID(156, TYPE_STRUCT, src_pink_StmtInit), .offset = offsetof(src_pink_Stmt, init)},
+        {"label", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Stmt, label)},
+    }},
+    [151] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtIf), .align = alignof(src_pink_StmtIf), .name = "src_pink_StmtIf", .num_fields = 6, .fields = (TypeFieldInfo[]) {
+        {"init", .type = TYPEID(167, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtIf, init)},
+        {"cond", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtIf, cond)},
+        {"then_block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtIf, then_block)},
+        {"elseifs", .type = TYPEID(225, TYPE_PTR, src_pink_ElseIf *), .offset = offsetof(src_pink_StmtIf, elseifs)},
+        {"num_elseifs", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtIf, num_elseifs)},
+        {"else_block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtIf, else_block)},
+    }},
+    [152] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtWhile), .align = alignof(src_pink_StmtWhile), .name = "src_pink_StmtWhile", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"cond", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtWhile, cond)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtWhile, block)},
+    }},
+    [153] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtFor), .align = alignof(src_pink_StmtFor), .name = "src_pink_StmtFor", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"init", .type = TYPEID(167, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtFor, init)},
+        {"cond", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtFor, cond)},
+        {"next", .type = TYPEID(167, TYPE_PTR, src_pink_Stmt *), .offset = offsetof(src_pink_StmtFor, next)},
+        {"block", .type = TYPEID(109, TYPE_STRUCT, src_pink_StmtList), .offset = offsetof(src_pink_StmtFor, block)},
+    }},
+    [154] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtSwitch), .align = alignof(src_pink_StmtSwitch), .name = "src_pink_StmtSwitch", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtSwitch, expr)},
+        {"cases", .type = TYPEID(229, TYPE_PTR, src_pink_SwitchCase *), .offset = offsetof(src_pink_StmtSwitch, cases)},
+        {"num_cases", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_StmtSwitch, num_cases)},
+    }},
+    [155] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtAssign), .align = alignof(src_pink_StmtAssign), .name = "src_pink_StmtAssign", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"op", .type = TYPEID(43, TYPE_NONE, src_pink_TokenKind), .offset = offsetof(src_pink_StmtAssign, op)},
+        {"left", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtAssign, left)},
+        {"right", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtAssign, right)},
+    }},
+    [156] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtInit), .align = alignof(src_pink_StmtInit), .name = "src_pink_StmtInit", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_StmtInit, name)},
+        {"type", .type = TYPEID(170, TYPE_PTR, src_pink_Typespec *), .offset = offsetof(src_pink_StmtInit, type)},
+        {"expr", .type = TYPEID(174, TYPE_PTR, src_pink_Expr *), .offset = offsetof(src_pink_StmtInit, expr)},
+    }},
+    [157] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Arena), .align = alignof(std_Arena), .name = "std_Arena", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"ptr", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, ptr)},
+        {"end", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, end)},
+        {"blocks", .type = TYPEID(158, TYPE_PTR, char (**)), .offset = offsetof(std_Arena, blocks)},
+    }},
+    [158] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(22, TYPE_PTR, char *)},
+    [159] = NULL, // Func
+    [160] = &(TypeInfo){TYPE_CONST, .size = 0, .align = 0, .base = TYPEID0(1, TYPE_VOID)},
+    [161] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(160, TYPE_CONST)},
+    [162] = NULL, // Func
+    [163] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(106, TYPE_STRUCT, src_pink_NoteArg)},
+    [164] = NULL, // Func
+    [165] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(107, TYPE_STRUCT, src_pink_Note)},
+    [166] = NULL, // Func
+    [167] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(150, TYPE_STRUCT, src_pink_Stmt)},
+    [168] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(167, TYPE_PTR, src_pink_Stmt *)},
+    [169] = NULL, // Func
+    [170] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(111, TYPE_STRUCT, src_pink_Typespec)},
+    [171] = NULL, // Func
+    [172] = NULL, // Func
+    [173] = NULL, // Func
+    [174] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(131, TYPE_STRUCT, src_pink_Expr)},
+    [175] = NULL, // Func
+    [176] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(170, TYPE_PTR, src_pink_Typespec *)},
+    [177] = NULL, // Func
+    [178] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(121, TYPE_STRUCT, src_pink_Decl)},
+    [179] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(178, TYPE_PTR, src_pink_Decl *)},
+    [180] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(127, TYPE_STRUCT, src_pink_Decls)},
+    [181] = NULL, // Func
+    [182] = NULL, // Func
+    [183] = NULL, // Func
+    [184] = NULL, // Func
+    [185] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(116, TYPE_STRUCT, src_pink_EnumItem)},
+    [186] = NULL, // Func
+    [187] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(115, TYPE_STRUCT, src_pink_AggregateItem)},
+    [188] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(120, TYPE_STRUCT, src_pink_Aggregate)},
+    [189] = NULL, // Func
+    [190] = NULL, // Func
+    [191] = NULL, // Func
+    [192] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(113, TYPE_STRUCT, src_pink_FuncParam)},
+    [193] = NULL, // Func
+    [194] = NULL, // Func
+    [195] = NULL, // Func
+    [196] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(117, TYPE_STRUCT, src_pink_ImportItem)},
+    [197] = NULL, // Func
+    [198] = NULL, // Func
+    [199] = NULL, // Func
+    [200] = NULL, // Func
+    [201] = NULL, // Func
+    [202] = NULL, // Func
+    [203] = NULL, // Func
+    [204] = NULL, // Func
+    [205] = NULL, // Func
+    [206] = NULL, // Func
+    [207] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(130, TYPE_STRUCT, src_pink_CompoundField)},
+    [208] = NULL, // Func
+    [209] = NULL, // Func
+    [210] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(174, TYPE_PTR, src_pink_Expr *)},
+    [211] = NULL, // Func
+    [212] = NULL, // Func
+    [213] = NULL, // Func
+    [214] = NULL, // Func
+    [215] = NULL, // Func
+    [216] = NULL, // Func
+    [217] = NULL, // Func
+    [218] = NULL, // Func
+    [219] = NULL, // Func
+    [220] = NULL, // Func
+    [221] = NULL, // Func
+    [222] = NULL, // Func
+    [223] = NULL, // Func
+    [224] = NULL, // Func
+    [225] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(146, TYPE_STRUCT, src_pink_ElseIf)},
+    [226] = NULL, // Func
+    [227] = NULL, // Func
+    [228] = NULL, // Func
+    [229] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(148, TYPE_STRUCT, src_pink_SwitchCase)},
+    [230] = NULL, // Func
+    [231] = NULL, // Func
+    [232] = NULL, // Func
+    [233] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [909]), .align = alignof(char [909]), .base = TYPEID(3, TYPE_CHAR, char), .count = 909},
+    [234] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [1513]), .align = alignof(char [1513]), .base = TYPEID(3, TYPE_CHAR, char), .count = 1513},
+    [235] = NULL, // Func
+    [236] = NULL, // Func
+    [237] = NULL, // Func
+    [238] = NULL, // Func
+    [239] = NULL, // Func
+    [240] = NULL, // Func
+    [241] = NULL, // Func
+    [242] = NULL, // Func
+    [243] = NULL, // Func
+    [244] = NULL, // Func
+    [245] = NULL, // Func
+    [246] = NULL, // Func
+    [247] = NULL, // Func
+    [248] = NULL, // Func
+    [249] = NULL, // Func
+    [250] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [11]), .align = alignof(char [11]), .base = TYPEID(3, TYPE_CHAR, char), .count = 11},
+    [251] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [12]), .align = alignof(char [12]), .base = TYPEID(3, TYPE_CHAR, char), .count = 12},
+    [252] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [9]), .align = alignof(char [9]), .base = TYPEID(3, TYPE_CHAR, char), .count = 9},
+    [253] = NULL, // Func
+    [254] = NULL, // Func
+    [255] = NULL, // Func
+    [256] = NULL, // Func
+    [257] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Package), .align = alignof(src_pink_Package), .name = "src_pink_Package", .num_fields = 8, .fields = (TypeFieldInfo[]) {
+        {"path", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Package, path)},
+        {"full_path", .type = TYPEID(66, TYPE_ARRAY, char [256]), .offset = offsetof(src_pink_Package, full_path)},
+        {"decls", .type = TYPEID(179, TYPE_PTR, src_pink_Decl (**)), .offset = offsetof(src_pink_Package, decls)},
+        {"num_decls", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Package, num_decls)},
+        {"syms_map", .type = TYPEID(83, TYPE_STRUCT, std_Map), .offset = offsetof(src_pink_Package, syms_map)},
+        {"syms", .type = TYPEID(267, TYPE_PTR, src_pink_Sym (**)), .offset = offsetof(src_pink_Package, syms)},
+        {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Package, external_name)},
+        {"always_reachable", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Package, always_reachable)},
+    }},
+    [258] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(257, TYPE_STRUCT, src_pink_Package)},
+    [259] = NULL, // Func
+    [260] = NULL, // Func
+    [261] = NULL, // Func
+    [262] = NULL, // Enum
+    [263] = NULL, // Enum
+    [264] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(258, TYPE_PTR, src_pink_Package *)},
+    [265] = NULL, // Func
+    [266] = NULL, // Func
+    [267] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(79, TYPE_PTR, src_pink_Sym *)},
+    [268] = &(TypeInfo){TYPE_UNION, .size = sizeof(std_Val), .align = alignof(std_Val), .name = "std_Val", .num_fields = 13, .fields = (TypeFieldInfo[]) {
+        {"b", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_Val, b)},
+        {"c", .type = TYPEID(3, TYPE_CHAR, char), .offset = offsetof(std_Val, c)},
+        {"uc", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(std_Val, uc)},
+        {"sc", .type = TYPEID(5, TYPE_SCHAR, schar), .offset = offsetof(std_Val, sc)},
+        {"s", .type = TYPEID(6, TYPE_SHORT, short), .offset = offsetof(std_Val, s)},
+        {"us", .type = TYPEID(7, TYPE_USHORT, ushort), .offset = offsetof(std_Val, us)},
+        {"i", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_Val, i)},
+        {"u", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(std_Val, u)},
+        {"l", .type = TYPEID(10, TYPE_LONG, long), .offset = offsetof(std_Val, l)},
+        {"ul", .type = TYPEID(11, TYPE_ULONG, ulong), .offset = offsetof(std_Val, ul)},
+        {"ll", .type = TYPEID(12, TYPE_LLONG, llong), .offset = offsetof(std_Val, ll)},
+        {"ull", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, ull)},
+        {"p", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, p)},
+    }},
+    [269] = NULL, // No associated type
+    [270] = NULL, // No associated type
+    [271] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_Sym [1024]), .align = alignof(src_pink_Sym [1024]), .base = TYPEID(78, TYPE_STRUCT, src_pink_Sym), .count = 1024},
+    [272] = NULL, // Func
+    [273] = NULL, // Func
+    [274] = NULL, // Func
+    [275] = NULL, // Func
+    [276] = NULL, // Func
+    [277] = NULL, // Func
+    [278] = NULL, // Func
+    [279] = NULL, // Func
+    [280] = NULL, // Func
+    [281] = NULL, // Func
+    [282] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Operand), .align = alignof(src_pink_Operand), .name = "src_pink_Operand", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"type", .type = TYPEID(77, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Operand, type)},
+        {"is_lvalue", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_lvalue)},
+        {"is_const", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_const)},
+        {"val", .type = TYPEID(268, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Operand, val)},
+    }},
+    [283] = NULL, // Func
+    [284] = NULL, // Func
+    [285] = NULL, // Func
+    [286] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(282, TYPE_STRUCT, src_pink_Operand)},
+    [287] = NULL, // Func
+    [288] = NULL, // Func
+    [289] = NULL, // Func
+    [290] = NULL, // Func
+    [291] = NULL, // Func
+    [292] = NULL, // Func
+    [293] = NULL, // Func
+    [294] = NULL, // Func
+    [295] = NULL, // Func
+    [296] = NULL, // Func
+    [297] = NULL, // Func
+    [298] = NULL, // Func
+    [299] = NULL, // Func
+    [300] = NULL, // Func
+    [301] = NULL, // Func
+    [302] = NULL, // Func
+    [303] = NULL, // Func
+    [304] = NULL, // Func
+    [305] = NULL, // Func
+    [306] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(268, TYPE_UNION, std_Val)},
+    [307] = NULL, // Func
+    [308] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtCtx), .align = alignof(src_pink_StmtCtx), .name = "src_pink_StmtCtx", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"is_break_legal", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_StmtCtx, is_break_legal)},
+        {"is_continue_legal", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_StmtCtx, is_continue_legal)},
+    }},
+    [309] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_Label), .align = alignof(src_pink_Label), .name = "src_pink_Label", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Label, name)},
+        {"pos", .type = TYPEID(57, TYPE_STRUCT, src_pink_SrcPos), .offset = offsetof(src_pink_Label, pos)},
+        {"referenced", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Label, referenced)},
+        {"defined", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Label, defined)},
+    }},
+    [310] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_Label [256]), .align = alignof(src_pink_Label [256]), .base = TYPEID(309, TYPE_STRUCT, src_pink_Label), .count = 256},
+    [311] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(309, TYPE_STRUCT, src_pink_Label)},
+    [312] = NULL, // Func
+    [313] = NULL, // Func
+    [314] = NULL, // Func
+    [315] = NULL, // Func
+    [316] = NULL, // Func
+    [317] = NULL, // Func
+    [318] = NULL, // Func
+    [319] = NULL, // Func
+    [320] = NULL, // Func
+    [321] = NULL, // Func
+    [322] = NULL, // Func
+    [323] = NULL, // Func
+    [324] = NULL, // Func
+    [325] = NULL, // Func
+    [326] = NULL, // Func
+    [327] = NULL, // Func
+    [328] = NULL, // Func
+    [329] = NULL, // Func
+    [330] = NULL, // Func
+    [331] = NULL, // Func
+    [332] = NULL, // Func
+    [333] = NULL, // Enum
+    [334] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[3])), .align = alignof(char const (*[3])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 3},
+    [335] = NULL, // Enum
+    [336] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[2])), .align = alignof(char const (*[2])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 2},
+    [337] = NULL, // Func
+    [338] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(src_pink_TypeMetrics [25]), .align = alignof(src_pink_TypeMetrics [25]), .base = TYPEID(75, TYPE_STRUCT, src_pink_TypeMetrics), .count = 25},
+    [339] = NULL, // Func
+    [340] = NULL, // Func
+    [341] = NULL, // No associated type
+    [342] = NULL, // Func
+    [343] = NULL, // Func
+    [344] = NULL, // Func
+    [345] = NULL, // Func
+    [346] = NULL, // Func
+    [347] = NULL, // Func
+    [348] = NULL, // Func
+    [349] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(147, TYPE_STRUCT, src_pink_SwitchCasePattern)},
+    [350] = NULL, // Func
+    [351] = NULL, // Func
+    [352] = NULL, // Func
+    [353] = NULL, // No associated type
+    [354] = NULL, // No associated type
+    [355] = NULL, // Func
+    [356] = NULL, // Func
+    [357] = NULL, // Func
+    [358] = NULL, // Func
+    [359] = NULL, // Func
+    [360] = NULL, // Func
+    [361] = NULL, // Func
+    [362] = NULL, // Func
+    [363] = NULL, // Func
+    [364] = NULL, // Func
+    [365] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [31]), .align = alignof(char [31]), .base = TYPEID(3, TYPE_CHAR, char), .count = 31},
+    [366] = NULL, // Func
+    [367] = NULL, // Func
+    [368] = NULL, // Func
+    [369] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [101]), .align = alignof(char [101]), .base = TYPEID(3, TYPE_CHAR, char), .count = 101},
+    [370] = NULL, // Func
+    [371] = NULL, // Func
+    [372] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(83, TYPE_STRUCT, std_Map)},
+    [373] = NULL, // Func
+    [374] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [69]), .align = alignof(char [69]), .base = TYPEID(3, TYPE_CHAR, char), .count = 69},
+    [375] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [67]), .align = alignof(char [67]), .base = TYPEID(3, TYPE_CHAR, char), .count = 67},
+    [376] = NULL, // Func
+    [377] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [44]), .align = alignof(char [44]), .base = TYPEID(3, TYPE_CHAR, char), .count = 44},
+    [378] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(8, TYPE_INT, int)},
+    [379] = NULL, // Func
+    [380] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [24]), .align = alignof(char [24]), .base = TYPEID(3, TYPE_CHAR, char), .count = 24},
+    [381] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [28]), .align = alignof(char [28]), .base = TYPEID(3, TYPE_CHAR, char), .count = 28},
+    [382] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(2, TYPE_BOOL, bool)},
+    [383] = NULL, // Func
+    [384] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [42]), .align = alignof(char [42]), .base = TYPEID(3, TYPE_CHAR, char), .count = 42},
+    [385] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [52]), .align = alignof(char [52]), .base = TYPEID(3, TYPE_CHAR, char), .count = 52},
+    [386] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [35]), .align = alignof(char [35]), .base = TYPEID(3, TYPE_CHAR, char), .count = 35},
+    [387] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [58]), .align = alignof(char [58]), .base = TYPEID(3, TYPE_CHAR, char), .count = 58},
+    [388] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [29]), .align = alignof(char [29]), .base = TYPEID(3, TYPE_CHAR, char), .count = 29},
+    [389] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(19, TYPE_PTR, char const ((**)))},
+    [390] = NULL, // Func
+    [391] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [34]), .align = alignof(char [34]), .base = TYPEID(3, TYPE_CHAR, char), .count = 34},
+    [392] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [25]), .align = alignof(char [25]), .base = TYPEID(3, TYPE_CHAR, char), .count = 25},
+    [393] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [45]), .align = alignof(char [45]), .base = TYPEID(3, TYPE_CHAR, char), .count = 45},
+    [394] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [39]), .align = alignof(char [39]), .base = TYPEID(3, TYPE_CHAR, char), .count = 39},
+    [395] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [54]), .align = alignof(char [54]), .base = TYPEID(3, TYPE_CHAR, char), .count = 54},
+    [396] = NULL, // Func
+    [397] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [48]), .align = alignof(char [48]), .base = TYPEID(3, TYPE_CHAR, char), .count = 48},
+    [398] = NULL, // Func
+    [399] = NULL, // Func
+    [400] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [33]), .align = alignof(char [33]), .base = TYPEID(3, TYPE_CHAR, char), .count = 33},
+    [401] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(16, TYPE_PTR, void *)},
+    [402] = NULL, // Func
+    [403] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [13]), .align = alignof(char [13]), .base = TYPEID(3, TYPE_CHAR, char), .count = 13},
+    [404] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [14]), .align = alignof(char [14]), .base = TYPEID(3, TYPE_CHAR, char), .count = 14},
+    [405] = NULL, // Func
+    [406] = NULL, // Func
+    [407] = NULL, // Func
+    [408] = NULL, // Func
+    [409] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(4, TYPE_UCHAR, uchar)},
+    [410] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [36]), .align = alignof(char [36]), .base = TYPEID(3, TYPE_CHAR, char), .count = 36},
+    [411] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [57]), .align = alignof(char [57]), .base = TYPEID(3, TYPE_CHAR, char), .count = 57},
+    [412] = NULL, // Func
+    [413] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [23]), .align = alignof(char [23]), .base = TYPEID(3, TYPE_CHAR, char), .count = 23},
+    [414] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [30]), .align = alignof(char [30]), .base = TYPEID(3, TYPE_CHAR, char), .count = 30},
+    [415] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [38]), .align = alignof(char [38]), .base = TYPEID(3, TYPE_CHAR, char), .count = 38},
+    [416] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [56]), .align = alignof(char [56]), .base = TYPEID(3, TYPE_CHAR, char), .count = 56},
+    [417] = NULL, // Func
+    [418] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [26]), .align = alignof(char [26]), .base = TYPEID(3, TYPE_CHAR, char), .count = 26},
+    [419] = NULL, // Func
+    [420] = NULL, // Func
+    [421] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(94, TYPE_STRUCT, src_pink_CachedArrayType)},
+    [422] = NULL, // Func
+    [423] = NULL, // Func
+    [424] = NULL, // Func
+    [425] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(96, TYPE_STRUCT, src_pink_CachedFuncType)},
+    [426] = NULL, // Func
+    [427] = NULL, // Func
+    [428] = NULL, // Func
+    [429] = NULL, // No associated type
+    [430] = NULL, // No associated type
+    [431] = NULL, // No associated type
+    [432] = NULL, // No associated type
+    [433] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(157, TYPE_STRUCT, std_Arena)},
+    [434] = NULL, // Func
+    [435] = NULL, // Func
+    [436] = NULL, // Func
+    [437] = NULL, // Func
+    [438] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [18]), .align = alignof(char [18]), .base = TYPEID(3, TYPE_CHAR, char), .count = 18},
+    [439] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [16]), .align = alignof(char [16]), .base = TYPEID(3, TYPE_CHAR, char), .count = 16},
+    [440] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [19]), .align = alignof(char [19]), .base = TYPEID(3, TYPE_CHAR, char), .count = 19},
+    [441] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [17]), .align = alignof(char [17]), .base = TYPEID(3, TYPE_CHAR, char), .count = 17},
+    [442] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [64]), .align = alignof(char [64]), .base = TYPEID(3, TYPE_CHAR, char), .count = 64},
+    [443] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [55]), .align = alignof(char [55]), .base = TYPEID(3, TYPE_CHAR, char), .count = 55},
+    [444] = NULL, // Func
+    [445] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [37]), .align = alignof(char [37]), .base = TYPEID(3, TYPE_CHAR, char), .count = 37},
+    [446] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [77]), .align = alignof(char [77]), .base = TYPEID(3, TYPE_CHAR, char), .count = 77},
+    [447] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [80]), .align = alignof(char [80]), .base = TYPEID(3, TYPE_CHAR, char), .count = 80},
+    [448] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [83]), .align = alignof(char [83]), .base = TYPEID(3, TYPE_CHAR, char), .count = 83},
+    [449] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [74]), .align = alignof(char [74]), .base = TYPEID(3, TYPE_CHAR, char), .count = 74},
+    [450] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [63]), .align = alignof(char [63]), .base = TYPEID(3, TYPE_CHAR, char), .count = 63},
+    [451] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [81]), .align = alignof(char [81]), .base = TYPEID(3, TYPE_CHAR, char), .count = 81},
+    [452] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [50]), .align = alignof(char [50]), .base = TYPEID(3, TYPE_CHAR, char), .count = 50},
+    [453] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [72]), .align = alignof(char [72]), .base = TYPEID(3, TYPE_CHAR, char), .count = 72},
+    [454] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [114]), .align = alignof(char [114]), .base = TYPEID(3, TYPE_CHAR, char), .count = 114},
+    [455] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [20]), .align = alignof(char [20]), .base = TYPEID(3, TYPE_CHAR, char), .count = 20},
+    [456] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [21]), .align = alignof(char [21]), .base = TYPEID(3, TYPE_CHAR, char), .count = 21},
+    [457] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [15]), .align = alignof(char [15]), .base = TYPEID(3, TYPE_CHAR, char), .count = 15},
+    [458] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(264, TYPE_PTR, src_pink_Package (**))},
+    [459] = NULL, // Func
+    [460] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(267, TYPE_PTR, src_pink_Sym (**))},
+    [461] = NULL, // Func
+    [462] = NULL, // Func
+    [463] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [22]), .align = alignof(char [22]), .base = TYPEID(3, TYPE_CHAR, char), .count = 22},
+    [464] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(81, TYPE_PTR, src_pink_Type (**))},
+    [465] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [47]), .align = alignof(char [47]), .base = TYPEID(3, TYPE_CHAR, char), .count = 47},
+    [466] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [41]), .align = alignof(char [41]), .base = TYPEID(3, TYPE_CHAR, char), .count = 41},
+    [467] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [53]), .align = alignof(char [53]), .base = TYPEID(3, TYPE_CHAR, char), .count = 53},
+    [468] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(43, TYPE_NONE, src_pink_TokenKind)},
+    [469] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [32]), .align = alignof(char [32]), .base = TYPEID(3, TYPE_CHAR, char), .count = 32},
+    [470] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [27]), .align = alignof(char [27]), .base = TYPEID(3, TYPE_CHAR, char), .count = 27},
+    [471] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [60]), .align = alignof(char [60]), .base = TYPEID(3, TYPE_CHAR, char), .count = 60},
+    [472] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [46]), .align = alignof(char [46]), .base = TYPEID(3, TYPE_CHAR, char), .count = 46},
+    [473] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [43]), .align = alignof(char [43]), .base = TYPEID(3, TYPE_CHAR, char), .count = 43},
+    [474] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [51]), .align = alignof(char [51]), .base = TYPEID(3, TYPE_CHAR, char), .count = 51},
+    [475] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [100]), .align = alignof(char [100]), .base = TYPEID(3, TYPE_CHAR, char), .count = 100},
+    [476] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [68]), .align = alignof(char [68]), .base = TYPEID(3, TYPE_CHAR, char), .count = 68},
+    [477] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [73]), .align = alignof(char [73]), .base = TYPEID(3, TYPE_CHAR, char), .count = 73},
+    [478] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [70]), .align = alignof(char [70]), .base = TYPEID(3, TYPE_CHAR, char), .count = 70},
+    [479] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [66]), .align = alignof(char [66]), .base = TYPEID(3, TYPE_CHAR, char), .count = 66},
+    [480] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [92]), .align = alignof(char [92]), .base = TYPEID(3, TYPE_CHAR, char), .count = 92},
+    [481] = NULL, // Func
+    [482] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_DirListIter), .align = alignof(std_os_DirListIter), .name = "std_os_DirListIter", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"valid", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, valid)},
+        {"error", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, error)},
+        {"base", .type = TYPEID(66, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, base)},
+        {"name", .type = TYPEID(66, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, name)},
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_os_DirListIter, size)},
+        {"is_dir", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, is_dir)},
+        {"handle", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(std_os_DirListIter, handle)},
+    }},
+    [483] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(482, TYPE_STRUCT, std_os_DirListIter)},
+    [484] = NULL, // Func
+    [485] = NULL, // Func
+    [486] = NULL, // Func
+    [487] = NULL, // Func
+    [488] = NULL, // Func
+    [489] = NULL, // Func
+    [490] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(179, TYPE_PTR, src_pink_Decl (**))},
+    [491] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [40]), .align = alignof(char [40]), .base = TYPEID(3, TYPE_CHAR, char), .count = 40},
+    [492] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [62]), .align = alignof(char [62]), .base = TYPEID(3, TYPE_CHAR, char), .count = 62},
+    [493] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [49]), .align = alignof(char [49]), .base = TYPEID(3, TYPE_CHAR, char), .count = 49},
+    [494] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(176, TYPE_PTR, src_pink_Typespec (**))},
+    [495] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(207, TYPE_PTR, src_pink_CompoundField *)},
+    [496] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(210, TYPE_PTR, src_pink_Expr (**))},
+    [497] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(168, TYPE_PTR, src_pink_Stmt (**))},
+    [498] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(225, TYPE_PTR, src_pink_ElseIf *)},
+    [499] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [59]), .align = alignof(char [59]), .base = TYPEID(3, TYPE_CHAR, char), .count = 59},
+    [500] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(349, TYPE_PTR, src_pink_SwitchCasePattern *)},
+    [501] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(229, TYPE_PTR, src_pink_SwitchCase *)},
+    [502] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(185, TYPE_PTR, src_pink_EnumItem *)},
+    [503] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(187, TYPE_PTR, src_pink_AggregateItem *)},
+    [504] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(192, TYPE_PTR, src_pink_FuncParam *)},
+    [505] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(163, TYPE_PTR, src_pink_NoteArg *)},
+    [506] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(165, TYPE_PTR, src_pink_Note *)},
+    [507] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(196, TYPE_PTR, src_pink_ImportItem *)},
+    [508] = NULL, // Func
+    [509] = NULL, // Func
+    [510] = NULL, // Func
+    [511] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDef), .align = alignof(std_os_FlagDef), .name = "std_os_FlagDef", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(512, TYPE_NONE, std_os_FlagKind), .offset = offsetof(std_os_FlagDef, kind)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, name)},
+        {"help", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, help)},
+        {"options", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDef, options)},
+        {"arg_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, arg_name)},
+        {"num_options", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_os_FlagDef, num_options)},
+        {"ptr", .type = TYPEID(513, TYPE_STRUCT, std_os_FlagDefPtr), .offset = offsetof(std_os_FlagDef, ptr)},
+    }},
+    [512] = NULL, // Enum
+    [513] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDefPtr), .align = alignof(std_os_FlagDefPtr), .name = "std_os_FlagDefPtr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"i", .type = TYPEID(378, TYPE_PTR, int *), .offset = offsetof(std_os_FlagDefPtr, i)},
+        {"b", .type = TYPEID(382, TYPE_PTR, bool *), .offset = offsetof(std_os_FlagDefPtr, b)},
+        {"s", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDefPtr, s)},
+    }},
+    [514] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(511, TYPE_STRUCT, std_os_FlagDef)},
+    [515] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(514, TYPE_PTR, std_os_FlagDef *)},
+    [516] = NULL, // Func
+    [517] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_BufHdr), .align = alignof(std_BufHdr), .name = "std_BufHdr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, cap)},
+        {"buf", .type = TYPEID(47, TYPE_ARRAY, char [1]), .offset = offsetof(std_BufHdr, buf)},
+    }},
+    [518] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(517, TYPE_STRUCT, std_BufHdr)},
+    [519] = NULL, // Func
+    [520] = NULL, // Incomplete: FILE
+    [521] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(520, TYPE_NONE)},
+    [522] = NULL, // Func
+    [523] = NULL, // Func
+    [524] = NULL, // Func
+    [525] = NULL, // Func
+    [526] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Intern), .align = alignof(std_Intern), .name = "std_Intern", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Intern, len)},
+        {"next", .type = TYPEID(527, TYPE_PTR, std_Intern *), .offset = offsetof(std_Intern, next)},
+        {"str", .type = TYPEID(47, TYPE_ARRAY, char [1]), .offset = offsetof(std_Intern, str)},
+    }},
+    [527] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(526, TYPE_STRUCT, std_Intern)},
+    [528] = NULL, // Func
+    [529] = NULL, // Func
+    [530] = NULL, // Func
+    [531] = NULL, // Func
+    [532] = NULL, // Func
+    [533] = NULL, // Func
+    [534] = NULL, // Func
+    [535] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(dirent), .align = alignof(dirent), .name = "dirent", .num_fields = 2, .fields = (TypeFieldInfo[]) {
+        {"d_name", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(dirent, d_name)},
+        {"d_type", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(dirent, d_type)},
+    }},
+    [536] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(535, TYPE_STRUCT, dirent)},
+    [537] = NULL, // Func
+    [538] = NULL, // Func
+    [539] = NULL, // Func
+    [540] = NULL, // Func
+    [541] = NULL, // Func
+    [542] = NULL, // Func
+    [543] = NULL, // Func
+    [544] = NULL, // Func
+    [545] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(158, TYPE_PTR, char (**))},
+    [546] = NULL, // Func
+    [547] = NULL, // Func
+    [548] = NULL, // Func
+    [549] = NULL, // Func
+    [550] = NULL, // Func
+    [551] = NULL, // Func
+    [552] = &(TypeInfo){TYPE_CONST, .size = sizeof(char (*const )), .align = alignof(char (*const )), .base = TYPEID(22, TYPE_PTR, char *)},
+    [553] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(552, TYPE_CONST, char (*const ))},
+    [554] = NULL, // Func
+    [555] = NULL, // No associated type
+    [556] = NULL, // Func
+    [557] = NULL, // Func
+    [558] = NULL, // No associated type
+    [559] = NULL, // Func
+    [560] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(10, TYPE_LONG, long)},
+    [561] = NULL, // Func
+    [562] = NULL, // No associated type
+    [563] = NULL, // No associated type
+    [564] = NULL, // Func
+    [565] = &(TypeInfo){TYPE_CONST, .size = sizeof(long const ), .align = alignof(long const ), .base = TYPEID(10, TYPE_LONG, long)},
+    [566] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(565, TYPE_CONST, long const )},
+    [567] = NULL, // Func
+    [568] = NULL, // Func
+    [569] = NULL, // Func
+    [570] = NULL, // No associated type
+    [571] = NULL, // Func
+    [572] = NULL, // Func
+    [573] = NULL, // Func
+    [574] = NULL, // Func
+    [575] = NULL, // Func
+    [576] = NULL, // Func
+    [577] = NULL, // Func
+    [578] = NULL, // Func
+    [579] = NULL, // Func
+    [580] = NULL, // Func
+    [581] = NULL, // Func
+    [582] = NULL, // Func
+    [583] = NULL, // Func
+    [584] = NULL, // Func
+    [585] = NULL, // No associated type
+    [586] = NULL, // Func
+    [587] = NULL, // Func
+    [588] = NULL, // No associated type
+    [589] = NULL, // No associated type
+    [590] = NULL, // No associated type
+    [591] = NULL, // Func
+    [592] = NULL, // Func
+    [593] = NULL, // Func
+    [594] = NULL, // Func
+    [595] = NULL, // Func
+    [596] = NULL, // Func
+    [597] = NULL, // Func
+    [598] = NULL, // Func
+    [599] = NULL, // Func
+    [600] = NULL, // Func
+    [601] = NULL, // Func
+    [602] = NULL, // Func
+    [603] = NULL, // Func
+    [604] = NULL, // Func
+    [605] = NULL, // Func
+    [606] = NULL, // Func
+    [607] = NULL, // Func
+    [608] = NULL, // Func
+    [609] = NULL, // Func
+    [610] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(6, TYPE_SHORT, short)},
+    [611] = NULL, // Func
+    [612] = NULL, // Func
+    [613] = NULL, // Func
+    [614] = &(TypeInfo){TYPE_CONST, .size = sizeof(short const ), .align = alignof(short const ), .base = TYPEID(6, TYPE_SHORT, short)},
+    [615] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(614, TYPE_CONST, short const )},
+    [616] = NULL, // Func
+    [617] = NULL, // Func
+    [618] = NULL, // Func
+    [619] = NULL, // Func
+    [620] = NULL, // Func
+    [621] = NULL, // Func
+    [622] = NULL, // Func
+    [623] = NULL, // Func
+    [624] = NULL, // Func
+    [625] = NULL, // Func
+    [626] = NULL, // Func
+    [627] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(14, TYPE_FLOAT, float)},
+    [628] = NULL, // Func
+    [629] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(15, TYPE_DOUBLE, double)},
+    [630] = NULL, // Func
+    [631] = NULL, // Func
+    [632] = NULL, // Func
+    [633] = NULL, // Func
+    [634] = NULL, // Func
+    [635] = NULL, // Func
+    [636] = NULL, // Func
+    [637] = NULL, // Func
+    [638] = NULL, // Func
+    [639] = NULL, // Func
+    [640] = NULL, // Func
+    [641] = NULL, // Func
+    [642] = NULL, // Func
+    [643] = NULL, // Func
+    [644] = NULL, // Func
+};
+
+int num_typeinfos = 645;
+const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;
 
 // Definitions
 int main(int argc, char const ((*(*argv)))) {
@@ -2200,7 +3221,6 @@ int main(int argc, char const ((*(*argv)))) {
 }
 
 char const ((*current_os)) = "linux";
-char const ((*current_arch)) = "x64";
 TypeKind typeid_kind(typeid type) {
     return (TypeKind)((((type) >> (24))) & (0xff));
 }
@@ -2222,6 +3242,1320 @@ TypeInfo const ((*get_typeinfo(typeid type))) {
     }
 }
 
+char const ((*current_arch)) = "x64";
+char const ((*(src_pink_static_package_search_paths[SRC_PINK_MAX_SEARCH_PATHS])));
+char const ((*(*src_pink_package_search_paths))) = src_pink_static_package_search_paths;
+int src_pink_num_package_search_paths;
+void src_pink_add_package_search_path(char const ((*path))) {
+    if (src_pink_flag_verbose) {
+        printf("Adding package search path %s\n", path);
+    }
+    src_pink_package_search_paths[(src_pink_num_package_search_paths)++] = std_str_intern(path);
+}
+
+void src_pink_add_package_search_path_range(char const ((*start)), char const ((*end))) {
+    char (path[MAX_PATH]) = {0};
+    size_t len = std_clamp_max((end) - (start), (MAX_PATH) - (1));
+    memcpy(path, start, len);
+    path[len] = 0;
+    src_pink_add_package_search_path(path);
+}
+
+void src_pink_init_package_search_paths(void) {
+    char (*pinkhome_var) = getenv("PINK_HOME");
+    if (!(pinkhome_var)) {
+        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where pinklib is located)\n");
+        exit(1);
+    }
+    char (path[MAX_PATH]) = {0};
+    std_os_path_copy(path, pinkhome_var);
+    std_os_path_join(path, "pinklib");
+    src_pink_add_package_search_path(path);
+    src_pink_add_package_search_path(".");
+    src_pink_add_package_search_path("./deps/");
+    char (*pinkpath_var) = getenv("PINK_PATH");
+    if (pinkpath_var) {
+        char (*start) = pinkpath_var;
+        for (char (*ptr) = pinkpath_var; *(ptr); (ptr)++) {
+            if ((*(ptr)) == (';')) {
+                src_pink_add_package_search_path_range(start, ptr);
+                start = (ptr) + (1);
+            }
+        }
+        if (*(start)) {
+            src_pink_add_package_search_path(start);
+        }
+    }
+}
+
+void src_pink_init_compiler(void) {
+    src_pink_init_target();
+    src_pink_init_package_search_paths();
+    src_pink_init_keywords();
+    src_pink_init_builtin_types();
+    std_map_put(&(src_pink_decl_note_names), src_pink_declare_note_name, (void *)(1));
+}
+
+void src_pink_parse_env_vars(void) {
+    char (*pinkos_var) = getenv("PINK_OS");
+    if (pinkos_var) {
+        int os = src_pink_get_os(pinkos_var);
+        if ((os) == (-(1))) {
+            printf("Unknown target operating system in PINK_OS environment variable: %s\n", pinkos_var);
+        } else {
+            src_pink_target_os = os;
+        }
+    }
+    char (*pinkarch_var) = getenv("PINK_ARCH");
+    if (pinkarch_var) {
+        int arch = src_pink_get_arch(pinkarch_var);
+        if ((arch) == (-(1))) {
+            printf("Unknown target architecture in PINK_ARCH environment variable: %s\n", pinkarch_var);
+        } else {
+            src_pink_target_arch = arch;
+        }
+    }
+}
+
+int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void), char const ((*extension))) {
+    src_pink_parse_env_vars();
+    char const ((*output_name)) = {0};
+    bool flag_check = false;
+    std_os_add_flag_str("o", &(output_name), "file", "Output file (default: out_<main-package>.c)");
+    std_os_add_flag_enum("os", &(src_pink_target_os), "Target operating system", src_pink_os_names, SRC_PINK_NUM_OSES);
+    std_os_add_flag_enum("arch", &(src_pink_target_arch), "Target machine architecture", src_pink_arch_names, SRC_PINK_NUM_ARCHES);
+    std_os_add_flag_bool("check", &(flag_check), "Semantic checking with no code generation");
+    std_os_add_flag_bool("lazy", &(src_pink_flag_lazy), "Only compile what\'s reachable from the main package");
+    std_os_add_flag_bool("nosourcemap", &(src_pink_flag_nosourcemap), "Don\'t generate any source map information");
+    std_os_add_flag_bool("notypeinfo", &(src_pink_flag_notypeinfo), "Don\'t generate any typeinfo tables");
+    std_os_add_flag_bool("fullgen", &(src_pink_flag_fullgen), "Force full code generation even for non-reachable symbols");
+    std_os_add_flag_bool("verbose", &(src_pink_flag_verbose), "Extra diagnostic information");
+    char const ((*program_name)) = std_os_parse_flags(&(argc), &(argv));
+    if ((argc) != (1)) {
+        printf("Usage: %s [flags] <main-package>\n", program_name);
+        std_os_print_flags_usage();
+        return 1;
+    }
+    char const ((*package_name)) = argv[0];
+    if (src_pink_flag_verbose) {
+        printf("Target operating system: %s\n", src_pink_os_names[src_pink_target_os]);
+        printf("Target architecture: %s\n", src_pink_arch_names[src_pink_target_arch]);
+    }
+    src_pink_init_compiler();
+    src_pink_builtin_package = src_pink_import_package("builtin");
+    if (!(src_pink_builtin_package)) {
+        printf("error: Failed to compile package \'builtin\'.\n");
+        return 1;
+    }
+    src_pink_builtin_package->external_name = std_str_intern("");
+    src_pink_Package (*main_package) = src_pink_import_package(package_name);
+    if (!(main_package)) {
+        printf("error: Failed to compile package \'%s\'\n", package_name);
+        return 1;
+    }
+    char const ((*main_name)) = std_str_intern("main");
+    src_pink_Sym (*main_sym) = src_pink_get_package_sym(main_package, main_name);
+    if (!(main_sym)) {
+        printf("error: No \'main\' entry point defined in package \'%s\'\n", package_name);
+        return 1;
+    }
+    main_sym->external_name = main_name;
+    src_pink_reachable_phase = SRC_PINK_REACHABLE_NATURAL;
+    src_pink_resolve_sym(main_sym);
+    for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+        if (src_pink_package_list[i]->always_reachable) {
+            src_pink_resolve_package_syms(src_pink_package_list[i]);
+        }
+    }
+    src_pink_finalize_reachable_syms();
+    if (src_pink_flag_verbose) {
+        printf("Reached %d symbols in %d packages from %s/main\n", (int)(std_buf_len(src_pink_reachable_syms)), (int)(std_buf_len(src_pink_package_list)), package_name);
+    }
+    if (!(src_pink_flag_lazy)) {
+        src_pink_reachable_phase = SRC_PINK_REACHABLE_FORCED;
+        for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+            src_pink_resolve_package_syms(src_pink_package_list[i]);
+        }
+        src_pink_finalize_reachable_syms();
+    }
+    if (!(flag_check)) {
+        char (c_path[MAX_PATH]) = {0};
+        if (output_name) {
+            std_os_path_copy(c_path, output_name);
+        } else {
+            snprintf(c_path, sizeof(c_path), "out_%s.%s", package_name, extension);
+        }
+        gen_all();
+        char (*c_code) = src_pink_gen_buf;
+        src_pink_gen_buf = NULL;
+        if (!(std_write_file(c_path, c_code, std_buf_len(c_code)))) {
+            printf("error: Failed to write file: %s\n", c_path);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+char const ((*src_pink_typedef_keyword));
+char const ((*src_pink_enum_keyword));
+char const ((*src_pink_struct_keyword));
+char const ((*src_pink_union_keyword));
+char const ((*src_pink_var_keyword));
+char const ((*src_pink_const_keyword));
+char const ((*src_pink_func_keyword));
+char const ((*src_pink_sizeof_keyword));
+char const ((*src_pink_alignof_keyword));
+char const ((*src_pink_typeof_keyword));
+char const ((*src_pink_offsetof_keyword));
+char const ((*src_pink_break_keyword));
+char const ((*src_pink_continue_keyword));
+char const ((*src_pink_return_keyword));
+char const ((*src_pink_if_keyword));
+char const ((*src_pink_else_keyword));
+char const ((*src_pink_while_keyword));
+char const ((*src_pink_do_keyword));
+char const ((*src_pink_for_keyword));
+char const ((*src_pink_switch_keyword));
+char const ((*src_pink_case_keyword));
+char const ((*src_pink_default_keyword));
+char const ((*src_pink_import_keyword));
+char const ((*src_pink_goto_keyword));
+char const ((*src_pink_first_keyword));
+char const ((*src_pink_last_keyword));
+char const ((*(*src_pink_keywords)));
+char const ((*src_pink_always_name));
+char const ((*src_pink_foreign_name));
+char const ((*src_pink_complete_name));
+char const ((*src_pink_assert_name));
+char const ((*src_pink_declare_note_name));
+char const ((*src_pink_static_assert_name));
+char const ((*src_pink_init_keyword(char const ((*keyword))))) {
+    keyword = std_str_intern(keyword);
+    std_buf_push((void (**))(&(src_pink_keywords)), (void *)(&(keyword)), sizeof(keyword));
+    return keyword;
+}
+
+bool src_pink_keywords_inited = false;
+void src_pink_init_keywords(void) {
+    if (src_pink_keywords_inited) {
+        return;
+    }
+    src_pink_typedef_keyword = src_pink_init_keyword("typedef");
+    char (*arena_end) = std_intern_arena.end;
+    src_pink_enum_keyword = src_pink_init_keyword("enum");
+    src_pink_struct_keyword = src_pink_init_keyword("struct");
+    src_pink_union_keyword = src_pink_init_keyword("union");
+    src_pink_const_keyword = src_pink_init_keyword("const");
+    src_pink_var_keyword = src_pink_init_keyword("var");
+    src_pink_func_keyword = src_pink_init_keyword("func");
+    src_pink_import_keyword = src_pink_init_keyword("import");
+    src_pink_goto_keyword = src_pink_init_keyword("goto");
+    src_pink_sizeof_keyword = src_pink_init_keyword("sizeof");
+    src_pink_alignof_keyword = src_pink_init_keyword("alignof");
+    src_pink_typeof_keyword = src_pink_init_keyword("typeof");
+    src_pink_offsetof_keyword = src_pink_init_keyword("offsetof");
+    src_pink_break_keyword = src_pink_init_keyword("break");
+    src_pink_continue_keyword = src_pink_init_keyword("continue");
+    src_pink_return_keyword = src_pink_init_keyword("return");
+    src_pink_if_keyword = src_pink_init_keyword("if");
+    src_pink_else_keyword = src_pink_init_keyword("else");
+    src_pink_while_keyword = src_pink_init_keyword("while");
+    src_pink_do_keyword = src_pink_init_keyword("do");
+    src_pink_for_keyword = src_pink_init_keyword("for");
+    src_pink_switch_keyword = src_pink_init_keyword("switch");
+    src_pink_case_keyword = src_pink_init_keyword("case");
+    src_pink_default_keyword = src_pink_init_keyword("default");
+    src_pink_first_keyword = src_pink_typedef_keyword;
+    src_pink_last_keyword = src_pink_default_keyword;
+    src_pink_always_name = std_str_intern("always");
+    src_pink_foreign_name = std_str_intern("foreign");
+    src_pink_complete_name = std_str_intern("complete");
+    src_pink_assert_name = std_str_intern("assert");
+    src_pink_declare_note_name = std_str_intern("declare_note");
+    src_pink_static_assert_name = std_str_intern("static_assert");
+    src_pink_keywords_inited = true;
+}
+
+bool src_pink_is_keyword_name(char const ((*name))) {
+    return ((src_pink_first_keyword) <= (name)) && ((name) <= (src_pink_last_keyword));
+}
+
+char const ((*(src_pink_token_suffix_names[7]))) = {[SRC_PINK_SUFFIX_NONE] = "", [SRC_PINK_SUFFIX_D] = "d", [SRC_PINK_SUFFIX_U] = "u", [SRC_PINK_SUFFIX_L] = "l", [SRC_PINK_SUFFIX_UL] = "ul", [SRC_PINK_SUFFIX_LL] = "ll", [SRC_PINK_SUFFIX_ULL] = "ull"};
+char const ((*(src_pink_token_kind_names[54]))) = {[SRC_PINK_TOKEN_EOF] = "EOF", [SRC_PINK_TOKEN_COLON] = ":", [SRC_PINK_TOKEN_LPAREN] = "(", [SRC_PINK_TOKEN_RPAREN] = ")", [SRC_PINK_TOKEN_LBRACE] = "{", [SRC_PINK_TOKEN_RBRACE] = "}", [SRC_PINK_TOKEN_LBRACKET] = "[", [SRC_PINK_TOKEN_RBRACKET] = "]", [SRC_PINK_TOKEN_COMMA] = ",", [SRC_PINK_TOKEN_DOT] = ".", [SRC_PINK_TOKEN_AT] = "@", [SRC_PINK_TOKEN_POUND] = "#", [SRC_PINK_TOKEN_ELLIPSIS] = "...", [SRC_PINK_TOKEN_QUESTION] = "?", [SRC_PINK_TOKEN_SEMICOLON] = ";", [SRC_PINK_TOKEN_KEYWORD] = "keyword", [SRC_PINK_TOKEN_INT] = "int", [SRC_PINK_TOKEN_FLOAT] = "float", [SRC_PINK_TOKEN_STR] = "string", [SRC_PINK_TOKEN_NAME] = "name", [SRC_PINK_TOKEN_NEG] = "~", [SRC_PINK_TOKEN_NOT] = "!", [SRC_PINK_TOKEN_MUL] = "*", [SRC_PINK_TOKEN_DIV] = "/", [SRC_PINK_TOKEN_MOD] = "%", [SRC_PINK_TOKEN_AND] = "&", [SRC_PINK_TOKEN_LSHIFT] = "<<", [SRC_PINK_TOKEN_RSHIFT] = ">>", [SRC_PINK_TOKEN_ADD] = "+", [SRC_PINK_TOKEN_SUB] = "-", [SRC_PINK_TOKEN_OR] = "|", [SRC_PINK_TOKEN_XOR] = "^", [SRC_PINK_TOKEN_EQ] = "==", [SRC_PINK_TOKEN_NOTEQ] = "!=", [SRC_PINK_TOKEN_LT] = "<", [SRC_PINK_TOKEN_GT] = ">", [SRC_PINK_TOKEN_LTEQ] = "<=", [SRC_PINK_TOKEN_GTEQ] = ">=", [SRC_PINK_TOKEN_AND_AND] = "&&", [SRC_PINK_TOKEN_OR_OR] = "||", [SRC_PINK_TOKEN_ASSIGN] = "=", [SRC_PINK_TOKEN_ADD_ASSIGN] = "+=", [SRC_PINK_TOKEN_SUB_ASSIGN] = "-=", [SRC_PINK_TOKEN_OR_ASSIGN] = "|=", [SRC_PINK_TOKEN_AND_ASSIGN] = "&=", [SRC_PINK_TOKEN_XOR_ASSIGN] = "^=", [SRC_PINK_TOKEN_MUL_ASSIGN] = "*=", [SRC_PINK_TOKEN_DIV_ASSIGN] = "/=", [SRC_PINK_TOKEN_MOD_ASSIGN] = "%=", [SRC_PINK_TOKEN_LSHIFT_ASSIGN] = "<<=", [SRC_PINK_TOKEN_RSHIFT_ASSIGN] = ">>=", [SRC_PINK_TOKEN_INC] = "++", [SRC_PINK_TOKEN_DEC] = "--", [SRC_PINK_TOKEN_COLON_ASSIGN] = ":="};
+char const ((*src_pink_token_kind_name(src_pink_TokenKind kind))) {
+    if ((kind) < ((sizeof(src_pink_token_kind_names)) / (sizeof(*(src_pink_token_kind_names))))) {
+        return src_pink_token_kind_names[kind];
+    } else {
+        return "<unknown>";
+    }
+}
+
+src_pink_TokenKind (src_pink_assign_token_to_binary_token[SRC_PINK_NUM_TOKEN_KINDS]) = {[SRC_PINK_TOKEN_ADD_ASSIGN] = SRC_PINK_TOKEN_ADD, [SRC_PINK_TOKEN_SUB_ASSIGN] = SRC_PINK_TOKEN_SUB, [SRC_PINK_TOKEN_OR_ASSIGN] = SRC_PINK_TOKEN_OR, [SRC_PINK_TOKEN_AND_ASSIGN] = SRC_PINK_TOKEN_AND, [SRC_PINK_TOKEN_XOR_ASSIGN] = SRC_PINK_TOKEN_XOR, [SRC_PINK_TOKEN_LSHIFT_ASSIGN] = SRC_PINK_TOKEN_LSHIFT, [SRC_PINK_TOKEN_RSHIFT_ASSIGN] = SRC_PINK_TOKEN_RSHIFT, [SRC_PINK_TOKEN_MUL_ASSIGN] = SRC_PINK_TOKEN_MUL, [SRC_PINK_TOKEN_DIV_ASSIGN] = SRC_PINK_TOKEN_DIV, [SRC_PINK_TOKEN_MOD_ASSIGN] = SRC_PINK_TOKEN_MOD};
+src_pink_SrcPos src_pink_pos_builtin = {.name = "<builtin>"};
+src_pink_Token src_pink_token;
+char const ((*src_pink_stream));
+char const ((*src_pink_line_start));
+void src_pink_vnotice(char const ((*level)), src_pink_SrcPos pos, char const ((*fmt)), va_list args) {
+    if ((pos.name) == (NULL)) {
+        pos = src_pink_pos_builtin;
+    }
+    printf("%s(%d): %s: ", pos.name, pos.line, level);
+    vprintf(fmt, args);
+    printf("\n");
+}
+
+void src_pink_warning(src_pink_SrcPos pos, char const ((*fmt)), ...) {
+    va_list args = {0};
+    va_start_ptr(&(args), &(fmt));
+    src_pink_vnotice("warning", pos, fmt, args);
+    va_end_ptr(&(args));
+}
+
+void src_pink_verror(src_pink_SrcPos pos, char const ((*fmt)), va_list args) {
+    src_pink_vnotice("error", pos, fmt, args);
+}
+
+void src_pink_error(src_pink_SrcPos pos, char const ((*fmt)), ...) {
+    va_list args = {0};
+    va_start_ptr(&(args), &(fmt));
+    src_pink_verror(pos, fmt, args);
+    va_end_ptr(&(args));
+}
+
+void src_pink_fatal_error(src_pink_SrcPos pos, char const ((*fmt)), ...) {
+    va_list args = {0};
+    va_start_ptr(&(args), &(fmt));
+    src_pink_verror(pos, fmt, args);
+    va_end_ptr(&(args));
+    exit(1);
+}
+
+char const ((*src_pink_token_info(void))) {
+    if (((src_pink_token.kind) == (SRC_PINK_TOKEN_NAME)) || ((src_pink_token.kind) == (SRC_PINK_TOKEN_KEYWORD))) {
+        return src_pink_token.name;
+    } else {
+        return src_pink_token_kind_name(src_pink_token.kind);
+    }
+}
+
+uint8_t (src_pink_char_to_digit[256]) = {['0'] = 0, ['1'] = 1, ['2'] = 2, ['3'] = 3, ['4'] = 4, ['5'] = 5, ['6'] = 6, ['7'] = 7, ['8'] = 8, ['9'] = 9, ['a'] = 10, ['A'] = 10, ['b'] = 11, ['B'] = 11, ['c'] = 12, ['C'] = 12, ['d'] = 13, ['D'] = 13, ['e'] = 14, ['E'] = 14, ['f'] = 15, ['F'] = 15};
+void src_pink_scan_int(void) {
+    int base = 10;
+    char const ((*start_digits)) = src_pink_stream;
+    if ((*(src_pink_stream)) == ('0')) {
+        (src_pink_stream)++;
+        if ((tolower(*(src_pink_stream))) == ('x')) {
+            (src_pink_stream)++;
+            src_pink_token.mod = SRC_PINK_MOD_HEX;
+            base = 16;
+            start_digits = src_pink_stream;
+        } else if ((tolower(*(src_pink_stream))) == ('b')) {
+            (src_pink_stream)++;
+            src_pink_token.mod = SRC_PINK_MOD_BIN;
+            base = 2;
+            start_digits = src_pink_stream;
+        } else if (isdigit(*(src_pink_stream))) {
+            src_pink_token.mod = SRC_PINK_MOD_OCT;
+            base = 8;
+            start_digits = src_pink_stream;
+        }
+    }
+    ullong val = 0;
+    for (;;) {
+        if ((*(src_pink_stream)) == ('_')) {
+            (src_pink_stream)++;
+            continue;
+        }
+        uchar digit = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
+        if (((digit) == (0)) && ((*(src_pink_stream)) != ('0'))) {
+            break;
+        }
+        if ((digit) >= (base)) {
+            src_pink_error(src_pink_token.pos, "Digit \'%c\' out of range for base %d", *(src_pink_stream), base);
+            digit = 0;
+        }
+        if ((val) > ((((ULLONG_MAX) - (digit))) / (base))) {
+            src_pink_error(src_pink_token.pos, "Integer literal overflow");
+            while (isdigit(*(src_pink_stream))) {
+                (src_pink_stream)++;
+            }
+            val = 0;
+            break;
+        }
+        val = ((val) * (base)) + (digit);
+        (src_pink_stream)++;
+    }
+    if ((src_pink_stream) == (start_digits)) {
+        src_pink_error(src_pink_token.pos, "Expected base %d digit, got \'%c\'", base, *(src_pink_stream));
+    }
+    src_pink_token.kind = SRC_PINK_TOKEN_INT;
+    src_pink_token.int_val = val;
+    if ((tolower(*(src_pink_stream))) == ('u')) {
+        src_pink_token.suffix = SRC_PINK_SUFFIX_U;
+        (src_pink_stream)++;
+        if ((tolower(*(src_pink_stream))) == ('l')) {
+            src_pink_token.suffix = SRC_PINK_SUFFIX_UL;
+            (src_pink_stream)++;
+            if ((tolower(*(src_pink_stream))) == ('l')) {
+                src_pink_token.suffix = SRC_PINK_SUFFIX_ULL;
+                (src_pink_stream)++;
+            }
+        }
+    } else if ((tolower(*(src_pink_stream))) == ('l')) {
+        src_pink_token.suffix = SRC_PINK_SUFFIX_L;
+        (src_pink_stream)++;
+        if ((tolower(*(src_pink_stream))) == ('l')) {
+            src_pink_token.suffix = SRC_PINK_SUFFIX_LL;
+            (src_pink_stream)++;
+        }
+    }
+}
+
+void src_pink_scan_float(void) {
+    char const ((*start)) = src_pink_stream;
+    while (isdigit(*(src_pink_stream))) {
+        (src_pink_stream)++;
+    }
+    if ((*(src_pink_stream)) == ('.')) {
+        (src_pink_stream)++;
+    }
+    while (isdigit(*(src_pink_stream))) {
+        (src_pink_stream)++;
+    }
+    if ((tolower(*(src_pink_stream))) == ('e')) {
+        (src_pink_stream)++;
+        if (((*(src_pink_stream)) == ('+')) || ((*(src_pink_stream)) == ('-'))) {
+            (src_pink_stream)++;
+        }
+        if (!(isdigit(*(src_pink_stream)))) {
+            src_pink_error(src_pink_token.pos, "Expected digit after float literal exponent, found \'%c\'.", *(src_pink_stream));
+        }
+        while (isdigit(*(src_pink_stream))) {
+            (src_pink_stream)++;
+        }
+    }
+    double val = strtod(start, NULL);
+    if ((val) == (HUGE_VAL)) {
+        src_pink_error(src_pink_token.pos, "Float literal overflow");
+    }
+    src_pink_token.kind = SRC_PINK_TOKEN_FLOAT;
+    src_pink_token.float_val = val;
+    if ((tolower(*(src_pink_stream))) == ('d')) {
+        src_pink_token.suffix = SRC_PINK_SUFFIX_D;
+        (src_pink_stream)++;
+    }
+}
+
+char (src_pink_escape_to_char[256]) = {['0'] = '\0', ['\''] = '\'', ['\"'] = '\"', ['\\'] = '\\', ['n'] = '\n', ['r'] = '\r', ['t'] = '\t', ['v'] = '\v', ['b'] = '\b', ['a'] = '\a'};
+int src_pink_scan_hex_escape(void) {
+    (src_pink_stream)++;
+    uchar val = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
+    if ((!(val)) && ((*(src_pink_stream)) != ('0'))) {
+        src_pink_error(src_pink_token.pos, "\\x needs at least 1 hex digit");
+    }
+    (src_pink_stream)++;
+    uchar digit = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
+    if ((digit) || ((*(src_pink_stream)) == ('0'))) {
+        val *= 16;
+        val += digit;
+        if ((val) > (0xff)) {
+            src_pink_error(src_pink_token.pos, "\\x argument out of range");
+            val = 0xff;
+        }
+        (src_pink_stream)++;
+    }
+    return val;
+}
+
+void src_pink_scan_char(void) {
+    (src_pink_stream)++;
+    int val = 0;
+    if ((*(src_pink_stream)) == ('\'')) {
+        src_pink_error(src_pink_token.pos, "Char literal cannot be empty");
+        (src_pink_stream)++;
+    } else if ((*(src_pink_stream)) == ('\n')) {
+        src_pink_error(src_pink_token.pos, "Char literal cannot contain newline");
+    } else if ((*(src_pink_stream)) == ('\\')) {
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('x')) {
+            val = src_pink_scan_hex_escape();
+        } else {
+            val = src_pink_escape_to_char[(uchar)(*(src_pink_stream))];
+            if (((val) == (0)) && ((*(src_pink_stream)) != ('0'))) {
+                src_pink_error(src_pink_token.pos, "Invalid char literal escape \'\\%c\'", *(src_pink_stream));
+            }
+            (src_pink_stream)++;
+        }
+    } else {
+        val = *(src_pink_stream);
+        (src_pink_stream)++;
+    }
+    if ((*(src_pink_stream)) != ('\'')) {
+        src_pink_error(src_pink_token.pos, "Expected closing char quote, got \'%c\'", *(src_pink_stream));
+    } else {
+        (src_pink_stream)++;
+    }
+    src_pink_token.kind = SRC_PINK_TOKEN_INT;
+    src_pink_token.int_val = val;
+    src_pink_token.mod = SRC_PINK_MOD_CHAR;
+}
+
+void src_pink_scan_str(void) {
+    (src_pink_stream)++;
+    char (*str) = NULL;
+    if (((src_pink_stream[0]) == ('\"')) && ((src_pink_stream[1]) == ('\"'))) {
+        src_pink_stream += 2;
+        while (*(src_pink_stream)) {
+            if ((((src_pink_stream[0]) == ('\"')) && ((src_pink_stream[1]) == ('\"'))) && ((src_pink_stream[2]) == ('\"'))) {
+                src_pink_stream += 3;
+                break;
+            }
+            if ((*(src_pink_stream)) != ('\r')) {
+                std_buf_push((void (**))(&(str)), (void *)(src_pink_stream), 1);
+            }
+            if ((*(src_pink_stream)) == ('\n')) {
+                (src_pink_token.pos.line)++;
+            }
+            (src_pink_stream)++;
+        }
+        if (!(*(src_pink_stream))) {
+            src_pink_error(src_pink_token.pos, "Unexpected end of file within multi-line string literal");
+        }
+        src_pink_token.mod = SRC_PINK_MOD_MULTILINE;
+    } else {
+        while ((*(src_pink_stream)) && ((*(src_pink_stream)) != ('\"'))) {
+            char val = *(src_pink_stream);
+            if ((val) == ('\n')) {
+                src_pink_error(src_pink_token.pos, "String literal cannot contain newline");
+                break;
+            } else if ((val) == ('\\')) {
+                (src_pink_stream)++;
+                if ((*(src_pink_stream)) == ('x')) {
+                    val = src_pink_scan_hex_escape();
+                } else {
+                    val = src_pink_escape_to_char[(uchar)(*(src_pink_stream))];
+                    if (((val) == (0)) && ((*(src_pink_stream)) != ('0'))) {
+                        src_pink_error(src_pink_token.pos, "Invalid string literal escape \'\\%c\'", *(src_pink_stream));
+                    }
+                    (src_pink_stream)++;
+                }
+            } else {
+                (src_pink_stream)++;
+            }
+            std_buf_push((void (**))(&(str)), &(val), 1);
+        }
+        if (*(src_pink_stream)) {
+            (src_pink_stream)++;
+        } else {
+            src_pink_error(src_pink_token.pos, "Unexpected end of file within string literal");
+        }
+    }
+    int nul = '\0';
+    std_buf_push((void (**))(&(str)), &(nul), 1);
+    src_pink_token.kind = SRC_PINK_TOKEN_STR;
+    src_pink_token.str_val = str;
+}
+
+void src_pink_next_token(void) {
+    repeat: ;
+    src_pink_token.start = src_pink_stream;
+    src_pink_token.mod = 0;
+    src_pink_token.suffix = 0;
+    switch (*(src_pink_stream)) {
+    case ' ':
+    case '\n':
+    case '\r':
+    case '\t':
+    case '\v': {
+        while (isspace(*(src_pink_stream))) {
+            if ((*((src_pink_stream)++)) == ('\n')) {
+                src_pink_line_start = src_pink_stream;
+                (src_pink_token.pos.line)++;
+            }
+        }
+        goto repeat;
+        break;
+    }
+    case '\'': {
+        src_pink_scan_char();
+        break;
+    }
+    case '\"': {
+        src_pink_scan_str();
+        break;
+    }
+    case '.': {
+        if (isdigit(src_pink_stream[1])) {
+            src_pink_scan_float();
+        } else if (((src_pink_stream[1]) == ('.')) && ((src_pink_stream[2]) == ('.'))) {
+            src_pink_token.kind = SRC_PINK_TOKEN_ELLIPSIS;
+            src_pink_stream += 3;
+        } else {
+            src_pink_token.kind = SRC_PINK_TOKEN_DOT;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9': {
+        {
+            while (isdigit(*(src_pink_stream))) {
+                (src_pink_stream)++;
+            }
+            char c = *(src_pink_stream);
+            src_pink_stream = src_pink_token.start;
+            if (((c) == ('.')) || ((tolower(c)) == ('e'))) {
+                src_pink_scan_float();
+            } else {
+                src_pink_scan_int();
+            }
+        }
+        break;
+    }
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case '_': {
+        while ((isalnum(*(src_pink_stream))) || ((*(src_pink_stream)) == ('_'))) {
+            (src_pink_stream)++;
+        }
+        src_pink_token.name = std_str_intern_range(src_pink_token.start, src_pink_stream);
+        src_pink_token.kind = (src_pink_is_keyword_name(src_pink_token.name) ? SRC_PINK_TOKEN_KEYWORD : SRC_PINK_TOKEN_NAME);
+        break;
+    }
+    case '<': {
+        src_pink_token.kind = SRC_PINK_TOKEN_LT;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('<')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_LSHIFT;
+            (src_pink_stream)++;
+            if ((*(src_pink_stream)) == ('=')) {
+                src_pink_token.kind = SRC_PINK_TOKEN_LSHIFT_ASSIGN;
+                (src_pink_stream)++;
+            }
+        } else if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_LTEQ;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '>': {
+        src_pink_token.kind = SRC_PINK_TOKEN_GT;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('>')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_RSHIFT;
+            (src_pink_stream)++;
+            if ((*(src_pink_stream)) == ('=')) {
+                src_pink_token.kind = SRC_PINK_TOKEN_RSHIFT_ASSIGN;
+                (src_pink_stream)++;
+            }
+        } else if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_GTEQ;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '/': {
+        src_pink_token.kind = SRC_PINK_TOKEN_DIV;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_DIV_ASSIGN;
+            (src_pink_stream)++;
+        } else if ((*(src_pink_stream)) == ('/')) {
+            (src_pink_stream)++;
+            while ((*(src_pink_stream)) && ((*(src_pink_stream)) != ('\n'))) {
+                (src_pink_stream)++;
+            }
+            goto repeat;
+        } else if ((*(src_pink_stream)) == ('*')) {
+            (src_pink_stream)++;
+            int level = 1;
+            while ((*(src_pink_stream)) && ((level) > (0))) {
+                if (((src_pink_stream[0]) == ('/')) && ((src_pink_stream[1]) == ('*'))) {
+                    (level)++;
+                    src_pink_stream += 2;
+                } else if (((src_pink_stream[0]) == ('*')) && ((src_pink_stream[1]) == ('/'))) {
+                    (level)--;
+                    src_pink_stream += 2;
+                } else {
+                    if ((*(src_pink_stream)) == ('\n')) {
+                        (src_pink_token.pos.line)++;
+                    }
+                    (src_pink_stream)++;
+                }
+            }
+            goto repeat;
+        }
+        break;
+    }
+    case '\0': {
+        src_pink_token.kind = SRC_PINK_TOKEN_EOF;
+        (src_pink_stream)++;
+        break;
+    }
+    case '(': {
+        src_pink_token.kind = SRC_PINK_TOKEN_LPAREN;
+        (src_pink_stream)++;
+        break;
+    }
+    case ')': {
+        src_pink_token.kind = SRC_PINK_TOKEN_RPAREN;
+        (src_pink_stream)++;
+        break;
+    }
+    case '{': {
+        src_pink_token.kind = SRC_PINK_TOKEN_LBRACE;
+        (src_pink_stream)++;
+        break;
+    }
+    case '}': {
+        src_pink_token.kind = SRC_PINK_TOKEN_RBRACE;
+        (src_pink_stream)++;
+        break;
+    }
+    case '[': {
+        src_pink_token.kind = SRC_PINK_TOKEN_LBRACKET;
+        (src_pink_stream)++;
+        break;
+    }
+    case ']': {
+        src_pink_token.kind = SRC_PINK_TOKEN_RBRACKET;
+        (src_pink_stream)++;
+        break;
+    }
+    case ',': {
+        src_pink_token.kind = SRC_PINK_TOKEN_COMMA;
+        (src_pink_stream)++;
+        break;
+    }
+    case '@': {
+        src_pink_token.kind = SRC_PINK_TOKEN_AT;
+        (src_pink_stream)++;
+        break;
+    }
+    case '#': {
+        src_pink_token.kind = SRC_PINK_TOKEN_POUND;
+        (src_pink_stream)++;
+        break;
+    }
+    case '?': {
+        src_pink_token.kind = SRC_PINK_TOKEN_QUESTION;
+        (src_pink_stream)++;
+        break;
+    }
+    case ';': {
+        src_pink_token.kind = SRC_PINK_TOKEN_SEMICOLON;
+        (src_pink_stream)++;
+        break;
+    }
+    case '~': {
+        src_pink_token.kind = SRC_PINK_TOKEN_NEG;
+        (src_pink_stream)++;
+        break;
+    }
+    case '!': {
+        src_pink_token.kind = SRC_PINK_TOKEN_NOT;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_NOTEQ;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case ':': {
+        src_pink_token.kind = SRC_PINK_TOKEN_COLON;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_COLON_ASSIGN;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '=': {
+        src_pink_token.kind = SRC_PINK_TOKEN_ASSIGN;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_EQ;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '^': {
+        src_pink_token.kind = SRC_PINK_TOKEN_XOR;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_XOR_ASSIGN;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '*': {
+        src_pink_token.kind = SRC_PINK_TOKEN_MUL;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_MUL_ASSIGN;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '%': {
+        src_pink_token.kind = SRC_PINK_TOKEN_MOD;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_MOD_ASSIGN;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '+': {
+        src_pink_token.kind = SRC_PINK_TOKEN_ADD;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_ADD_ASSIGN;
+            (src_pink_stream)++;
+        } else if ((*(src_pink_stream)) == ('+')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_INC;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '-': {
+        src_pink_token.kind = SRC_PINK_TOKEN_SUB;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_SUB_ASSIGN;
+            (src_pink_stream)++;
+        } else if ((*(src_pink_stream)) == ('-')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_DEC;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '&': {
+        src_pink_token.kind = SRC_PINK_TOKEN_AND;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_AND_ASSIGN;
+            (src_pink_stream)++;
+        } else if ((*(src_pink_stream)) == ('&')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_AND_AND;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    case '|': {
+        src_pink_token.kind = SRC_PINK_TOKEN_OR;
+        (src_pink_stream)++;
+        if ((*(src_pink_stream)) == ('=')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_OR_ASSIGN;
+            (src_pink_stream)++;
+        } else if ((*(src_pink_stream)) == ('|')) {
+            src_pink_token.kind = SRC_PINK_TOKEN_OR_OR;
+            (src_pink_stream)++;
+        }
+        break;
+    }
+    default: {
+        src_pink_error(src_pink_token.pos, "Invalid \'%c\' token, skipping", *(src_pink_stream));
+        (src_pink_stream)++;
+        goto repeat;
+        break;
+    }
+    }
+    src_pink_token.end = src_pink_stream;
+}
+
+void src_pink_init_stream(char const ((*name)), char const ((*buf))) {
+    src_pink_stream = buf;
+    src_pink_line_start = src_pink_stream;
+    src_pink_token.pos.name = (name ? name : (char const (*))("<string>"));
+    src_pink_token.pos.line = 1;
+    src_pink_next_token();
+}
+
+bool src_pink_is_token(src_pink_TokenKind kind) {
+    return (src_pink_token.kind) == (kind);
+}
+
+bool src_pink_is_token_eof(void) {
+    return (src_pink_token.kind) == (SRC_PINK_TOKEN_EOF);
+}
+
+bool src_pink_is_token_name(char const ((*name))) {
+    return ((src_pink_token.kind) == (SRC_PINK_TOKEN_NAME)) && ((src_pink_token.name) == (name));
+}
+
+bool src_pink_is_keyword(char const ((*name))) {
+    return (src_pink_is_token(SRC_PINK_TOKEN_KEYWORD)) && ((src_pink_token.name) == (name));
+}
+
+bool src_pink_match_keyword(char const ((*name))) {
+    if (src_pink_is_keyword(name)) {
+        src_pink_next_token();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool src_pink_match_token(src_pink_TokenKind kind) {
+    if (src_pink_is_token(kind)) {
+        src_pink_next_token();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool src_pink_expect_token(src_pink_TokenKind kind) {
+    if (src_pink_is_token(kind)) {
+        src_pink_next_token();
+        return true;
+    } else {
+        src_pink_fatal_error(src_pink_token.pos, "Expected token %s, got %s", src_pink_token_kind_name(kind), src_pink_token_info());
+        return false;
+    }
+}
+
+src_pink_TypeMetrics (*src_pink_type_metrics);
+src_pink_Type (*src_pink_type_void) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_VOID});
+src_pink_Type (*src_pink_type_bool) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_BOOL});
+src_pink_Type (*src_pink_type_char) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_CHAR});
+src_pink_Type (*src_pink_type_uchar) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_UCHAR});
+src_pink_Type (*src_pink_type_schar) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_SCHAR});
+src_pink_Type (*src_pink_type_short) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_SHORT});
+src_pink_Type (*src_pink_type_ushort) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_USHORT});
+src_pink_Type (*src_pink_type_int) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_INT});
+src_pink_Type (*src_pink_type_uint) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_UINT});
+src_pink_Type (*src_pink_type_long) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_LONG});
+src_pink_Type (*src_pink_type_ulong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_ULONG});
+src_pink_Type (*src_pink_type_llong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_LLONG});
+src_pink_Type (*src_pink_type_ullong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_ULLONG});
+src_pink_Type (*src_pink_type_float) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_FLOAT});
+src_pink_Type (*src_pink_type_double) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_DOUBLE});
+int src_pink_next_typeid = 1;
+src_pink_Type (*src_pink_type_uintptr);
+src_pink_Type (*src_pink_type_usize);
+src_pink_Type (*src_pink_type_ssize);
+std_Map src_pink_typeid_map;
+src_pink_Type (*src_pink_get_type_from_typeid(int typeid)) {
+    if ((typeid) == (0)) {
+        return NULL;
+    }
+    return std_map_get(&(src_pink_typeid_map), (void *)((uintptr_t)(typeid)));
+}
+
+void src_pink_register_typeid(src_pink_Type (*type)) {
+    std_map_put(&(src_pink_typeid_map), (void *)((uintptr_t)(type->typeid)), type);
+}
+
+src_pink_Type (*src_pink_type_alloc(TypeKind kind)) {
+    src_pink_Type (*type) = std_xcalloc(1, sizeof(src_pink_Type));
+    type->kind = kind;
+    type->typeid = (src_pink_next_typeid)++;
+    src_pink_register_typeid(type);
+    return type;
+}
+
+bool src_pink_is_ptr_type(src_pink_Type (*type)) {
+    return (type->kind) == (SRC_PINK_CMPL_TYPE_PTR);
+}
+
+bool src_pink_is_func_type(src_pink_Type (*type)) {
+    return (type->kind) == (SRC_PINK_CMPL_TYPE_FUNC);
+}
+
+bool src_pink_is_ptr_like_type(src_pink_Type (*type)) {
+    return ((type->kind) == (SRC_PINK_CMPL_TYPE_PTR)) || ((type->kind) == (SRC_PINK_CMPL_TYPE_FUNC));
+}
+
+bool src_pink_is_const_type(src_pink_Type (*type)) {
+    return (type->kind) == (SRC_PINK_CMPL_TYPE_CONST);
+}
+
+bool src_pink_is_array_type(src_pink_Type (*type)) {
+    return (type->kind) == (SRC_PINK_CMPL_TYPE_ARRAY);
+}
+
+bool src_pink_is_incomplete_array_type(src_pink_Type (*type)) {
+    return (src_pink_is_array_type(type)) && ((type->num_elems) == (0));
+}
+
+bool src_pink_is_integer_type(src_pink_Type (*type)) {
+    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_ENUM));
+}
+
+bool src_pink_is_floating_type(src_pink_Type (*type)) {
+    return ((SRC_PINK_CMPL_TYPE_FLOAT) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_DOUBLE));
+}
+
+bool src_pink_is_arithmetic_type(src_pink_Type (*type)) {
+    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_DOUBLE));
+}
+
+bool src_pink_is_scalar_type(src_pink_Type (*type)) {
+    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_FUNC));
+}
+
+bool src_pink_is_aggregate_type(src_pink_Type (*type)) {
+    return ((type->kind) == (SRC_PINK_CMPL_TYPE_STRUCT)) || ((type->kind) == (SRC_PINK_CMPL_TYPE_UNION));
+}
+
+bool src_pink_is_signed_type(src_pink_Type (*type)) {
+    switch (type->kind) {
+    case SRC_PINK_CMPL_TYPE_CHAR: {
+        return src_pink_type_metrics[SRC_PINK_CMPL_TYPE_CHAR].sign;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_SCHAR:
+    case SRC_PINK_CMPL_TYPE_SHORT:
+    case SRC_PINK_CMPL_TYPE_INT:
+    case SRC_PINK_CMPL_TYPE_LONG:
+    case SRC_PINK_CMPL_TYPE_LLONG: {
+        return true;
+        break;
+    }
+    default: {
+        return false;
+        break;
+    }
+    }
+}
+
+char const ((*(src_pink_type_names[SRC_PINK_NUM_CMPL_TYPE_KINDS]))) = {[SRC_PINK_CMPL_TYPE_VOID] = "void", [SRC_PINK_CMPL_TYPE_BOOL] = "bool", [SRC_PINK_CMPL_TYPE_CHAR] = "char", [SRC_PINK_CMPL_TYPE_SCHAR] = "schar", [SRC_PINK_CMPL_TYPE_UCHAR] = "uchar", [SRC_PINK_CMPL_TYPE_SHORT] = "short", [SRC_PINK_CMPL_TYPE_USHORT] = "ushort", [SRC_PINK_CMPL_TYPE_INT] = "int", [SRC_PINK_CMPL_TYPE_UINT] = "uint", [SRC_PINK_CMPL_TYPE_LONG] = "long", [SRC_PINK_CMPL_TYPE_ULONG] = "ulong", [SRC_PINK_CMPL_TYPE_LLONG] = "llong", [SRC_PINK_CMPL_TYPE_ULLONG] = "ullong", [SRC_PINK_CMPL_TYPE_FLOAT] = "float", [SRC_PINK_CMPL_TYPE_DOUBLE] = "double"};
+int (src_pink_type_ranks[SRC_PINK_NUM_CMPL_TYPE_KINDS]) = {[SRC_PINK_CMPL_TYPE_BOOL] = 1, [SRC_PINK_CMPL_TYPE_CHAR] = 2, [SRC_PINK_CMPL_TYPE_SCHAR] = 2, [SRC_PINK_CMPL_TYPE_UCHAR] = 2, [SRC_PINK_CMPL_TYPE_SHORT] = 3, [SRC_PINK_CMPL_TYPE_USHORT] = 3, [SRC_PINK_CMPL_TYPE_INT] = 4, [SRC_PINK_CMPL_TYPE_UINT] = 4, [SRC_PINK_CMPL_TYPE_LONG] = 5, [SRC_PINK_CMPL_TYPE_ULONG] = 5, [SRC_PINK_CMPL_TYPE_LLONG] = 6, [SRC_PINK_CMPL_TYPE_ULLONG] = 6};
+int src_pink_type_rank(src_pink_Type (*type)) {
+    int rank = src_pink_type_ranks[type->kind];
+    return rank;
+}
+
+src_pink_Type (*src_pink_unsigned_type(src_pink_Type (*type))) {
+    switch (type->kind) {
+    case SRC_PINK_CMPL_TYPE_BOOL: {
+        return src_pink_type_bool;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_CHAR:
+    case SRC_PINK_CMPL_TYPE_SCHAR:
+    case SRC_PINK_CMPL_TYPE_UCHAR: {
+        return src_pink_type_uchar;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_SHORT:
+    case SRC_PINK_CMPL_TYPE_USHORT: {
+        return src_pink_type_ushort;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_INT:
+    case SRC_PINK_CMPL_TYPE_UINT: {
+        return src_pink_type_uint;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_LONG:
+    case SRC_PINK_CMPL_TYPE_ULONG: {
+        return src_pink_type_ulong;
+        break;
+    }
+    case SRC_PINK_CMPL_TYPE_LLONG:
+    case SRC_PINK_CMPL_TYPE_ULLONG: {
+        return src_pink_type_ullong;
+        break;
+    }
+    default: {
+        return NULL;
+        break;
+    }
+    }
+}
+
+size_t src_pink_type_sizeof(src_pink_Type (*type)) {
+    return type->size;
+}
+
+size_t src_pink_type_alignof(src_pink_Type (*type)) {
+    return type->align;
+}
+
+std_Map src_pink_cached_ptr_types;
+src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base))) {
+    src_pink_Type (*type) = std_map_get(&(src_pink_cached_ptr_types), base);
+    if (!(type)) {
+        type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_PTR);
+        type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
+        type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
+        type->base = base;
+        std_map_put(&(src_pink_cached_ptr_types), base, type);
+    }
+    return type;
+}
+
+std_Map src_pink_cached_const_types;
+src_pink_Type (*src_pink_type_const(src_pink_Type (*base))) {
+    if ((base->kind) == (SRC_PINK_CMPL_TYPE_CONST)) {
+        return base;
+    }
+    src_pink_Type (*type) = std_map_get(&(src_pink_cached_const_types), base);
+    if (!(type)) {
+        src_pink_complete_type(base);
+        type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_CONST);
+        type->nonmodifiable = true;
+        type->size = base->size;
+        type->align = base->align;
+        type->base = base;
+        std_map_put(&(src_pink_cached_const_types), base, type);
+    }
+    return type;
+}
+
+src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type))) {
+    if ((type->kind) == (SRC_PINK_CMPL_TYPE_CONST)) {
+        return type->base;
+    } else {
+        return type;
+    }
+}
+
+std_Map src_pink_cached_array_types;
+src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems)) {
+    ullong hash = std_hash_mix(std_hash_ptr(base), std_hash_uint64(num_elems));
+    uint64_t key = (hash ? hash : 1);
+    src_pink_CachedArrayType (*cached) = std_map_get_from_uint64(&(src_pink_cached_array_types), key);
+    for (src_pink_CachedArrayType (*it) = cached; it; it = it->next) {
+        src_pink_Type (*type) = it->type;
+        if (((type->base) == (base)) && ((type->num_elems) == (num_elems))) {
+            return type;
+        }
+    }
+    src_pink_complete_type(base);
+    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_ARRAY);
+    type->nonmodifiable = base->nonmodifiable;
+    type->size = (num_elems) * (src_pink_type_sizeof(base));
+    type->align = src_pink_type_alignof(base);
+    type->base = base;
+    type->num_elems = num_elems;
+    src_pink_CachedArrayType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedArrayType));
+    new_cached->type = type;
+    new_cached->next = cached;
+    std_map_put_from_uint64(&(src_pink_cached_array_types), key, new_cached);
+    return type;
+}
+
+std_Map src_pink_cached_func_types;
+src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs)) {
+    ullong params_size = (num_params) * (sizeof(*(params)));
+    ullong hash = std_hash_mix(std_hash_bytes(params, params_size), std_hash_ptr(ret));
+    uint64_t key = (hash ? hash : 1);
+    src_pink_CachedFuncType (*cached) = std_map_get_from_uint64(&(src_pink_cached_func_types), key);
+    for (src_pink_CachedFuncType (*it) = cached; it; it = it->next) {
+        src_pink_Type (*type) = it->type;
+        if ((((type->function.num_params) == (num_params)) && ((type->function.ret) == (ret))) && ((type->function.has_varargs) == (has_varargs))) {
+            if ((memcmp(type->function.params, params, params_size)) == (0)) {
+                return type;
+            }
+        }
+    }
+    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_FUNC);
+    type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
+    type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
+    type->function.params = std_memdup(params, params_size);
+    type->function.num_params = num_params;
+    type->function.has_varargs = has_varargs;
+    type->function.ret = ret;
+    src_pink_CachedFuncType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedFuncType));
+    new_cached->type = type;
+    new_cached->next = cached;
+    std_map_put_from_uint64(&(src_pink_cached_func_types), key, new_cached);
+    return type;
+}
+
+bool src_pink_has_duplicate_fields(src_pink_Type (*type)) {
+    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
+        for (size_t j = (i) + (1); (j) < (type->aggregate.num_fields); (j)++) {
+            if ((type->aggregate.fields[i].name) == (type->aggregate.fields[j].name)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void src_pink_add_type_fields(src_pink_TypeField (*(*fields)), src_pink_Type (*type), size_t offset) {
+    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
+        src_pink_TypeField (*field) = &(type->aggregate.fields[i]);
+        src_pink_TypeField new_field = {field->name, field->type, (field->offset) + (offset)};
+        std_buf_push((void (**))(fields), &(new_field), sizeof(new_field));
+    }
+}
+
+void src_pink_type_complete_struct(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields) {
+    type->kind = SRC_PINK_CMPL_TYPE_STRUCT;
+    type->size = 0;
+    type->align = 0;
+    bool nonmodifiable = false;
+    src_pink_TypeField (*new_fields) = {0};
+    for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
+        if (it->name) {
+            it->offset = type->size;
+            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
+        } else {
+            src_pink_add_type_fields(&(new_fields), it->type, type->size);
+        }
+        type->align = std_max(type->align, src_pink_type_alignof(it->type));
+        type->size = (src_pink_type_sizeof(it->type)) + (std_align_up(type->size, src_pink_type_alignof(it->type)));
+        nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
+    }
+    type->size = std_align_up(type->size, type->align);
+    type->aggregate.fields = new_fields;
+    type->aggregate.num_fields = std_buf_len(new_fields);
+    type->nonmodifiable = nonmodifiable;
+}
+
+void src_pink_type_complete_union(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields) {
+    type->kind = SRC_PINK_CMPL_TYPE_UNION;
+    type->size = 0;
+    type->align = 0;
+    bool nonmodifiable = false;
+    src_pink_TypeField (*new_fields) = {0};
+    for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
+        if (it->name) {
+            it->offset = type->size;
+            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
+        } else {
+            src_pink_add_type_fields(&(new_fields), it->type, 0);
+        }
+        type->size = std_max(type->size, src_pink_type_sizeof(it->type));
+        type->align = std_max(type->align, src_pink_type_alignof(it->type));
+        nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
+    }
+    type->size = std_align_up(type->size, type->align);
+    type->aggregate.fields = new_fields;
+    type->aggregate.num_fields = std_buf_len(new_fields);
+    type->nonmodifiable = nonmodifiable;
+}
+
+src_pink_Type (*src_pink_type_incomplete(src_pink_Sym (*sym))) {
+    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_INCOMPLETE);
+    type->sym = sym;
+    return type;
+}
+
+src_pink_Type (*src_pink_type_enum(src_pink_Sym (*sym), src_pink_Type (*base))) {
+    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_ENUM);
+    type->sym = sym;
+    type->base = base;
+    type->size = src_pink_type_int->size;
+    type->align = src_pink_type_int->align;
+    return type;
+}
+
+void src_pink_init_builtin_type(src_pink_Type (*type)) {
+    type->typeid = (src_pink_next_typeid)++;
+    src_pink_register_typeid(type);
+    type->size = src_pink_type_metrics[type->kind].size;
+    type->align = src_pink_type_metrics[type->kind].align;
+}
+
+void src_pink_init_builtin_types(void) {
+    src_pink_init_builtin_type(src_pink_type_void);
+    src_pink_init_builtin_type(src_pink_type_bool);
+    src_pink_init_builtin_type(src_pink_type_char);
+    src_pink_init_builtin_type(src_pink_type_uchar);
+    src_pink_init_builtin_type(src_pink_type_schar);
+    src_pink_init_builtin_type(src_pink_type_short);
+    src_pink_init_builtin_type(src_pink_type_ushort);
+    src_pink_init_builtin_type(src_pink_type_int);
+    src_pink_init_builtin_type(src_pink_type_uint);
+    src_pink_init_builtin_type(src_pink_type_long);
+    src_pink_init_builtin_type(src_pink_type_ulong);
+    src_pink_init_builtin_type(src_pink_type_llong);
+    src_pink_init_builtin_type(src_pink_type_ullong);
+    src_pink_init_builtin_type(src_pink_type_float);
+    src_pink_init_builtin_type(src_pink_type_double);
+}
+
+int src_pink_aggregate_item_field_index(src_pink_Type (*type), char const ((*name))) {
+    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
+        if ((type->aggregate.fields[i].name) == (name)) {
+            return (int)(i);
+        }
+    }
+    return -(1);
+}
+
+src_pink_Type (*src_pink_aggregate_item_field_type_from_index(src_pink_Type (*type), int index)) {
+    return type->aggregate.fields[index].type;
+}
+
+src_pink_Type (*src_pink_aggregate_item_field_type_from_name(src_pink_Type (*type), char const ((*name)))) {
+    int index = src_pink_aggregate_item_field_index(type, name);
+    if ((index) < (0)) {
+        return NULL;
+    }
+    return src_pink_aggregate_item_field_type_from_index(type, index);
+}
+
+bool src_pink_flag_verbose;
+bool src_pink_flag_lazy;
+bool src_pink_flag_nosourcemap;
+bool src_pink_flag_notypeinfo;
+bool src_pink_flag_fullgen;
 std_Arena src_pink_ast_arena;
 void (*src_pink_ast_alloc(size_t size)) {
     void (*ptr) = std_arena_alloc(&(src_pink_ast_arena), size);
@@ -4068,1816 +6402,6 @@ void src_pink_gen_all(void) {
     src_pink_gen_foreign_sources();
     src_pink_genln();
     src_pink_gen_postamble();
-}
-
-char const ((*src_pink_typedef_keyword));
-char const ((*src_pink_enum_keyword));
-char const ((*src_pink_struct_keyword));
-char const ((*src_pink_union_keyword));
-char const ((*src_pink_var_keyword));
-char const ((*src_pink_const_keyword));
-char const ((*src_pink_func_keyword));
-char const ((*src_pink_sizeof_keyword));
-char const ((*src_pink_alignof_keyword));
-char const ((*src_pink_typeof_keyword));
-char const ((*src_pink_offsetof_keyword));
-char const ((*src_pink_break_keyword));
-char const ((*src_pink_continue_keyword));
-char const ((*src_pink_return_keyword));
-char const ((*src_pink_if_keyword));
-char const ((*src_pink_else_keyword));
-char const ((*src_pink_while_keyword));
-char const ((*src_pink_do_keyword));
-char const ((*src_pink_for_keyword));
-char const ((*src_pink_switch_keyword));
-char const ((*src_pink_case_keyword));
-char const ((*src_pink_default_keyword));
-char const ((*src_pink_import_keyword));
-char const ((*src_pink_goto_keyword));
-char const ((*src_pink_first_keyword));
-char const ((*src_pink_last_keyword));
-char const ((*(*src_pink_keywords)));
-char const ((*src_pink_always_name));
-char const ((*src_pink_foreign_name));
-char const ((*src_pink_complete_name));
-char const ((*src_pink_assert_name));
-char const ((*src_pink_declare_note_name));
-char const ((*src_pink_static_assert_name));
-char const ((*src_pink_init_keyword(char const ((*keyword))))) {
-    keyword = std_str_intern(keyword);
-    std_buf_push((void (**))(&(src_pink_keywords)), (void *)(&(keyword)), sizeof(keyword));
-    return keyword;
-}
-
-bool src_pink_keywords_inited = false;
-void src_pink_init_keywords(void) {
-    if (src_pink_keywords_inited) {
-        return;
-    }
-    src_pink_typedef_keyword = src_pink_init_keyword("typedef");
-    char (*arena_end) = std_intern_arena.end;
-    src_pink_enum_keyword = src_pink_init_keyword("enum");
-    src_pink_struct_keyword = src_pink_init_keyword("struct");
-    src_pink_union_keyword = src_pink_init_keyword("union");
-    src_pink_const_keyword = src_pink_init_keyword("const");
-    src_pink_var_keyword = src_pink_init_keyword("var");
-    src_pink_func_keyword = src_pink_init_keyword("func");
-    src_pink_import_keyword = src_pink_init_keyword("import");
-    src_pink_goto_keyword = src_pink_init_keyword("goto");
-    src_pink_sizeof_keyword = src_pink_init_keyword("sizeof");
-    src_pink_alignof_keyword = src_pink_init_keyword("alignof");
-    src_pink_typeof_keyword = src_pink_init_keyword("typeof");
-    src_pink_offsetof_keyword = src_pink_init_keyword("offsetof");
-    src_pink_break_keyword = src_pink_init_keyword("break");
-    src_pink_continue_keyword = src_pink_init_keyword("continue");
-    src_pink_return_keyword = src_pink_init_keyword("return");
-    src_pink_if_keyword = src_pink_init_keyword("if");
-    src_pink_else_keyword = src_pink_init_keyword("else");
-    src_pink_while_keyword = src_pink_init_keyword("while");
-    src_pink_do_keyword = src_pink_init_keyword("do");
-    src_pink_for_keyword = src_pink_init_keyword("for");
-    src_pink_switch_keyword = src_pink_init_keyword("switch");
-    src_pink_case_keyword = src_pink_init_keyword("case");
-    src_pink_default_keyword = src_pink_init_keyword("default");
-    src_pink_first_keyword = src_pink_typedef_keyword;
-    src_pink_last_keyword = src_pink_default_keyword;
-    src_pink_always_name = std_str_intern("always");
-    src_pink_foreign_name = std_str_intern("foreign");
-    src_pink_complete_name = std_str_intern("complete");
-    src_pink_assert_name = std_str_intern("assert");
-    src_pink_declare_note_name = std_str_intern("declare_note");
-    src_pink_static_assert_name = std_str_intern("static_assert");
-    src_pink_keywords_inited = true;
-}
-
-bool src_pink_is_keyword_name(char const ((*name))) {
-    return ((src_pink_first_keyword) <= (name)) && ((name) <= (src_pink_last_keyword));
-}
-
-char const ((*(src_pink_token_suffix_names[7]))) = {[SRC_PINK_SUFFIX_NONE] = "", [SRC_PINK_SUFFIX_D] = "d", [SRC_PINK_SUFFIX_U] = "u", [SRC_PINK_SUFFIX_L] = "l", [SRC_PINK_SUFFIX_UL] = "ul", [SRC_PINK_SUFFIX_LL] = "ll", [SRC_PINK_SUFFIX_ULL] = "ull"};
-char const ((*(src_pink_token_kind_names[54]))) = {[SRC_PINK_TOKEN_EOF] = "EOF", [SRC_PINK_TOKEN_COLON] = ":", [SRC_PINK_TOKEN_LPAREN] = "(", [SRC_PINK_TOKEN_RPAREN] = ")", [SRC_PINK_TOKEN_LBRACE] = "{", [SRC_PINK_TOKEN_RBRACE] = "}", [SRC_PINK_TOKEN_LBRACKET] = "[", [SRC_PINK_TOKEN_RBRACKET] = "]", [SRC_PINK_TOKEN_COMMA] = ",", [SRC_PINK_TOKEN_DOT] = ".", [SRC_PINK_TOKEN_AT] = "@", [SRC_PINK_TOKEN_POUND] = "#", [SRC_PINK_TOKEN_ELLIPSIS] = "...", [SRC_PINK_TOKEN_QUESTION] = "?", [SRC_PINK_TOKEN_SEMICOLON] = ";", [SRC_PINK_TOKEN_KEYWORD] = "keyword", [SRC_PINK_TOKEN_INT] = "int", [SRC_PINK_TOKEN_FLOAT] = "float", [SRC_PINK_TOKEN_STR] = "string", [SRC_PINK_TOKEN_NAME] = "name", [SRC_PINK_TOKEN_NEG] = "~", [SRC_PINK_TOKEN_NOT] = "!", [SRC_PINK_TOKEN_MUL] = "*", [SRC_PINK_TOKEN_DIV] = "/", [SRC_PINK_TOKEN_MOD] = "%", [SRC_PINK_TOKEN_AND] = "&", [SRC_PINK_TOKEN_LSHIFT] = "<<", [SRC_PINK_TOKEN_RSHIFT] = ">>", [SRC_PINK_TOKEN_ADD] = "+", [SRC_PINK_TOKEN_SUB] = "-", [SRC_PINK_TOKEN_OR] = "|", [SRC_PINK_TOKEN_XOR] = "^", [SRC_PINK_TOKEN_EQ] = "==", [SRC_PINK_TOKEN_NOTEQ] = "!=", [SRC_PINK_TOKEN_LT] = "<", [SRC_PINK_TOKEN_GT] = ">", [SRC_PINK_TOKEN_LTEQ] = "<=", [SRC_PINK_TOKEN_GTEQ] = ">=", [SRC_PINK_TOKEN_AND_AND] = "&&", [SRC_PINK_TOKEN_OR_OR] = "||", [SRC_PINK_TOKEN_ASSIGN] = "=", [SRC_PINK_TOKEN_ADD_ASSIGN] = "+=", [SRC_PINK_TOKEN_SUB_ASSIGN] = "-=", [SRC_PINK_TOKEN_OR_ASSIGN] = "|=", [SRC_PINK_TOKEN_AND_ASSIGN] = "&=", [SRC_PINK_TOKEN_XOR_ASSIGN] = "^=", [SRC_PINK_TOKEN_MUL_ASSIGN] = "*=", [SRC_PINK_TOKEN_DIV_ASSIGN] = "/=", [SRC_PINK_TOKEN_MOD_ASSIGN] = "%=", [SRC_PINK_TOKEN_LSHIFT_ASSIGN] = "<<=", [SRC_PINK_TOKEN_RSHIFT_ASSIGN] = ">>=", [SRC_PINK_TOKEN_INC] = "++", [SRC_PINK_TOKEN_DEC] = "--", [SRC_PINK_TOKEN_COLON_ASSIGN] = ":="};
-char const ((*src_pink_token_kind_name(src_pink_TokenKind kind))) {
-    if ((kind) < ((sizeof(src_pink_token_kind_names)) / (sizeof(*(src_pink_token_kind_names))))) {
-        return src_pink_token_kind_names[kind];
-    } else {
-        return "<unknown>";
-    }
-}
-
-src_pink_TokenKind (src_pink_assign_token_to_binary_token[SRC_PINK_NUM_TOKEN_KINDS]) = {[SRC_PINK_TOKEN_ADD_ASSIGN] = SRC_PINK_TOKEN_ADD, [SRC_PINK_TOKEN_SUB_ASSIGN] = SRC_PINK_TOKEN_SUB, [SRC_PINK_TOKEN_OR_ASSIGN] = SRC_PINK_TOKEN_OR, [SRC_PINK_TOKEN_AND_ASSIGN] = SRC_PINK_TOKEN_AND, [SRC_PINK_TOKEN_XOR_ASSIGN] = SRC_PINK_TOKEN_XOR, [SRC_PINK_TOKEN_LSHIFT_ASSIGN] = SRC_PINK_TOKEN_LSHIFT, [SRC_PINK_TOKEN_RSHIFT_ASSIGN] = SRC_PINK_TOKEN_RSHIFT, [SRC_PINK_TOKEN_MUL_ASSIGN] = SRC_PINK_TOKEN_MUL, [SRC_PINK_TOKEN_DIV_ASSIGN] = SRC_PINK_TOKEN_DIV, [SRC_PINK_TOKEN_MOD_ASSIGN] = SRC_PINK_TOKEN_MOD};
-src_pink_SrcPos src_pink_pos_builtin = {.name = "<builtin>"};
-src_pink_Token src_pink_token;
-char const ((*src_pink_stream));
-char const ((*src_pink_line_start));
-void src_pink_vnotice(char const ((*level)), src_pink_SrcPos pos, char const ((*fmt)), va_list args) {
-    if ((pos.name) == (NULL)) {
-        pos = src_pink_pos_builtin;
-    }
-    printf("%s(%d): %s: ", pos.name, pos.line, level);
-    vprintf(fmt, args);
-    printf("\n");
-}
-
-void src_pink_warning(src_pink_SrcPos pos, char const ((*fmt)), ...) {
-    va_list args = {0};
-    va_start_ptr(&(args), &(fmt));
-    src_pink_vnotice("warning", pos, fmt, args);
-    va_end_ptr(&(args));
-}
-
-void src_pink_verror(src_pink_SrcPos pos, char const ((*fmt)), va_list args) {
-    src_pink_vnotice("error", pos, fmt, args);
-}
-
-void src_pink_error(src_pink_SrcPos pos, char const ((*fmt)), ...) {
-    va_list args = {0};
-    va_start_ptr(&(args), &(fmt));
-    src_pink_verror(pos, fmt, args);
-    va_end_ptr(&(args));
-}
-
-void src_pink_fatal_error(src_pink_SrcPos pos, char const ((*fmt)), ...) {
-    va_list args = {0};
-    va_start_ptr(&(args), &(fmt));
-    src_pink_verror(pos, fmt, args);
-    va_end_ptr(&(args));
-    exit(1);
-}
-
-char const ((*src_pink_token_info(void))) {
-    if (((src_pink_token.kind) == (SRC_PINK_TOKEN_NAME)) || ((src_pink_token.kind) == (SRC_PINK_TOKEN_KEYWORD))) {
-        return src_pink_token.name;
-    } else {
-        return src_pink_token_kind_name(src_pink_token.kind);
-    }
-}
-
-uint8_t (src_pink_char_to_digit[256]) = {['0'] = 0, ['1'] = 1, ['2'] = 2, ['3'] = 3, ['4'] = 4, ['5'] = 5, ['6'] = 6, ['7'] = 7, ['8'] = 8, ['9'] = 9, ['a'] = 10, ['A'] = 10, ['b'] = 11, ['B'] = 11, ['c'] = 12, ['C'] = 12, ['d'] = 13, ['D'] = 13, ['e'] = 14, ['E'] = 14, ['f'] = 15, ['F'] = 15};
-void src_pink_scan_int(void) {
-    int base = 10;
-    char const ((*start_digits)) = src_pink_stream;
-    if ((*(src_pink_stream)) == ('0')) {
-        (src_pink_stream)++;
-        if ((tolower(*(src_pink_stream))) == ('x')) {
-            (src_pink_stream)++;
-            src_pink_token.mod = SRC_PINK_MOD_HEX;
-            base = 16;
-            start_digits = src_pink_stream;
-        } else if ((tolower(*(src_pink_stream))) == ('b')) {
-            (src_pink_stream)++;
-            src_pink_token.mod = SRC_PINK_MOD_BIN;
-            base = 2;
-            start_digits = src_pink_stream;
-        } else if (isdigit(*(src_pink_stream))) {
-            src_pink_token.mod = SRC_PINK_MOD_OCT;
-            base = 8;
-            start_digits = src_pink_stream;
-        }
-    }
-    ullong val = 0;
-    for (;;) {
-        if ((*(src_pink_stream)) == ('_')) {
-            (src_pink_stream)++;
-            continue;
-        }
-        uchar digit = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
-        if (((digit) == (0)) && ((*(src_pink_stream)) != ('0'))) {
-            break;
-        }
-        if ((digit) >= (base)) {
-            src_pink_error(src_pink_token.pos, "Digit \'%c\' out of range for base %d", *(src_pink_stream), base);
-            digit = 0;
-        }
-        if ((val) > ((((ULLONG_MAX) - (digit))) / (base))) {
-            src_pink_error(src_pink_token.pos, "Integer literal overflow");
-            while (isdigit(*(src_pink_stream))) {
-                (src_pink_stream)++;
-            }
-            val = 0;
-            break;
-        }
-        val = ((val) * (base)) + (digit);
-        (src_pink_stream)++;
-    }
-    if ((src_pink_stream) == (start_digits)) {
-        src_pink_error(src_pink_token.pos, "Expected base %d digit, got \'%c\'", base, *(src_pink_stream));
-    }
-    src_pink_token.kind = SRC_PINK_TOKEN_INT;
-    src_pink_token.int_val = val;
-    if ((tolower(*(src_pink_stream))) == ('u')) {
-        src_pink_token.suffix = SRC_PINK_SUFFIX_U;
-        (src_pink_stream)++;
-        if ((tolower(*(src_pink_stream))) == ('l')) {
-            src_pink_token.suffix = SRC_PINK_SUFFIX_UL;
-            (src_pink_stream)++;
-            if ((tolower(*(src_pink_stream))) == ('l')) {
-                src_pink_token.suffix = SRC_PINK_SUFFIX_ULL;
-                (src_pink_stream)++;
-            }
-        }
-    } else if ((tolower(*(src_pink_stream))) == ('l')) {
-        src_pink_token.suffix = SRC_PINK_SUFFIX_L;
-        (src_pink_stream)++;
-        if ((tolower(*(src_pink_stream))) == ('l')) {
-            src_pink_token.suffix = SRC_PINK_SUFFIX_LL;
-            (src_pink_stream)++;
-        }
-    }
-}
-
-void src_pink_scan_float(void) {
-    char const ((*start)) = src_pink_stream;
-    while (isdigit(*(src_pink_stream))) {
-        (src_pink_stream)++;
-    }
-    if ((*(src_pink_stream)) == ('.')) {
-        (src_pink_stream)++;
-    }
-    while (isdigit(*(src_pink_stream))) {
-        (src_pink_stream)++;
-    }
-    if ((tolower(*(src_pink_stream))) == ('e')) {
-        (src_pink_stream)++;
-        if (((*(src_pink_stream)) == ('+')) || ((*(src_pink_stream)) == ('-'))) {
-            (src_pink_stream)++;
-        }
-        if (!(isdigit(*(src_pink_stream)))) {
-            src_pink_error(src_pink_token.pos, "Expected digit after float literal exponent, found \'%c\'.", *(src_pink_stream));
-        }
-        while (isdigit(*(src_pink_stream))) {
-            (src_pink_stream)++;
-        }
-    }
-    double val = strtod(start, NULL);
-    if ((val) == (HUGE_VAL)) {
-        src_pink_error(src_pink_token.pos, "Float literal overflow");
-    }
-    src_pink_token.kind = SRC_PINK_TOKEN_FLOAT;
-    src_pink_token.float_val = val;
-    if ((tolower(*(src_pink_stream))) == ('d')) {
-        src_pink_token.suffix = SRC_PINK_SUFFIX_D;
-        (src_pink_stream)++;
-    }
-}
-
-char (src_pink_escape_to_char[256]) = {['0'] = '\0', ['\''] = '\'', ['\"'] = '\"', ['\\'] = '\\', ['n'] = '\n', ['r'] = '\r', ['t'] = '\t', ['v'] = '\v', ['b'] = '\b', ['a'] = '\a'};
-int src_pink_scan_hex_escape(void) {
-    (src_pink_stream)++;
-    uchar val = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
-    if ((!(val)) && ((*(src_pink_stream)) != ('0'))) {
-        src_pink_error(src_pink_token.pos, "\\x needs at least 1 hex digit");
-    }
-    (src_pink_stream)++;
-    uchar digit = src_pink_char_to_digit[(uchar)(*(src_pink_stream))];
-    if ((digit) || ((*(src_pink_stream)) == ('0'))) {
-        val *= 16;
-        val += digit;
-        if ((val) > (0xff)) {
-            src_pink_error(src_pink_token.pos, "\\x argument out of range");
-            val = 0xff;
-        }
-        (src_pink_stream)++;
-    }
-    return val;
-}
-
-void src_pink_scan_char(void) {
-    (src_pink_stream)++;
-    int val = 0;
-    if ((*(src_pink_stream)) == ('\'')) {
-        src_pink_error(src_pink_token.pos, "Char literal cannot be empty");
-        (src_pink_stream)++;
-    } else if ((*(src_pink_stream)) == ('\n')) {
-        src_pink_error(src_pink_token.pos, "Char literal cannot contain newline");
-    } else if ((*(src_pink_stream)) == ('\\')) {
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('x')) {
-            val = src_pink_scan_hex_escape();
-        } else {
-            val = src_pink_escape_to_char[(uchar)(*(src_pink_stream))];
-            if (((val) == (0)) && ((*(src_pink_stream)) != ('0'))) {
-                src_pink_error(src_pink_token.pos, "Invalid char literal escape \'\\%c\'", *(src_pink_stream));
-            }
-            (src_pink_stream)++;
-        }
-    } else {
-        val = *(src_pink_stream);
-        (src_pink_stream)++;
-    }
-    if ((*(src_pink_stream)) != ('\'')) {
-        src_pink_error(src_pink_token.pos, "Expected closing char quote, got \'%c\'", *(src_pink_stream));
-    } else {
-        (src_pink_stream)++;
-    }
-    src_pink_token.kind = SRC_PINK_TOKEN_INT;
-    src_pink_token.int_val = val;
-    src_pink_token.mod = SRC_PINK_MOD_CHAR;
-}
-
-void src_pink_scan_str(void) {
-    (src_pink_stream)++;
-    char (*str) = NULL;
-    if (((src_pink_stream[0]) == ('\"')) && ((src_pink_stream[1]) == ('\"'))) {
-        src_pink_stream += 2;
-        while (*(src_pink_stream)) {
-            if ((((src_pink_stream[0]) == ('\"')) && ((src_pink_stream[1]) == ('\"'))) && ((src_pink_stream[2]) == ('\"'))) {
-                src_pink_stream += 3;
-                break;
-            }
-            if ((*(src_pink_stream)) != ('\r')) {
-                std_buf_push((void (**))(&(str)), (void *)(src_pink_stream), 1);
-            }
-            if ((*(src_pink_stream)) == ('\n')) {
-                (src_pink_token.pos.line)++;
-            }
-            (src_pink_stream)++;
-        }
-        if (!(*(src_pink_stream))) {
-            src_pink_error(src_pink_token.pos, "Unexpected end of file within multi-line string literal");
-        }
-        src_pink_token.mod = SRC_PINK_MOD_MULTILINE;
-    } else {
-        while ((*(src_pink_stream)) && ((*(src_pink_stream)) != ('\"'))) {
-            char val = *(src_pink_stream);
-            if ((val) == ('\n')) {
-                src_pink_error(src_pink_token.pos, "String literal cannot contain newline");
-                break;
-            } else if ((val) == ('\\')) {
-                (src_pink_stream)++;
-                if ((*(src_pink_stream)) == ('x')) {
-                    val = src_pink_scan_hex_escape();
-                } else {
-                    val = src_pink_escape_to_char[(uchar)(*(src_pink_stream))];
-                    if (((val) == (0)) && ((*(src_pink_stream)) != ('0'))) {
-                        src_pink_error(src_pink_token.pos, "Invalid string literal escape \'\\%c\'", *(src_pink_stream));
-                    }
-                    (src_pink_stream)++;
-                }
-            } else {
-                (src_pink_stream)++;
-            }
-            std_buf_push((void (**))(&(str)), &(val), 1);
-        }
-        if (*(src_pink_stream)) {
-            (src_pink_stream)++;
-        } else {
-            src_pink_error(src_pink_token.pos, "Unexpected end of file within string literal");
-        }
-    }
-    int nul = '\0';
-    std_buf_push((void (**))(&(str)), &(nul), 1);
-    src_pink_token.kind = SRC_PINK_TOKEN_STR;
-    src_pink_token.str_val = str;
-}
-
-void src_pink_next_token(void) {
-    repeat: ;
-    src_pink_token.start = src_pink_stream;
-    src_pink_token.mod = 0;
-    src_pink_token.suffix = 0;
-    switch (*(src_pink_stream)) {
-    case ' ':
-    case '\n':
-    case '\r':
-    case '\t':
-    case '\v': {
-        while (isspace(*(src_pink_stream))) {
-            if ((*((src_pink_stream)++)) == ('\n')) {
-                src_pink_line_start = src_pink_stream;
-                (src_pink_token.pos.line)++;
-            }
-        }
-        goto repeat;
-        break;
-    }
-    case '\'': {
-        src_pink_scan_char();
-        break;
-    }
-    case '\"': {
-        src_pink_scan_str();
-        break;
-    }
-    case '.': {
-        if (isdigit(src_pink_stream[1])) {
-            src_pink_scan_float();
-        } else if (((src_pink_stream[1]) == ('.')) && ((src_pink_stream[2]) == ('.'))) {
-            src_pink_token.kind = SRC_PINK_TOKEN_ELLIPSIS;
-            src_pink_stream += 3;
-        } else {
-            src_pink_token.kind = SRC_PINK_TOKEN_DOT;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9': {
-        {
-            while (isdigit(*(src_pink_stream))) {
-                (src_pink_stream)++;
-            }
-            char c = *(src_pink_stream);
-            src_pink_stream = src_pink_token.start;
-            if (((c) == ('.')) || ((tolower(c)) == ('e'))) {
-                src_pink_scan_float();
-            } else {
-                src_pink_scan_int();
-            }
-        }
-        break;
-    }
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case '_': {
-        while ((isalnum(*(src_pink_stream))) || ((*(src_pink_stream)) == ('_'))) {
-            (src_pink_stream)++;
-        }
-        src_pink_token.name = std_str_intern_range(src_pink_token.start, src_pink_stream);
-        src_pink_token.kind = (src_pink_is_keyword_name(src_pink_token.name) ? SRC_PINK_TOKEN_KEYWORD : SRC_PINK_TOKEN_NAME);
-        break;
-    }
-    case '<': {
-        src_pink_token.kind = SRC_PINK_TOKEN_LT;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('<')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_LSHIFT;
-            (src_pink_stream)++;
-            if ((*(src_pink_stream)) == ('=')) {
-                src_pink_token.kind = SRC_PINK_TOKEN_LSHIFT_ASSIGN;
-                (src_pink_stream)++;
-            }
-        } else if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_LTEQ;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '>': {
-        src_pink_token.kind = SRC_PINK_TOKEN_GT;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('>')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_RSHIFT;
-            (src_pink_stream)++;
-            if ((*(src_pink_stream)) == ('=')) {
-                src_pink_token.kind = SRC_PINK_TOKEN_RSHIFT_ASSIGN;
-                (src_pink_stream)++;
-            }
-        } else if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_GTEQ;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '/': {
-        src_pink_token.kind = SRC_PINK_TOKEN_DIV;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_DIV_ASSIGN;
-            (src_pink_stream)++;
-        } else if ((*(src_pink_stream)) == ('/')) {
-            (src_pink_stream)++;
-            while ((*(src_pink_stream)) && ((*(src_pink_stream)) != ('\n'))) {
-                (src_pink_stream)++;
-            }
-            goto repeat;
-        } else if ((*(src_pink_stream)) == ('*')) {
-            (src_pink_stream)++;
-            int level = 1;
-            while ((*(src_pink_stream)) && ((level) > (0))) {
-                if (((src_pink_stream[0]) == ('/')) && ((src_pink_stream[1]) == ('*'))) {
-                    (level)++;
-                    src_pink_stream += 2;
-                } else if (((src_pink_stream[0]) == ('*')) && ((src_pink_stream[1]) == ('/'))) {
-                    (level)--;
-                    src_pink_stream += 2;
-                } else {
-                    if ((*(src_pink_stream)) == ('\n')) {
-                        (src_pink_token.pos.line)++;
-                    }
-                    (src_pink_stream)++;
-                }
-            }
-            goto repeat;
-        }
-        break;
-    }
-    case '\0': {
-        src_pink_token.kind = SRC_PINK_TOKEN_EOF;
-        (src_pink_stream)++;
-        break;
-    }
-    case '(': {
-        src_pink_token.kind = SRC_PINK_TOKEN_LPAREN;
-        (src_pink_stream)++;
-        break;
-    }
-    case ')': {
-        src_pink_token.kind = SRC_PINK_TOKEN_RPAREN;
-        (src_pink_stream)++;
-        break;
-    }
-    case '{': {
-        src_pink_token.kind = SRC_PINK_TOKEN_LBRACE;
-        (src_pink_stream)++;
-        break;
-    }
-    case '}': {
-        src_pink_token.kind = SRC_PINK_TOKEN_RBRACE;
-        (src_pink_stream)++;
-        break;
-    }
-    case '[': {
-        src_pink_token.kind = SRC_PINK_TOKEN_LBRACKET;
-        (src_pink_stream)++;
-        break;
-    }
-    case ']': {
-        src_pink_token.kind = SRC_PINK_TOKEN_RBRACKET;
-        (src_pink_stream)++;
-        break;
-    }
-    case ',': {
-        src_pink_token.kind = SRC_PINK_TOKEN_COMMA;
-        (src_pink_stream)++;
-        break;
-    }
-    case '@': {
-        src_pink_token.kind = SRC_PINK_TOKEN_AT;
-        (src_pink_stream)++;
-        break;
-    }
-    case '#': {
-        src_pink_token.kind = SRC_PINK_TOKEN_POUND;
-        (src_pink_stream)++;
-        break;
-    }
-    case '?': {
-        src_pink_token.kind = SRC_PINK_TOKEN_QUESTION;
-        (src_pink_stream)++;
-        break;
-    }
-    case ';': {
-        src_pink_token.kind = SRC_PINK_TOKEN_SEMICOLON;
-        (src_pink_stream)++;
-        break;
-    }
-    case '~': {
-        src_pink_token.kind = SRC_PINK_TOKEN_NEG;
-        (src_pink_stream)++;
-        break;
-    }
-    case '!': {
-        src_pink_token.kind = SRC_PINK_TOKEN_NOT;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_NOTEQ;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case ':': {
-        src_pink_token.kind = SRC_PINK_TOKEN_COLON;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_COLON_ASSIGN;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '=': {
-        src_pink_token.kind = SRC_PINK_TOKEN_ASSIGN;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_EQ;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '^': {
-        src_pink_token.kind = SRC_PINK_TOKEN_XOR;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_XOR_ASSIGN;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '*': {
-        src_pink_token.kind = SRC_PINK_TOKEN_MUL;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_MUL_ASSIGN;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '%': {
-        src_pink_token.kind = SRC_PINK_TOKEN_MOD;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_MOD_ASSIGN;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '+': {
-        src_pink_token.kind = SRC_PINK_TOKEN_ADD;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_ADD_ASSIGN;
-            (src_pink_stream)++;
-        } else if ((*(src_pink_stream)) == ('+')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_INC;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '-': {
-        src_pink_token.kind = SRC_PINK_TOKEN_SUB;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_SUB_ASSIGN;
-            (src_pink_stream)++;
-        } else if ((*(src_pink_stream)) == ('-')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_DEC;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '&': {
-        src_pink_token.kind = SRC_PINK_TOKEN_AND;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_AND_ASSIGN;
-            (src_pink_stream)++;
-        } else if ((*(src_pink_stream)) == ('&')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_AND_AND;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    case '|': {
-        src_pink_token.kind = SRC_PINK_TOKEN_OR;
-        (src_pink_stream)++;
-        if ((*(src_pink_stream)) == ('=')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_OR_ASSIGN;
-            (src_pink_stream)++;
-        } else if ((*(src_pink_stream)) == ('|')) {
-            src_pink_token.kind = SRC_PINK_TOKEN_OR_OR;
-            (src_pink_stream)++;
-        }
-        break;
-    }
-    default: {
-        src_pink_error(src_pink_token.pos, "Invalid \'%c\' token, skipping", *(src_pink_stream));
-        (src_pink_stream)++;
-        goto repeat;
-        break;
-    }
-    }
-    src_pink_token.end = src_pink_stream;
-}
-
-void src_pink_init_stream(char const ((*name)), char const ((*buf))) {
-    src_pink_stream = buf;
-    src_pink_line_start = src_pink_stream;
-    src_pink_token.pos.name = (name ? name : (char const (*))("<string>"));
-    src_pink_token.pos.line = 1;
-    src_pink_next_token();
-}
-
-bool src_pink_is_token(src_pink_TokenKind kind) {
-    return (src_pink_token.kind) == (kind);
-}
-
-bool src_pink_is_token_eof(void) {
-    return (src_pink_token.kind) == (SRC_PINK_TOKEN_EOF);
-}
-
-bool src_pink_is_token_name(char const ((*name))) {
-    return ((src_pink_token.kind) == (SRC_PINK_TOKEN_NAME)) && ((src_pink_token.name) == (name));
-}
-
-bool src_pink_is_keyword(char const ((*name))) {
-    return (src_pink_is_token(SRC_PINK_TOKEN_KEYWORD)) && ((src_pink_token.name) == (name));
-}
-
-bool src_pink_match_keyword(char const ((*name))) {
-    if (src_pink_is_keyword(name)) {
-        src_pink_next_token();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool src_pink_match_token(src_pink_TokenKind kind) {
-    if (src_pink_is_token(kind)) {
-        src_pink_next_token();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool src_pink_expect_token(src_pink_TokenKind kind) {
-    if (src_pink_is_token(kind)) {
-        src_pink_next_token();
-        return true;
-    } else {
-        src_pink_fatal_error(src_pink_token.pos, "Expected token %s, got %s", src_pink_token_kind_name(kind), src_pink_token_info());
-        return false;
-    }
-}
-
-bool src_pink_flag_verbose;
-bool src_pink_flag_lazy;
-bool src_pink_flag_nosourcemap;
-bool src_pink_flag_notypeinfo;
-bool src_pink_flag_fullgen;
-src_pink_Typespec (*src_pink_parse_type_func_param(void)) {
-    src_pink_Typespec (*type) = src_pink_parse_type();
-    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        if ((type->kind) != (SRC_PINK_TYPESPEC_NAME)) {
-            src_pink_error(src_pink_token.pos, "Colons in parameters of func types must be preceded by names.");
-        }
-        type = src_pink_parse_type();
-    }
-    return type;
-}
-
-src_pink_Typespec (*src_pink_parse_type_func(void)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Typespec (*(*args)) = NULL;
-    bool has_varargs = false;
-    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-    while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
-        if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
-            if (has_varargs) {
-                src_pink_error(src_pink_token.pos, "Multiple ellipsis instances in function type");
-            }
-            has_varargs = true;
-        } else {
-            if (has_varargs) {
-                src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function type");
-            }
-            src_pink_Typespec (*param) = src_pink_parse_type_func_param();
-            std_buf_push((void (**))(&(args)), &(param), sizeof(param));
-        }
-        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-            break;
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    src_pink_Typespec (*ret) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        ret = src_pink_parse_type();
-    }
-    return src_pink_new_typespec_func(pos, args, std_buf_len(args), ret, has_varargs);
-}
-
-src_pink_Typespec (*src_pink_parse_type_base(void)) {
-    if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        char const ((*name)) = src_pink_token.name;
-        src_pink_next_token();
-        return src_pink_new_typespec_name(pos, name);
-    } else if (src_pink_match_keyword(src_pink_func_keyword)) {
-        return src_pink_parse_type_func();
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
-        src_pink_Typespec (*type) = src_pink_parse_type();
-        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-        return type;
-    } else {
-        src_pink_fatal_error(src_pink_token.pos, "Unexpected token %s in type", src_pink_token_info());
-        return NULL;
-    }
-}
-
-src_pink_Typespec (*src_pink_parse_type(void)) {
-    src_pink_Typespec (*type) = src_pink_parse_type_base();
-    src_pink_SrcPos pos = src_pink_token.pos;
-    while (((src_pink_is_token(SRC_PINK_TOKEN_LBRACKET)) || (src_pink_is_token(SRC_PINK_TOKEN_MUL))) || (src_pink_is_keyword(src_pink_const_keyword))) {
-        if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
-            src_pink_Expr (*size) = NULL;
-            if (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACKET))) {
-                size = src_pink_parse_expr();
-            }
-            src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
-            type = src_pink_new_typespec_array(pos, type, size);
-        } else if (src_pink_match_keyword(src_pink_const_keyword)) {
-            type = src_pink_new_typespec_const(pos, type);
-        } else {
-            src_pink_next_token();
-            type = src_pink_new_typespec_ptr(pos, type);
-        }
-    }
-    return type;
-}
-
-src_pink_CompoundField src_pink_parse_expr_compound_field(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
-        src_pink_Expr (*index) = src_pink_parse_expr();
-        src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
-        src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
-        return (src_pink_CompoundField){SRC_PINK_FIELD_INDEX, pos, src_pink_parse_expr(), .index = index};
-    } else {
-        src_pink_Expr (*expr) = src_pink_parse_expr();
-        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-            if ((expr->kind) != (SRC_PINK_EXPR_NAME)) {
-                src_pink_fatal_error(src_pink_token.pos, "Named initializer in compound literal must be preceded by field name");
-            }
-            return (src_pink_CompoundField){SRC_PINK_FIELD_NAME, pos, src_pink_parse_expr(), .name = expr->name};
-        } else {
-            return (src_pink_CompoundField){SRC_PINK_FIELD_DEFAULT, pos, expr};
-        }
-    }
-}
-
-src_pink_Expr (*src_pink_parse_expr_compound(src_pink_Typespec (*type))) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
-    src_pink_CompoundField (*fields) = NULL;
-    while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
-        src_pink_CompoundField field = src_pink_parse_expr_compound_field();
-        std_buf_push((void (**))(&(fields)), &(field), sizeof(field));
-        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-            break;
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_expr_compound(pos, type, fields, std_buf_len(fields));
-}
-
-src_pink_Expr (*src_pink_parse_expr_operand(void)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    if (src_pink_is_token(SRC_PINK_TOKEN_INT)) {
-        ullong val = src_pink_token.int_val;
-        src_pink_TokenMod mod = src_pink_token.mod;
-        src_pink_TokenSuffix suffix = src_pink_token.suffix;
-        src_pink_next_token();
-        return src_pink_new_expr_int(pos, val, mod, suffix);
-    } else if (src_pink_is_token(SRC_PINK_TOKEN_FLOAT)) {
-        char const ((*start)) = src_pink_token.start;
-        char const ((*end)) = src_pink_token.end;
-        double val = src_pink_token.float_val;
-        src_pink_TokenSuffix suffix = src_pink_token.suffix;
-        src_pink_next_token();
-        return src_pink_new_expr_float(pos, start, end, val, suffix);
-    } else if (src_pink_is_token(SRC_PINK_TOKEN_STR)) {
-        char const ((*val)) = src_pink_token.str_val;
-        src_pink_TokenMod mod = src_pink_token.mod;
-        src_pink_next_token();
-        return src_pink_new_expr_str(pos, val, mod);
-    } else if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
-        char const ((*name)) = src_pink_token.name;
-        src_pink_next_token();
-        if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
-            return src_pink_parse_expr_compound(src_pink_new_typespec_name(pos, name));
-        } else {
-            return src_pink_new_expr_name(pos, name);
-        }
-    } else if (src_pink_match_keyword(src_pink_sizeof_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-            src_pink_Typespec (*type) = src_pink_parse_type();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_sizeof_type(pos, type);
-        } else {
-            src_pink_Expr (*expr) = src_pink_parse_expr();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_sizeof_expr(pos, expr);
-        }
-    } else if (src_pink_match_keyword(src_pink_alignof_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-            src_pink_Typespec (*type) = src_pink_parse_type();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_alignof_type(pos, type);
-        } else {
-            src_pink_Expr (*expr) = src_pink_parse_expr();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_alignof_expr(pos, expr);
-        }
-    } else if (src_pink_match_keyword(src_pink_typeof_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-            src_pink_Typespec (*type) = src_pink_parse_type();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_typeof_type(pos, type);
-        } else {
-            src_pink_Expr (*expr) = src_pink_parse_expr();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_typeof_expr(pos, expr);
-        }
-    } else if (src_pink_match_keyword(src_pink_offsetof_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-        src_pink_Typespec (*type) = src_pink_parse_type();
-        src_pink_expect_token(SRC_PINK_TOKEN_COMMA);
-        char const ((*name)) = src_pink_parse_name();
-        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-        return src_pink_new_expr_offsetof(pos, type, name);
-    } else if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
-        return src_pink_parse_expr_compound(NULL);
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
-        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-            src_pink_Typespec (*type) = src_pink_parse_type();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
-                return src_pink_parse_expr_compound(type);
-            } else {
-                return src_pink_new_expr_cast(pos, type, src_pink_parse_expr_unary());
-            }
-        } else {
-            src_pink_Expr (*expr) = src_pink_parse_expr();
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            return src_pink_new_expr_paren(pos, expr);
-        }
-    } else {
-        src_pink_fatal_error(src_pink_token.pos, "Unexpected token %s in expression", src_pink_token_info());
-        return NULL;
-    }
-}
-
-src_pink_Expr (*src_pink_parse_expr_base(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_operand();
-    while (((((src_pink_is_token(SRC_PINK_TOKEN_LPAREN)) || (src_pink_is_token(SRC_PINK_TOKEN_LBRACKET))) || (src_pink_is_token(SRC_PINK_TOKEN_DOT))) || (src_pink_is_token(SRC_PINK_TOKEN_INC))) || (src_pink_is_token(SRC_PINK_TOKEN_DEC))) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
-            src_pink_Expr (*(*args)) = NULL;
-            while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
-                src_pink_Expr (*arg) = src_pink_parse_expr();
-                std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
-                if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-                    break;
-                }
-            }
-            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            expr = src_pink_new_expr_call(pos, expr, args, std_buf_len(args));
-        } else if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
-            src_pink_Expr (*index) = src_pink_parse_expr();
-            src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
-            expr = src_pink_new_expr_index(pos, expr, index);
-        } else if (src_pink_is_token(SRC_PINK_TOKEN_DOT)) {
-            src_pink_next_token();
-            char const ((*field)) = src_pink_token.name;
-            src_pink_expect_token(SRC_PINK_TOKEN_NAME);
-            expr = src_pink_new_expr_field(pos, expr, field);
-        } else {
-            src_pink_TokenKind op = src_pink_token.kind;
-            src_pink_next_token();
-            expr = src_pink_new_expr_modify(pos, op, true, expr);
-        }
-    }
-    return expr;
-}
-
-bool src_pink_is_unary_op(void) {
-    return (((((((src_pink_is_token(SRC_PINK_TOKEN_ADD)) || (src_pink_is_token(SRC_PINK_TOKEN_SUB))) || (src_pink_is_token(SRC_PINK_TOKEN_MUL))) || (src_pink_is_token(SRC_PINK_TOKEN_AND))) || (src_pink_is_token(SRC_PINK_TOKEN_NEG))) || (src_pink_is_token(SRC_PINK_TOKEN_NOT))) || (src_pink_is_token(SRC_PINK_TOKEN_INC))) || (src_pink_is_token(SRC_PINK_TOKEN_DEC));
-}
-
-src_pink_Expr (*src_pink_parse_expr_unary(void)) {
-    if (src_pink_is_unary_op()) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        src_pink_TokenKind op = src_pink_token.kind;
-        src_pink_next_token();
-        if (((op) == (SRC_PINK_TOKEN_INC)) || ((op) == (SRC_PINK_TOKEN_DEC))) {
-            return src_pink_new_expr_modify(pos, op, false, src_pink_parse_expr_unary());
-        } else {
-            return src_pink_new_expr_unary(pos, op, src_pink_parse_expr_unary());
-        }
-    } else {
-        return src_pink_parse_expr_base();
-    }
-}
-
-bool src_pink_is_mul_op(void) {
-    return ((SRC_PINK_TOKEN_FIRST_MUL) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_MUL));
-}
-
-src_pink_Expr (*src_pink_parse_expr_mul(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_unary();
-    while (src_pink_is_mul_op()) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        src_pink_TokenKind op = src_pink_token.kind;
-        src_pink_next_token();
-        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_unary());
-    }
-    return expr;
-}
-
-bool src_pink_is_add_op(void) {
-    return ((SRC_PINK_TOKEN_FIRST_ADD) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_ADD));
-}
-
-src_pink_Expr (*src_pink_parse_expr_add(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_mul();
-    while (src_pink_is_add_op()) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        src_pink_TokenKind op = src_pink_token.kind;
-        src_pink_next_token();
-        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_mul());
-    }
-    return expr;
-}
-
-bool src_pink_is_cmp_op(void) {
-    return ((SRC_PINK_TOKEN_FIRST_CMP) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_CMP));
-}
-
-src_pink_Expr (*src_pink_parse_expr_cmp(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_add();
-    while (src_pink_is_cmp_op()) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        src_pink_TokenKind op = src_pink_token.kind;
-        src_pink_next_token();
-        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_add());
-    }
-    return expr;
-}
-
-src_pink_Expr (*src_pink_parse_expr_and(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_cmp();
-    while (src_pink_match_token(SRC_PINK_TOKEN_AND_AND)) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        expr = src_pink_new_expr_binary(pos, SRC_PINK_TOKEN_AND_AND, expr, src_pink_parse_expr_cmp());
-    }
-    return expr;
-}
-
-src_pink_Expr (*src_pink_parse_expr_or(void)) {
-    src_pink_Expr (*expr) = src_pink_parse_expr_and();
-    while (src_pink_match_token(SRC_PINK_TOKEN_OR_OR)) {
-        src_pink_SrcPos pos = src_pink_token.pos;
-        expr = src_pink_new_expr_binary(pos, SRC_PINK_TOKEN_OR_OR, expr, src_pink_parse_expr_and());
-    }
-    return expr;
-}
-
-src_pink_Expr (*src_pink_parse_expr_ternary(void)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Expr (*expr) = src_pink_parse_expr_or();
-    if (src_pink_match_token(SRC_PINK_TOKEN_QUESTION)) {
-        src_pink_Expr (*then_expr) = src_pink_parse_expr_ternary();
-        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
-        src_pink_Expr (*else_expr) = src_pink_parse_expr_ternary();
-        expr = src_pink_new_expr_ternary(pos, expr, then_expr, else_expr);
-    }
-    return expr;
-}
-
-src_pink_Expr (*src_pink_parse_expr(void)) {
-    return src_pink_parse_expr_ternary();
-}
-
-src_pink_Expr (*src_pink_parse_paren_expr(void)) {
-    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-    src_pink_Expr (*expr) = src_pink_parse_expr();
-    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    return expr;
-}
-
-src_pink_StmtList src_pink_parse_stmt_block(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
-    src_pink_Stmt (*(*stmts)) = NULL;
-    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
-        src_pink_Stmt (*stmt) = src_pink_parse_stmt();
-        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts));
-}
-
-src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos)) {
-    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-    src_pink_Expr (*cond) = src_pink_parse_expr();
-    src_pink_Stmt (*init) = src_pink_parse_init_stmt(cond);
-    if (init) {
-        if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
-            cond = src_pink_parse_expr();
-        } else {
-            cond = NULL;
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    src_pink_StmtList then_block = src_pink_parse_stmt_block();
-    src_pink_StmtList else_block = {{NULL, 0}, NULL, 0};
-    src_pink_ElseIf (*elseifs) = NULL;
-    while (src_pink_match_keyword(src_pink_else_keyword)) {
-        if (!(src_pink_match_keyword(src_pink_if_keyword))) {
-            else_block = src_pink_parse_stmt_block();
-            break;
-        }
-        src_pink_Expr (*elseif_cond) = src_pink_parse_paren_expr();
-        src_pink_StmtList elseif_block = src_pink_parse_stmt_block();
-        src_pink_ElseIf elseif = {elseif_cond, elseif_block};
-        std_buf_push((void (**))(&(elseifs)), &(elseif), sizeof(elseif));
-    }
-    return src_pink_new_stmt_if(pos, init, cond, then_block, elseifs, std_buf_len(elseifs), else_block);
-}
-
-src_pink_Stmt (*src_pink_parse_stmt_while(src_pink_SrcPos pos)) {
-    src_pink_Expr (*cond) = src_pink_parse_paren_expr();
-    return src_pink_new_stmt_while(pos, cond, src_pink_parse_stmt_block());
-}
-
-src_pink_Stmt (*src_pink_parse_stmt_do_while(src_pink_SrcPos pos)) {
-    src_pink_StmtList block = src_pink_parse_stmt_block();
-    if (!(src_pink_match_keyword(src_pink_while_keyword))) {
-        src_pink_fatal_error(src_pink_token.pos, "Expected \'while\' after \'do\' block");
-        return NULL;
-    }
-    src_pink_Stmt (*stmt) = src_pink_new_stmt_do_while(pos, src_pink_parse_paren_expr(), block);
-    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    return stmt;
-}
-
-bool src_pink_is_assign_op(void) {
-    return ((SRC_PINK_TOKEN_FIRST_ASSIGN) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_ASSIGN));
-}
-
-src_pink_Stmt (*src_pink_parse_init_stmt(src_pink_Expr (*left))) {
-    if (src_pink_match_token(SRC_PINK_TOKEN_COLON_ASSIGN)) {
-        if ((left->kind) != (SRC_PINK_EXPR_NAME)) {
-            src_pink_fatal_error(src_pink_token.pos, ":= must be preceded by a name");
-            return NULL;
-        }
-        return src_pink_new_stmt_init(left->pos, left->name, NULL, src_pink_parse_expr());
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        if ((left->kind) != (SRC_PINK_EXPR_NAME)) {
-            src_pink_fatal_error(src_pink_token.pos, ": must be preceded by a name");
-            return NULL;
-        }
-        char const ((*name)) = left->name;
-        src_pink_Typespec (*type) = src_pink_parse_type();
-        src_pink_Expr (*expr) = NULL;
-        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-            expr = src_pink_parse_expr();
-        }
-        return src_pink_new_stmt_init(left->pos, name, type, expr);
-    } else {
-        return NULL;
-    }
-}
-
-src_pink_Stmt (*src_pink_parse_simple_stmt(void)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Expr (*expr) = src_pink_parse_expr();
-    src_pink_Stmt (*stmt) = src_pink_parse_init_stmt(expr);
-    if (!(stmt)) {
-        if (src_pink_is_assign_op()) {
-            src_pink_TokenKind op = src_pink_token.kind;
-            src_pink_next_token();
-            stmt = src_pink_new_stmt_assign(pos, op, expr, src_pink_parse_expr());
-        } else {
-            stmt = src_pink_new_stmt_expr(pos, expr);
-        }
-    }
-    return stmt;
-}
-
-src_pink_Stmt (*src_pink_parse_stmt_for(src_pink_SrcPos pos)) {
-    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-    src_pink_Stmt (*init) = NULL;
-    if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
-        init = src_pink_parse_simple_stmt();
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    src_pink_Expr (*cond) = NULL;
-    if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
-        cond = src_pink_parse_expr();
-    }
-    src_pink_Stmt (*next) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
-        if (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
-            next = src_pink_parse_simple_stmt();
-            if ((next->kind) == (SRC_PINK_STMT_INIT)) {
-                src_pink_error(src_pink_token.pos, "Init statements not allowed in for-statement\'s next clause");
-            }
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    return src_pink_new_stmt_for(pos, init, cond, next, src_pink_parse_stmt_block());
-}
-
-src_pink_SwitchCasePattern src_pink_parse_switch_case_pattern(void) {
-    src_pink_Expr (*start) = src_pink_parse_expr();
-    src_pink_Expr (*end) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
-        end = src_pink_parse_expr();
-    }
-    return (src_pink_SwitchCasePattern){start, end};
-}
-
-src_pink_SwitchCase src_pink_parse_stmt_switch_case(void) {
-    src_pink_SwitchCasePattern (*patterns) = NULL;
-    bool is_default = false;
-    bool is_first_case = true;
-    while ((src_pink_is_keyword(src_pink_case_keyword)) || (src_pink_is_keyword(src_pink_default_keyword))) {
-        if (src_pink_match_keyword(src_pink_case_keyword)) {
-            if (!(is_first_case)) {
-                src_pink_error(src_pink_token.pos, "Use comma-separated expressions to match multiple values with one case label");
-                is_first_case = false;
-            }
-            src_pink_SwitchCasePattern pattern = src_pink_parse_switch_case_pattern();
-            std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
-            while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
-                pattern = src_pink_parse_switch_case_pattern();
-                std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
-            }
-        } else {
-            src_pink_next_token();
-            if (is_default) {
-                src_pink_error(src_pink_token.pos, "Duplicate default labels in same switch clause");
-            }
-            is_default = true;
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
-    }
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Stmt (*(*stmts)) = {0};
-    while ((((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) && (!(src_pink_is_keyword(src_pink_case_keyword)))) && (!(src_pink_is_keyword(src_pink_default_keyword)))) {
-        src_pink_Stmt (*stmt) = src_pink_parse_stmt();
-        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
-    }
-    return (src_pink_SwitchCase){patterns, std_buf_len(patterns), is_default, src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts))};
-}
-
-src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos)) {
-    src_pink_Expr (*expr) = src_pink_parse_paren_expr();
-    src_pink_SwitchCase (*cases) = {0};
-    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
-    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
-        src_pink_SwitchCase case_stmt = src_pink_parse_stmt_switch_case();
-        std_buf_push((void (**))(&(cases)), &(case_stmt), sizeof(case_stmt));
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_stmt_switch(pos, expr, cases, std_buf_len(cases));
-}
-
-src_pink_Stmt (*src_pink_parse_stmt(void)) {
-    src_pink_Notes notes = src_pink_parse_notes();
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Stmt (*stmt) = {0};
-    if (src_pink_match_keyword(src_pink_if_keyword)) {
-        stmt = src_pink_parse_stmt_if(pos);
-    } else if (src_pink_match_keyword(src_pink_while_keyword)) {
-        stmt = src_pink_parse_stmt_while(pos);
-    } else if (src_pink_match_keyword(src_pink_do_keyword)) {
-        stmt = src_pink_parse_stmt_do_while(pos);
-    } else if (src_pink_match_keyword(src_pink_for_keyword)) {
-        stmt = src_pink_parse_stmt_for(pos);
-    } else if (src_pink_match_keyword(src_pink_switch_keyword)) {
-        stmt = src_pink_parse_stmt_switch(pos);
-    } else if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
-        stmt = src_pink_new_stmt_block(pos, src_pink_parse_stmt_block());
-    } else if (src_pink_match_keyword(src_pink_break_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        stmt = src_pink_new_stmt_break(pos);
-    } else if (src_pink_match_keyword(src_pink_continue_keyword)) {
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        stmt = src_pink_new_stmt_continue(pos);
-    } else if (src_pink_match_keyword(src_pink_return_keyword)) {
-        src_pink_Expr (*expr) = {0};
-        if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
-            expr = src_pink_parse_expr();
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        stmt = src_pink_new_stmt_return(pos, expr);
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_POUND)) {
-        src_pink_Note note = src_pink_parse_note();
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        stmt = src_pink_new_stmt_note(pos, note);
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        stmt = src_pink_new_stmt_label(pos, src_pink_parse_name());
-    } else if (src_pink_match_keyword(src_pink_goto_keyword)) {
-        stmt = src_pink_new_stmt_goto(pos, src_pink_parse_name());
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    } else {
-        stmt = src_pink_parse_simple_stmt();
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    }
-    stmt->notes = notes;
-    return stmt;
-}
-
-char const ((*src_pink_parse_name(void))) {
-    char const ((*name)) = src_pink_token.name;
-    src_pink_expect_token(SRC_PINK_TOKEN_NAME);
-    return name;
-}
-
-src_pink_EnumItem src_pink_parse_decl_enum_item(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_Expr (*init) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-        init = src_pink_parse_expr();
-    }
-    return (src_pink_EnumItem){pos, name, init};
-}
-
-src_pink_Decl (*src_pink_parse_decl_enum(src_pink_SrcPos pos)) {
-    char const ((*name)) = NULL;
-    if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
-        name = src_pink_parse_name();
-    }
-    src_pink_Typespec (*type) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-        type = src_pink_parse_type();
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
-    src_pink_EnumItem (*items) = NULL;
-    while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
-        src_pink_EnumItem item = src_pink_parse_decl_enum_item();
-        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
-        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-            break;
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_decl_enum(pos, name, type, items, std_buf_len(items));
-}
-
-src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    if (src_pink_match_keyword(src_pink_struct_keyword)) {
-        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE, .subaggregate = src_pink_parse_aggregate(SRC_PINK_AGGREGATE_STRUCT)};
-    } else if (src_pink_match_keyword(src_pink_union_keyword)) {
-        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE, .subaggregate = src_pink_parse_aggregate(SRC_PINK_AGGREGATE_UNION)};
-    } else {
-        char const ((*(*names))) = NULL;
-        char const ((*name)) = src_pink_parse_name();
-        std_buf_push((void (**))(&(names)), &(name), sizeof(name));
-        while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
-            name = src_pink_parse_name();
-            std_buf_push((void (**))(&(names)), &(name), sizeof(name));
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
-        src_pink_Typespec (*type) = src_pink_parse_type();
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_FIELD, .names = names, .num_names = std_buf_len(names), .type = type};
-    }
-}
-
-src_pink_Aggregate (*src_pink_parse_aggregate(src_pink_AggregateKind kind)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
-    src_pink_AggregateItem (*items) = NULL;
-    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
-        src_pink_AggregateItem item = src_pink_parse_decl_aggregate_item();
-        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_aggregate(pos, kind, items, std_buf_len(items));
-}
-
-src_pink_Decl (*src_pink_parse_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind)) {
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_AggregateKind aggregate_kind = ((kind) == (SRC_PINK_DECL_STRUCT) ? SRC_PINK_AGGREGATE_STRUCT : SRC_PINK_AGGREGATE_UNION);
-    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
-        src_pink_Decl (*decl) = src_pink_new_decl_aggregate(pos, kind, name, src_pink_new_aggregate(pos, aggregate_kind, NULL, 0));
-        decl->is_incomplete = true;
-        return decl;
-    } else {
-        return src_pink_new_decl_aggregate(pos, kind, name, src_pink_parse_aggregate(aggregate_kind));
-    }
-}
-
-src_pink_Decl (*src_pink_parse_decl_var(src_pink_SrcPos pos)) {
-    char const ((*name)) = src_pink_parse_name();
-    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-        src_pink_Expr (*expr) = src_pink_parse_expr();
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        return src_pink_new_decl_var(pos, name, NULL, expr);
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        src_pink_Typespec (*type) = src_pink_parse_type();
-        src_pink_Expr (*expr) = NULL;
-        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-            expr = src_pink_parse_expr();
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        return src_pink_new_decl_var(pos, name, type, expr);
-    } else {
-        src_pink_fatal_error(src_pink_token.pos, "Expected : or = after var, got %s", src_pink_token_info());
-        return NULL;
-    }
-}
-
-src_pink_Decl (*src_pink_parse_decl_const(src_pink_SrcPos pos)) {
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_Typespec (*type) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        type = src_pink_parse_type();
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
-    src_pink_Expr (*expr) = src_pink_parse_expr();
-    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    return src_pink_new_decl_const(pos, name, type, expr);
-}
-
-src_pink_Decl (*src_pink_parse_decl_typedef(src_pink_SrcPos pos)) {
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
-    src_pink_Typespec (*type) = src_pink_parse_type();
-    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-    return src_pink_new_decl_typedef(pos, name, type);
-}
-
-src_pink_FuncParam src_pink_parse_decl_func_param(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_expect_token(SRC_PINK_TOKEN_COLON);
-    src_pink_Typespec (*type) = src_pink_parse_type();
-    return (src_pink_FuncParam){pos, name, type};
-}
-
-src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos)) {
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
-    src_pink_FuncParam (*params) = NULL;
-    bool has_varargs = false;
-    while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
-        if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
-            if (has_varargs) {
-                src_pink_error(src_pink_token.pos, "Multiple ellipsis in function declaration");
-            }
-            has_varargs = true;
-        } else {
-            if (has_varargs) {
-                src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function declaration");
-            }
-            src_pink_FuncParam param = src_pink_parse_decl_func_param();
-            std_buf_push((void (**))(&(params)), &(param), sizeof(param));
-        }
-        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-            break;
-        }
-    }
-    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    src_pink_Typespec (*ret_type) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
-        ret_type = src_pink_parse_type();
-    }
-    src_pink_StmtList block = {0};
-    bool is_incomplete = {0};
-    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
-        is_incomplete = true;
-    } else {
-        block = src_pink_parse_stmt_block();
-        is_incomplete = false;
-    }
-    src_pink_Decl (*decl) = src_pink_new_decl_func(pos, name, params, std_buf_len(params), ret_type, has_varargs, block);
-    decl->is_incomplete = is_incomplete;
-    return decl;
-}
-
-src_pink_NoteArg src_pink_parse_note_arg(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    src_pink_Expr (*expr) = src_pink_parse_expr();
-    char const ((*name)) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-        if ((expr->kind) != (SRC_PINK_EXPR_NAME)) {
-            src_pink_fatal_error(src_pink_token.pos, "Left of: operand = in note argument must be a name");
-        }
-        name = expr->name;
-        expr = src_pink_parse_expr();
-    }
-    return (src_pink_NoteArg){.pos = pos, .name = name, .expr = expr};
-}
-
-src_pink_Note src_pink_parse_note(void) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    char const ((*name)) = src_pink_parse_name();
-    src_pink_NoteArg (*args) = NULL;
-    if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
-        src_pink_NoteArg arg = src_pink_parse_note_arg();
-        std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
-        while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
-            arg = src_pink_parse_note_arg();
-            std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-    }
-    return src_pink_new_note(pos, name, args, std_buf_len(args));
-}
-
-src_pink_Notes src_pink_parse_notes(void) {
-    src_pink_Note (*notes) = NULL;
-    while (src_pink_match_token(SRC_PINK_TOKEN_AT)) {
-        src_pink_Note note = src_pink_parse_note();
-        std_buf_push((void (**))(&(notes)), &(note), sizeof(note));
-    }
-    return src_pink_new_notes(notes, std_buf_len(notes));
-}
-
-src_pink_Decl (*src_pink_parse_decl_note(src_pink_SrcPos pos)) {
-    return src_pink_new_decl_note(pos, src_pink_parse_note());
-}
-
-src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
-    char const ((*rename_name)) = {0};
-    bool is_relative = {0};
-    repeat: ;
-    is_relative = false;
-    if (src_pink_match_token(SRC_PINK_TOKEN_DOT)) {
-        is_relative = true;
-    }
-    char const ((*name)) = src_pink_token.name;
-    src_pink_expect_token(SRC_PINK_TOKEN_NAME);
-    if ((!(is_relative)) && (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN))) {
-        if (rename_name) {
-            src_pink_fatal_error(pos, "Only one import assignment is allowed");
-        }
-        rename_name = name;
-        goto repeat;
-    }
-    char const ((*(*names))) = NULL;
-    std_buf_push((void (**))(&(names)), &(name), sizeof(name));
-    while (src_pink_match_token(SRC_PINK_TOKEN_DOT)) {
-        std_buf_push((void (**))(&(names)), &(src_pink_token.name), sizeof(src_pink_token.name));
-        src_pink_expect_token(SRC_PINK_TOKEN_NAME);
-    }
-    bool import_all = false;
-    src_pink_ImportItem (*items) = {0};
-    if (src_pink_match_token(SRC_PINK_TOKEN_LBRACE)) {
-        while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
-            if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
-                import_all = true;
-            } else {
-                char const ((*item_name)) = src_pink_parse_name();
-                if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
-                    src_pink_ImportItem item = {.name = src_pink_parse_name(), .rename = item_name};
-                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
-                } else {
-                    src_pink_ImportItem item = {.name = item_name};
-                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
-                }
-                if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
-                    break;
-                }
-            }
-        }
-        src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    }
-    return src_pink_new_decl_import(pos, rename_name, is_relative, names, std_buf_len(names), import_all, items, std_buf_len(items));
-}
-
-src_pink_Decl (*src_pink_parse_decl_opt(void)) {
-    src_pink_SrcPos pos = src_pink_token.pos;
-    if (src_pink_match_keyword(src_pink_enum_keyword)) {
-        return src_pink_parse_decl_enum(pos);
-    } else if (src_pink_match_keyword(src_pink_struct_keyword)) {
-        return src_pink_parse_decl_aggregate(pos, SRC_PINK_DECL_STRUCT);
-    } else if (src_pink_match_keyword(src_pink_union_keyword)) {
-        return src_pink_parse_decl_aggregate(pos, SRC_PINK_DECL_UNION);
-    } else if (src_pink_match_keyword(src_pink_const_keyword)) {
-        return src_pink_parse_decl_const(pos);
-    } else if (src_pink_match_keyword(src_pink_typedef_keyword)) {
-        return src_pink_parse_decl_typedef(pos);
-    } else if (src_pink_match_keyword(src_pink_func_keyword)) {
-        return src_pink_parse_decl_func(pos);
-    } else if (src_pink_match_keyword(src_pink_var_keyword)) {
-        return src_pink_parse_decl_var(pos);
-    } else if (src_pink_match_keyword(src_pink_import_keyword)) {
-        return src_pink_parse_decl_import(pos);
-    } else if (src_pink_match_token(SRC_PINK_TOKEN_POUND)) {
-        return src_pink_parse_decl_note(pos);
-    } else {
-        return NULL;
-    }
-}
-
-src_pink_Decl (*src_pink_parse_decl(void)) {
-    src_pink_Notes notes = src_pink_parse_notes();
-    src_pink_Decl (*decl) = src_pink_parse_decl_opt();
-    if (!(decl)) {
-        src_pink_fatal_error(src_pink_token.pos, "Expected declaration keyword, got %s", src_pink_token_info());
-    }
-    decl->notes = notes;
-    return decl;
-}
-
-src_pink_Decls (*src_pink_parse_decls(void)) {
-    src_pink_Decl (*(*decls)) = NULL;
-    while (!(src_pink_is_token(SRC_PINK_TOKEN_EOF))) {
-        src_pink_Decl (*decl) = src_pink_parse_decl();
-        std_buf_push((void (**))(&(decls)), &(decl), sizeof(decl));
-    }
-    return src_pink_new_decls(decls, std_buf_len(decls));
-}
-
-char const ((*(src_pink_static_package_search_paths[SRC_PINK_MAX_SEARCH_PATHS])));
-char const ((*(*src_pink_package_search_paths))) = src_pink_static_package_search_paths;
-int src_pink_num_package_search_paths;
-void src_pink_add_package_search_path(char const ((*path))) {
-    if (src_pink_flag_verbose) {
-        printf("Adding package search path %s\n", path);
-    }
-    src_pink_package_search_paths[(src_pink_num_package_search_paths)++] = std_str_intern(path);
-}
-
-void src_pink_add_package_search_path_range(char const ((*start)), char const ((*end))) {
-    char (path[MAX_PATH]) = {0};
-    size_t len = std_clamp_max((end) - (start), (MAX_PATH) - (1));
-    memcpy(path, start, len);
-    path[len] = 0;
-    src_pink_add_package_search_path(path);
-}
-
-void src_pink_init_package_search_paths(void) {
-    char (*pinkhome_var) = getenv("PINK_HOME");
-    if (!(pinkhome_var)) {
-        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where pinklib is located)\n");
-        exit(1);
-    }
-    char (path[MAX_PATH]) = {0};
-    std_os_path_copy(path, pinkhome_var);
-    std_os_path_join(path, "pinklib");
-    src_pink_add_package_search_path(path);
-    src_pink_add_package_search_path(".");
-    src_pink_add_package_search_path("./deps/");
-    char (*pinkpath_var) = getenv("PINK_PATH");
-    if (pinkpath_var) {
-        char (*start) = pinkpath_var;
-        for (char (*ptr) = pinkpath_var; *(ptr); (ptr)++) {
-            if ((*(ptr)) == (';')) {
-                src_pink_add_package_search_path_range(start, ptr);
-                start = (ptr) + (1);
-            }
-        }
-        if (*(start)) {
-            src_pink_add_package_search_path(start);
-        }
-    }
-}
-
-void src_pink_init_compiler(void) {
-    src_pink_init_target();
-    src_pink_init_package_search_paths();
-    src_pink_init_keywords();
-    src_pink_init_builtin_types();
-    std_map_put(&(src_pink_decl_note_names), src_pink_declare_note_name, (void *)(1));
-}
-
-void src_pink_parse_env_vars(void) {
-    char (*pinkos_var) = getenv("PINK_OS");
-    if (pinkos_var) {
-        int os = src_pink_get_os(pinkos_var);
-        if ((os) == (-(1))) {
-            printf("Unknown target operating system in PINK_OS environment variable: %s\n", pinkos_var);
-        } else {
-            src_pink_target_os = os;
-        }
-    }
-    char (*pinkarch_var) = getenv("PINK_ARCH");
-    if (pinkarch_var) {
-        int arch = src_pink_get_arch(pinkarch_var);
-        if ((arch) == (-(1))) {
-            printf("Unknown target architecture in PINK_ARCH environment variable: %s\n", pinkarch_var);
-        } else {
-            src_pink_target_arch = arch;
-        }
-    }
-}
-
-int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void), char const ((*extension))) {
-    src_pink_parse_env_vars();
-    char const ((*output_name)) = {0};
-    bool flag_check = false;
-    std_os_add_flag_str("o", &(output_name), "file", "Output file (default: out_<main-package>.c)");
-    std_os_add_flag_enum("os", &(src_pink_target_os), "Target operating system", src_pink_os_names, SRC_PINK_NUM_OSES);
-    std_os_add_flag_enum("arch", &(src_pink_target_arch), "Target machine architecture", src_pink_arch_names, SRC_PINK_NUM_ARCHES);
-    std_os_add_flag_bool("check", &(flag_check), "Semantic checking with no code generation");
-    std_os_add_flag_bool("lazy", &(src_pink_flag_lazy), "Only compile what\'s reachable from the main package");
-    std_os_add_flag_bool("nosourcemap", &(src_pink_flag_nosourcemap), "Don\'t generate any source map information");
-    std_os_add_flag_bool("notypeinfo", &(src_pink_flag_notypeinfo), "Don\'t generate any typeinfo tables");
-    std_os_add_flag_bool("fullgen", &(src_pink_flag_fullgen), "Force full code generation even for non-reachable symbols");
-    std_os_add_flag_bool("verbose", &(src_pink_flag_verbose), "Extra diagnostic information");
-    char const ((*program_name)) = std_os_parse_flags(&(argc), &(argv));
-    if ((argc) != (1)) {
-        printf("Usage: %s [flags] <main-package>\n", program_name);
-        std_os_print_flags_usage();
-        return 1;
-    }
-    char const ((*package_name)) = argv[0];
-    if (src_pink_flag_verbose) {
-        printf("Target operating system: %s\n", src_pink_os_names[src_pink_target_os]);
-        printf("Target architecture: %s\n", src_pink_arch_names[src_pink_target_arch]);
-    }
-    src_pink_init_compiler();
-    src_pink_builtin_package = src_pink_import_package("builtin");
-    if (!(src_pink_builtin_package)) {
-        printf("error: Failed to compile package \'builtin\'.\n");
-        return 1;
-    }
-    src_pink_builtin_package->external_name = std_str_intern("");
-    src_pink_Package (*main_package) = src_pink_import_package(package_name);
-    if (!(main_package)) {
-        printf("error: Failed to compile package \'%s\'\n", package_name);
-        return 1;
-    }
-    char const ((*main_name)) = std_str_intern("main");
-    src_pink_Sym (*main_sym) = src_pink_get_package_sym(main_package, main_name);
-    if (!(main_sym)) {
-        printf("error: No \'main\' entry point defined in package \'%s\'\n", package_name);
-        return 1;
-    }
-    main_sym->external_name = main_name;
-    src_pink_reachable_phase = SRC_PINK_REACHABLE_NATURAL;
-    src_pink_resolve_sym(main_sym);
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
-        if (src_pink_package_list[i]->always_reachable) {
-            src_pink_resolve_package_syms(src_pink_package_list[i]);
-        }
-    }
-    src_pink_finalize_reachable_syms();
-    if (src_pink_flag_verbose) {
-        printf("Reached %d symbols in %d packages from %s/main\n", (int)(std_buf_len(src_pink_reachable_syms)), (int)(std_buf_len(src_pink_package_list)), package_name);
-    }
-    if (!(src_pink_flag_lazy)) {
-        src_pink_reachable_phase = SRC_PINK_REACHABLE_FORCED;
-        for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
-            src_pink_resolve_package_syms(src_pink_package_list[i]);
-        }
-        src_pink_finalize_reachable_syms();
-    }
-    if (!(flag_check)) {
-        char (c_path[MAX_PATH]) = {0};
-        if (output_name) {
-            std_os_path_copy(c_path, output_name);
-        } else {
-            snprintf(c_path, sizeof(c_path), "out_%s.%s", package_name, extension);
-        }
-        gen_all();
-        char (*c_code) = src_pink_gen_buf;
-        src_pink_gen_buf = NULL;
-        if (!(std_write_file(c_path, c_code, std_buf_len(c_code)))) {
-            printf("error: Failed to write file: %s\n", c_path);
-            return 1;
-        }
-    }
-    return 0;
 }
 
 src_pink_Package (*src_pink_current_package);
@@ -8373,443 +8897,886 @@ bool src_pink_is_excluded_target_filename(char const ((*name))) {
     }
 }
 
-src_pink_TypeMetrics (*src_pink_type_metrics);
-src_pink_Type (*src_pink_type_void) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_VOID});
-src_pink_Type (*src_pink_type_bool) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_BOOL});
-src_pink_Type (*src_pink_type_char) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_CHAR});
-src_pink_Type (*src_pink_type_uchar) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_UCHAR});
-src_pink_Type (*src_pink_type_schar) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_SCHAR});
-src_pink_Type (*src_pink_type_short) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_SHORT});
-src_pink_Type (*src_pink_type_ushort) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_USHORT});
-src_pink_Type (*src_pink_type_int) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_INT});
-src_pink_Type (*src_pink_type_uint) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_UINT});
-src_pink_Type (*src_pink_type_long) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_LONG});
-src_pink_Type (*src_pink_type_ulong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_ULONG});
-src_pink_Type (*src_pink_type_llong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_LLONG});
-src_pink_Type (*src_pink_type_ullong) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_ULLONG});
-src_pink_Type (*src_pink_type_float) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_FLOAT});
-src_pink_Type (*src_pink_type_double) = &((src_pink_Type){SRC_PINK_CMPL_TYPE_DOUBLE});
-int src_pink_next_typeid = 1;
-src_pink_Type (*src_pink_type_uintptr);
-src_pink_Type (*src_pink_type_usize);
-src_pink_Type (*src_pink_type_ssize);
-std_Map src_pink_typeid_map;
-src_pink_Type (*src_pink_get_type_from_typeid(int typeid)) {
-    if ((typeid) == (0)) {
-        return NULL;
-    }
-    return std_map_get(&(src_pink_typeid_map), (void *)((uintptr_t)(typeid)));
-}
-
-void src_pink_register_typeid(src_pink_Type (*type)) {
-    std_map_put(&(src_pink_typeid_map), (void *)((uintptr_t)(type->typeid)), type);
-}
-
-src_pink_Type (*src_pink_type_alloc(TypeKind kind)) {
-    src_pink_Type (*type) = std_xcalloc(1, sizeof(src_pink_Type));
-    type->kind = kind;
-    type->typeid = (src_pink_next_typeid)++;
-    src_pink_register_typeid(type);
-    return type;
-}
-
-bool src_pink_is_ptr_type(src_pink_Type (*type)) {
-    return (type->kind) == (SRC_PINK_CMPL_TYPE_PTR);
-}
-
-bool src_pink_is_func_type(src_pink_Type (*type)) {
-    return (type->kind) == (SRC_PINK_CMPL_TYPE_FUNC);
-}
-
-bool src_pink_is_ptr_like_type(src_pink_Type (*type)) {
-    return ((type->kind) == (SRC_PINK_CMPL_TYPE_PTR)) || ((type->kind) == (SRC_PINK_CMPL_TYPE_FUNC));
-}
-
-bool src_pink_is_const_type(src_pink_Type (*type)) {
-    return (type->kind) == (SRC_PINK_CMPL_TYPE_CONST);
-}
-
-bool src_pink_is_array_type(src_pink_Type (*type)) {
-    return (type->kind) == (SRC_PINK_CMPL_TYPE_ARRAY);
-}
-
-bool src_pink_is_incomplete_array_type(src_pink_Type (*type)) {
-    return (src_pink_is_array_type(type)) && ((type->num_elems) == (0));
-}
-
-bool src_pink_is_integer_type(src_pink_Type (*type)) {
-    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_ENUM));
-}
-
-bool src_pink_is_floating_type(src_pink_Type (*type)) {
-    return ((SRC_PINK_CMPL_TYPE_FLOAT) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_DOUBLE));
-}
-
-bool src_pink_is_arithmetic_type(src_pink_Type (*type)) {
-    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_DOUBLE));
-}
-
-bool src_pink_is_scalar_type(src_pink_Type (*type)) {
-    return ((SRC_PINK_CMPL_TYPE_BOOL) <= (type->kind)) && ((type->kind) <= (SRC_PINK_CMPL_TYPE_FUNC));
-}
-
-bool src_pink_is_aggregate_type(src_pink_Type (*type)) {
-    return ((type->kind) == (SRC_PINK_CMPL_TYPE_STRUCT)) || ((type->kind) == (SRC_PINK_CMPL_TYPE_UNION));
-}
-
-bool src_pink_is_signed_type(src_pink_Type (*type)) {
-    switch (type->kind) {
-    case SRC_PINK_CMPL_TYPE_CHAR: {
-        return src_pink_type_metrics[SRC_PINK_CMPL_TYPE_CHAR].sign;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_SCHAR:
-    case SRC_PINK_CMPL_TYPE_SHORT:
-    case SRC_PINK_CMPL_TYPE_INT:
-    case SRC_PINK_CMPL_TYPE_LONG:
-    case SRC_PINK_CMPL_TYPE_LLONG: {
-        return true;
-        break;
-    }
-    default: {
-        return false;
-        break;
-    }
-    }
-}
-
-char const ((*(src_pink_type_names[SRC_PINK_NUM_CMPL_TYPE_KINDS]))) = {[SRC_PINK_CMPL_TYPE_VOID] = "void", [SRC_PINK_CMPL_TYPE_BOOL] = "bool", [SRC_PINK_CMPL_TYPE_CHAR] = "char", [SRC_PINK_CMPL_TYPE_SCHAR] = "schar", [SRC_PINK_CMPL_TYPE_UCHAR] = "uchar", [SRC_PINK_CMPL_TYPE_SHORT] = "short", [SRC_PINK_CMPL_TYPE_USHORT] = "ushort", [SRC_PINK_CMPL_TYPE_INT] = "int", [SRC_PINK_CMPL_TYPE_UINT] = "uint", [SRC_PINK_CMPL_TYPE_LONG] = "long", [SRC_PINK_CMPL_TYPE_ULONG] = "ulong", [SRC_PINK_CMPL_TYPE_LLONG] = "llong", [SRC_PINK_CMPL_TYPE_ULLONG] = "ullong", [SRC_PINK_CMPL_TYPE_FLOAT] = "float", [SRC_PINK_CMPL_TYPE_DOUBLE] = "double"};
-int (src_pink_type_ranks[SRC_PINK_NUM_CMPL_TYPE_KINDS]) = {[SRC_PINK_CMPL_TYPE_BOOL] = 1, [SRC_PINK_CMPL_TYPE_CHAR] = 2, [SRC_PINK_CMPL_TYPE_SCHAR] = 2, [SRC_PINK_CMPL_TYPE_UCHAR] = 2, [SRC_PINK_CMPL_TYPE_SHORT] = 3, [SRC_PINK_CMPL_TYPE_USHORT] = 3, [SRC_PINK_CMPL_TYPE_INT] = 4, [SRC_PINK_CMPL_TYPE_UINT] = 4, [SRC_PINK_CMPL_TYPE_LONG] = 5, [SRC_PINK_CMPL_TYPE_ULONG] = 5, [SRC_PINK_CMPL_TYPE_LLONG] = 6, [SRC_PINK_CMPL_TYPE_ULLONG] = 6};
-int src_pink_type_rank(src_pink_Type (*type)) {
-    int rank = src_pink_type_ranks[type->kind];
-    return rank;
-}
-
-src_pink_Type (*src_pink_unsigned_type(src_pink_Type (*type))) {
-    switch (type->kind) {
-    case SRC_PINK_CMPL_TYPE_BOOL: {
-        return src_pink_type_bool;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_CHAR:
-    case SRC_PINK_CMPL_TYPE_SCHAR:
-    case SRC_PINK_CMPL_TYPE_UCHAR: {
-        return src_pink_type_uchar;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_SHORT:
-    case SRC_PINK_CMPL_TYPE_USHORT: {
-        return src_pink_type_ushort;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_INT:
-    case SRC_PINK_CMPL_TYPE_UINT: {
-        return src_pink_type_uint;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_LONG:
-    case SRC_PINK_CMPL_TYPE_ULONG: {
-        return src_pink_type_ulong;
-        break;
-    }
-    case SRC_PINK_CMPL_TYPE_LLONG:
-    case SRC_PINK_CMPL_TYPE_ULLONG: {
-        return src_pink_type_ullong;
-        break;
-    }
-    default: {
-        return NULL;
-        break;
-    }
-    }
-}
-
-size_t src_pink_type_sizeof(src_pink_Type (*type)) {
-    return type->size;
-}
-
-size_t src_pink_type_alignof(src_pink_Type (*type)) {
-    return type->align;
-}
-
-std_Map src_pink_cached_ptr_types;
-src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base))) {
-    src_pink_Type (*type) = std_map_get(&(src_pink_cached_ptr_types), base);
-    if (!(type)) {
-        type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_PTR);
-        type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
-        type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
-        type->base = base;
-        std_map_put(&(src_pink_cached_ptr_types), base, type);
+src_pink_Typespec (*src_pink_parse_type_func_param(void)) {
+    src_pink_Typespec (*type) = src_pink_parse_type();
+    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        if ((type->kind) != (SRC_PINK_TYPESPEC_NAME)) {
+            src_pink_error(src_pink_token.pos, "Colons in parameters of func types must be preceded by names.");
+        }
+        type = src_pink_parse_type();
     }
     return type;
 }
 
-std_Map src_pink_cached_const_types;
-src_pink_Type (*src_pink_type_const(src_pink_Type (*base))) {
-    if ((base->kind) == (SRC_PINK_CMPL_TYPE_CONST)) {
-        return base;
+src_pink_Typespec (*src_pink_parse_type_func(void)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Typespec (*(*args)) = NULL;
+    bool has_varargs = false;
+    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+    while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
+        if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
+            if (has_varargs) {
+                src_pink_error(src_pink_token.pos, "Multiple ellipsis instances in function type");
+            }
+            has_varargs = true;
+        } else {
+            if (has_varargs) {
+                src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function type");
+            }
+            src_pink_Typespec (*param) = src_pink_parse_type_func_param();
+            std_buf_push((void (**))(&(args)), &(param), sizeof(param));
+        }
+        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+            break;
+        }
     }
-    src_pink_Type (*type) = std_map_get(&(src_pink_cached_const_types), base);
-    if (!(type)) {
-        src_pink_complete_type(base);
-        type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_CONST);
-        type->nonmodifiable = true;
-        type->size = base->size;
-        type->align = base->align;
-        type->base = base;
-        std_map_put(&(src_pink_cached_const_types), base, type);
+    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    src_pink_Typespec (*ret) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        ret = src_pink_parse_type();
     }
-    return type;
+    return src_pink_new_typespec_func(pos, args, std_buf_len(args), ret, has_varargs);
 }
 
-src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type))) {
-    if ((type->kind) == (SRC_PINK_CMPL_TYPE_CONST)) {
-        return type->base;
-    } else {
+src_pink_Typespec (*src_pink_parse_type_base(void)) {
+    if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        char const ((*name)) = src_pink_token.name;
+        src_pink_next_token();
+        return src_pink_new_typespec_name(pos, name);
+    } else if (src_pink_match_keyword(src_pink_func_keyword)) {
+        return src_pink_parse_type_func();
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
+        src_pink_Typespec (*type) = src_pink_parse_type();
+        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
         return type;
-    }
-}
-
-std_Map src_pink_cached_array_types;
-src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems)) {
-    ullong hash = std_hash_mix(std_hash_ptr(base), std_hash_uint64(num_elems));
-    uint64_t key = (hash ? hash : 1);
-    src_pink_CachedArrayType (*cached) = std_map_get_from_uint64(&(src_pink_cached_array_types), key);
-    for (src_pink_CachedArrayType (*it) = cached; it; it = it->next) {
-        src_pink_Type (*type) = it->type;
-        if (((type->base) == (base)) && ((type->num_elems) == (num_elems))) {
-            return type;
-        }
-    }
-    src_pink_complete_type(base);
-    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_ARRAY);
-    type->nonmodifiable = base->nonmodifiable;
-    type->size = (num_elems) * (src_pink_type_sizeof(base));
-    type->align = src_pink_type_alignof(base);
-    type->base = base;
-    type->num_elems = num_elems;
-    src_pink_CachedArrayType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedArrayType));
-    new_cached->type = type;
-    new_cached->next = cached;
-    std_map_put_from_uint64(&(src_pink_cached_array_types), key, new_cached);
-    return type;
-}
-
-std_Map src_pink_cached_func_types;
-src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs)) {
-    ullong params_size = (num_params) * (sizeof(*(params)));
-    ullong hash = std_hash_mix(std_hash_bytes(params, params_size), std_hash_ptr(ret));
-    uint64_t key = (hash ? hash : 1);
-    src_pink_CachedFuncType (*cached) = std_map_get_from_uint64(&(src_pink_cached_func_types), key);
-    for (src_pink_CachedFuncType (*it) = cached; it; it = it->next) {
-        src_pink_Type (*type) = it->type;
-        if ((((type->function.num_params) == (num_params)) && ((type->function.ret) == (ret))) && ((type->function.has_varargs) == (has_varargs))) {
-            if ((memcmp(type->function.params, params, params_size)) == (0)) {
-                return type;
-            }
-        }
-    }
-    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_FUNC);
-    type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
-    type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
-    type->function.params = std_memdup(params, params_size);
-    type->function.num_params = num_params;
-    type->function.has_varargs = has_varargs;
-    type->function.ret = ret;
-    src_pink_CachedFuncType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedFuncType));
-    new_cached->type = type;
-    new_cached->next = cached;
-    std_map_put_from_uint64(&(src_pink_cached_func_types), key, new_cached);
-    return type;
-}
-
-bool src_pink_has_duplicate_fields(src_pink_Type (*type)) {
-    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
-        for (size_t j = (i) + (1); (j) < (type->aggregate.num_fields); (j)++) {
-            if ((type->aggregate.fields[i].name) == (type->aggregate.fields[j].name)) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-void src_pink_add_type_fields(src_pink_TypeField (*(*fields)), src_pink_Type (*type), size_t offset) {
-    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
-        src_pink_TypeField (*field) = &(type->aggregate.fields[i]);
-        src_pink_TypeField new_field = {field->name, field->type, (field->offset) + (offset)};
-        std_buf_push((void (**))(fields), &(new_field), sizeof(new_field));
-    }
-}
-
-void src_pink_type_complete_struct(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields) {
-    type->kind = SRC_PINK_CMPL_TYPE_STRUCT;
-    type->size = 0;
-    type->align = 0;
-    bool nonmodifiable = false;
-    src_pink_TypeField (*new_fields) = {0};
-    for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
-        if (it->name) {
-            it->offset = type->size;
-            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
-        } else {
-            src_pink_add_type_fields(&(new_fields), it->type, type->size);
-        }
-        type->align = std_max(type->align, src_pink_type_alignof(it->type));
-        type->size = (src_pink_type_sizeof(it->type)) + (std_align_up(type->size, src_pink_type_alignof(it->type)));
-        nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
-    }
-    type->size = std_align_up(type->size, type->align);
-    type->aggregate.fields = new_fields;
-    type->aggregate.num_fields = std_buf_len(new_fields);
-    type->nonmodifiable = nonmodifiable;
-}
-
-void src_pink_type_complete_union(src_pink_Type (*type), src_pink_TypeField (*fields), size_t num_fields) {
-    type->kind = SRC_PINK_CMPL_TYPE_UNION;
-    type->size = 0;
-    type->align = 0;
-    bool nonmodifiable = false;
-    src_pink_TypeField (*new_fields) = {0};
-    for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
-        if (it->name) {
-            it->offset = type->size;
-            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
-        } else {
-            src_pink_add_type_fields(&(new_fields), it->type, 0);
-        }
-        type->size = std_max(type->size, src_pink_type_sizeof(it->type));
-        type->align = std_max(type->align, src_pink_type_alignof(it->type));
-        nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
-    }
-    type->size = std_align_up(type->size, type->align);
-    type->aggregate.fields = new_fields;
-    type->aggregate.num_fields = std_buf_len(new_fields);
-    type->nonmodifiable = nonmodifiable;
-}
-
-src_pink_Type (*src_pink_type_incomplete(src_pink_Sym (*sym))) {
-    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_INCOMPLETE);
-    type->sym = sym;
-    return type;
-}
-
-src_pink_Type (*src_pink_type_enum(src_pink_Sym (*sym), src_pink_Type (*base))) {
-    src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_ENUM);
-    type->sym = sym;
-    type->base = base;
-    type->size = src_pink_type_int->size;
-    type->align = src_pink_type_int->align;
-    return type;
-}
-
-void src_pink_init_builtin_type(src_pink_Type (*type)) {
-    type->typeid = (src_pink_next_typeid)++;
-    src_pink_register_typeid(type);
-    type->size = src_pink_type_metrics[type->kind].size;
-    type->align = src_pink_type_metrics[type->kind].align;
-}
-
-void src_pink_init_builtin_types(void) {
-    src_pink_init_builtin_type(src_pink_type_void);
-    src_pink_init_builtin_type(src_pink_type_bool);
-    src_pink_init_builtin_type(src_pink_type_char);
-    src_pink_init_builtin_type(src_pink_type_uchar);
-    src_pink_init_builtin_type(src_pink_type_schar);
-    src_pink_init_builtin_type(src_pink_type_short);
-    src_pink_init_builtin_type(src_pink_type_ushort);
-    src_pink_init_builtin_type(src_pink_type_int);
-    src_pink_init_builtin_type(src_pink_type_uint);
-    src_pink_init_builtin_type(src_pink_type_long);
-    src_pink_init_builtin_type(src_pink_type_ulong);
-    src_pink_init_builtin_type(src_pink_type_llong);
-    src_pink_init_builtin_type(src_pink_type_ullong);
-    src_pink_init_builtin_type(src_pink_type_float);
-    src_pink_init_builtin_type(src_pink_type_double);
-}
-
-int src_pink_aggregate_item_field_index(src_pink_Type (*type), char const ((*name))) {
-    for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
-        if ((type->aggregate.fields[i].name) == (name)) {
-            return (int)(i);
-        }
-    }
-    return -(1);
-}
-
-src_pink_Type (*src_pink_aggregate_item_field_type_from_index(src_pink_Type (*type), int index)) {
-    return type->aggregate.fields[index].type;
-}
-
-src_pink_Type (*src_pink_aggregate_item_field_type_from_name(src_pink_Type (*type), char const ((*name)))) {
-    int index = src_pink_aggregate_item_field_index(type, name);
-    if ((index) < (0)) {
+    } else {
+        src_pink_fatal_error(src_pink_token.pos, "Unexpected token %s in type", src_pink_token_info());
         return NULL;
     }
-    return src_pink_aggregate_item_field_type_from_index(type, index);
 }
 
-void (*std_arena_alloc(std_Arena (*arena), size_t size)) {
-    if ((size) > ((size_t)(((arena->end) - (arena->ptr))))) {
-        std_arena_grow(arena, size);
+src_pink_Typespec (*src_pink_parse_type(void)) {
+    src_pink_Typespec (*type) = src_pink_parse_type_base();
+    src_pink_SrcPos pos = src_pink_token.pos;
+    while (((src_pink_is_token(SRC_PINK_TOKEN_LBRACKET)) || (src_pink_is_token(SRC_PINK_TOKEN_MUL))) || (src_pink_is_keyword(src_pink_const_keyword))) {
+        if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
+            src_pink_Expr (*size) = NULL;
+            if (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACKET))) {
+                size = src_pink_parse_expr();
+            }
+            src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
+            type = src_pink_new_typespec_array(pos, type, size);
+        } else if (src_pink_match_keyword(src_pink_const_keyword)) {
+            type = src_pink_new_typespec_const(pos, type);
+        } else {
+            src_pink_next_token();
+            type = src_pink_new_typespec_ptr(pos, type);
+        }
     }
-    char (*ptr) = arena->ptr;
-    arena->ptr = std_align_up_ptr((arena->ptr) + (size), STD_ARENA_ALIGNMENT);
-    return ptr;
+    return type;
 }
 
-void std_buf_printf(char (*(*buf)), char const ((*fmt)), ...) {
-    va_list args = {0};
-    va_start_ptr(&(args), &(fmt));
-    ullong cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
-    int n = (1) + (vsnprintf(std_buf_end(*(buf), 1), cap, fmt, args));
-    va_end_ptr(&(args));
-    if ((n) > (cap)) {
-        std_buf_fit((void (**))(buf), (n) + (std_buf_len(*(buf))), 1);
-        va_start_ptr(&(args), &(fmt));
-        ullong new_cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
-        n = (1) + (vsnprintf(std_buf_end(*(buf), 1), new_cap, fmt, args));
-        va_end_ptr(&(args));
+src_pink_CompoundField src_pink_parse_expr_compound_field(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
+        src_pink_Expr (*index) = src_pink_parse_expr();
+        src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
+        src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
+        return (src_pink_CompoundField){SRC_PINK_FIELD_INDEX, pos, src_pink_parse_expr(), .index = index};
+    } else {
+        src_pink_Expr (*expr) = src_pink_parse_expr();
+        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+            if ((expr->kind) != (SRC_PINK_EXPR_NAME)) {
+                src_pink_fatal_error(src_pink_token.pos, "Named initializer in compound literal must be preceded by field name");
+            }
+            return (src_pink_CompoundField){SRC_PINK_FIELD_NAME, pos, src_pink_parse_expr(), .name = expr->name};
+        } else {
+            return (src_pink_CompoundField){SRC_PINK_FIELD_DEFAULT, pos, expr};
+        }
     }
-    std_buf__hdr(*(buf))->len += (n) - (1);
 }
 
-char (*std_strf(char const ((*fmt)), ...)) {
-    va_list args = {0};
-    va_start_ptr(&(args), &(fmt));
-    int n = (1) + (vsnprintf(NULL, 0, fmt, args));
-    va_end_ptr(&(args));
-    char (*str) = std_xmalloc(n);
-    va_start_ptr(&(args), &(fmt));
-    vsnprintf(str, n, fmt, args);
-    va_end_ptr(&(args));
-    return str;
+src_pink_Expr (*src_pink_parse_expr_compound(src_pink_Typespec (*type))) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
+    src_pink_CompoundField (*fields) = NULL;
+    while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
+        src_pink_CompoundField field = src_pink_parse_expr_compound_field();
+        std_buf_push((void (**))(&(fields)), &(field), sizeof(field));
+        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+            break;
+        }
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    return src_pink_new_expr_compound(pos, type, fields, std_buf_len(fields));
 }
 
-void (*std_map_get(std_Map (*map), void const ((*key)))) {
-    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)))));
+src_pink_Expr (*src_pink_parse_expr_operand(void)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    if (src_pink_is_token(SRC_PINK_TOKEN_INT)) {
+        ullong val = src_pink_token.int_val;
+        src_pink_TokenMod mod = src_pink_token.mod;
+        src_pink_TokenSuffix suffix = src_pink_token.suffix;
+        src_pink_next_token();
+        return src_pink_new_expr_int(pos, val, mod, suffix);
+    } else if (src_pink_is_token(SRC_PINK_TOKEN_FLOAT)) {
+        char const ((*start)) = src_pink_token.start;
+        char const ((*end)) = src_pink_token.end;
+        double val = src_pink_token.float_val;
+        src_pink_TokenSuffix suffix = src_pink_token.suffix;
+        src_pink_next_token();
+        return src_pink_new_expr_float(pos, start, end, val, suffix);
+    } else if (src_pink_is_token(SRC_PINK_TOKEN_STR)) {
+        char const ((*val)) = src_pink_token.str_val;
+        src_pink_TokenMod mod = src_pink_token.mod;
+        src_pink_next_token();
+        return src_pink_new_expr_str(pos, val, mod);
+    } else if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
+        char const ((*name)) = src_pink_token.name;
+        src_pink_next_token();
+        if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
+            return src_pink_parse_expr_compound(src_pink_new_typespec_name(pos, name));
+        } else {
+            return src_pink_new_expr_name(pos, name);
+        }
+    } else if (src_pink_match_keyword(src_pink_sizeof_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+            src_pink_Typespec (*type) = src_pink_parse_type();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_sizeof_type(pos, type);
+        } else {
+            src_pink_Expr (*expr) = src_pink_parse_expr();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_sizeof_expr(pos, expr);
+        }
+    } else if (src_pink_match_keyword(src_pink_alignof_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+            src_pink_Typespec (*type) = src_pink_parse_type();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_alignof_type(pos, type);
+        } else {
+            src_pink_Expr (*expr) = src_pink_parse_expr();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_alignof_expr(pos, expr);
+        }
+    } else if (src_pink_match_keyword(src_pink_typeof_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+            src_pink_Typespec (*type) = src_pink_parse_type();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_typeof_type(pos, type);
+        } else {
+            src_pink_Expr (*expr) = src_pink_parse_expr();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_typeof_expr(pos, expr);
+        }
+    } else if (src_pink_match_keyword(src_pink_offsetof_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+        src_pink_Typespec (*type) = src_pink_parse_type();
+        src_pink_expect_token(SRC_PINK_TOKEN_COMMA);
+        char const ((*name)) = src_pink_parse_name();
+        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+        return src_pink_new_expr_offsetof(pos, type, name);
+    } else if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
+        return src_pink_parse_expr_compound(NULL);
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
+        if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+            src_pink_Typespec (*type) = src_pink_parse_type();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
+                return src_pink_parse_expr_compound(type);
+            } else {
+                return src_pink_new_expr_cast(pos, type, src_pink_parse_expr_unary());
+            }
+        } else {
+            src_pink_Expr (*expr) = src_pink_parse_expr();
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            return src_pink_new_expr_paren(pos, expr);
+        }
+    } else {
+        src_pink_fatal_error(src_pink_token.pos, "Unexpected token %s in expression", src_pink_token_info());
+        return NULL;
+    }
 }
 
-void std_map_put(std_Map (*map), void const ((*key)), void (*val)) {
-    std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), (uint64_t)((uintptr_t)(val)));
+src_pink_Expr (*src_pink_parse_expr_base(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_operand();
+    while (((((src_pink_is_token(SRC_PINK_TOKEN_LPAREN)) || (src_pink_is_token(SRC_PINK_TOKEN_LBRACKET))) || (src_pink_is_token(SRC_PINK_TOKEN_DOT))) || (src_pink_is_token(SRC_PINK_TOKEN_INC))) || (src_pink_is_token(SRC_PINK_TOKEN_DEC))) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
+            src_pink_Expr (*(*args)) = NULL;
+            while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
+                src_pink_Expr (*arg) = src_pink_parse_expr();
+                std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+                if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+                    break;
+                }
+            }
+            src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+            expr = src_pink_new_expr_call(pos, expr, args, std_buf_len(args));
+        } else if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
+            src_pink_Expr (*index) = src_pink_parse_expr();
+            src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
+            expr = src_pink_new_expr_index(pos, expr, index);
+        } else if (src_pink_is_token(SRC_PINK_TOKEN_DOT)) {
+            src_pink_next_token();
+            char const ((*field)) = src_pink_token.name;
+            src_pink_expect_token(SRC_PINK_TOKEN_NAME);
+            expr = src_pink_new_expr_field(pos, expr, field);
+        } else {
+            src_pink_TokenKind op = src_pink_token.kind;
+            src_pink_next_token();
+            expr = src_pink_new_expr_modify(pos, op, true, expr);
+        }
+    }
+    return expr;
 }
 
-void (*std_buf_end(void (*b), size_t elem_size)) {
-    return ((char *)(b)) + ((elem_size) * (std_buf_len(b)));
+bool src_pink_is_unary_op(void) {
+    return (((((((src_pink_is_token(SRC_PINK_TOKEN_ADD)) || (src_pink_is_token(SRC_PINK_TOKEN_SUB))) || (src_pink_is_token(SRC_PINK_TOKEN_MUL))) || (src_pink_is_token(SRC_PINK_TOKEN_AND))) || (src_pink_is_token(SRC_PINK_TOKEN_NEG))) || (src_pink_is_token(SRC_PINK_TOKEN_NOT))) || (src_pink_is_token(SRC_PINK_TOKEN_INC))) || (src_pink_is_token(SRC_PINK_TOKEN_DEC));
 }
 
-size_t std_buf_len(void (*b)) {
-    return (b ? std_buf__hdr(b)->len : 0);
+src_pink_Expr (*src_pink_parse_expr_unary(void)) {
+    if (src_pink_is_unary_op()) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        src_pink_TokenKind op = src_pink_token.kind;
+        src_pink_next_token();
+        if (((op) == (SRC_PINK_TOKEN_INC)) || ((op) == (SRC_PINK_TOKEN_DEC))) {
+            return src_pink_new_expr_modify(pos, op, false, src_pink_parse_expr_unary());
+        } else {
+            return src_pink_new_expr_unary(pos, op, src_pink_parse_expr_unary());
+        }
+    } else {
+        return src_pink_parse_expr_base();
+    }
+}
+
+bool src_pink_is_mul_op(void) {
+    return ((SRC_PINK_TOKEN_FIRST_MUL) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_MUL));
+}
+
+src_pink_Expr (*src_pink_parse_expr_mul(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_unary();
+    while (src_pink_is_mul_op()) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        src_pink_TokenKind op = src_pink_token.kind;
+        src_pink_next_token();
+        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_unary());
+    }
+    return expr;
+}
+
+bool src_pink_is_add_op(void) {
+    return ((SRC_PINK_TOKEN_FIRST_ADD) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_ADD));
+}
+
+src_pink_Expr (*src_pink_parse_expr_add(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_mul();
+    while (src_pink_is_add_op()) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        src_pink_TokenKind op = src_pink_token.kind;
+        src_pink_next_token();
+        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_mul());
+    }
+    return expr;
+}
+
+bool src_pink_is_cmp_op(void) {
+    return ((SRC_PINK_TOKEN_FIRST_CMP) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_CMP));
+}
+
+src_pink_Expr (*src_pink_parse_expr_cmp(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_add();
+    while (src_pink_is_cmp_op()) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        src_pink_TokenKind op = src_pink_token.kind;
+        src_pink_next_token();
+        expr = src_pink_new_expr_binary(pos, op, expr, src_pink_parse_expr_add());
+    }
+    return expr;
+}
+
+src_pink_Expr (*src_pink_parse_expr_and(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_cmp();
+    while (src_pink_match_token(SRC_PINK_TOKEN_AND_AND)) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        expr = src_pink_new_expr_binary(pos, SRC_PINK_TOKEN_AND_AND, expr, src_pink_parse_expr_cmp());
+    }
+    return expr;
+}
+
+src_pink_Expr (*src_pink_parse_expr_or(void)) {
+    src_pink_Expr (*expr) = src_pink_parse_expr_and();
+    while (src_pink_match_token(SRC_PINK_TOKEN_OR_OR)) {
+        src_pink_SrcPos pos = src_pink_token.pos;
+        expr = src_pink_new_expr_binary(pos, SRC_PINK_TOKEN_OR_OR, expr, src_pink_parse_expr_and());
+    }
+    return expr;
+}
+
+src_pink_Expr (*src_pink_parse_expr_ternary(void)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Expr (*expr) = src_pink_parse_expr_or();
+    if (src_pink_match_token(SRC_PINK_TOKEN_QUESTION)) {
+        src_pink_Expr (*then_expr) = src_pink_parse_expr_ternary();
+        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
+        src_pink_Expr (*else_expr) = src_pink_parse_expr_ternary();
+        expr = src_pink_new_expr_ternary(pos, expr, then_expr, else_expr);
+    }
+    return expr;
+}
+
+src_pink_Expr (*src_pink_parse_expr(void)) {
+    return src_pink_parse_expr_ternary();
+}
+
+src_pink_Expr (*src_pink_parse_paren_expr(void)) {
+    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+    src_pink_Expr (*expr) = src_pink_parse_expr();
+    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    return expr;
+}
+
+src_pink_StmtList src_pink_parse_stmt_block(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
+    src_pink_Stmt (*(*stmts)) = NULL;
+    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
+        src_pink_Stmt (*stmt) = src_pink_parse_stmt();
+        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    return src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts));
+}
+
+src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos)) {
+    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+    src_pink_Expr (*cond) = src_pink_parse_expr();
+    src_pink_Stmt (*init) = src_pink_parse_init_stmt(cond);
+    if (init) {
+        if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
+            cond = src_pink_parse_expr();
+        } else {
+            cond = NULL;
+        }
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    src_pink_StmtList then_block = src_pink_parse_stmt_block();
+    src_pink_StmtList else_block = {{NULL, 0}, NULL, 0};
+    src_pink_ElseIf (*elseifs) = NULL;
+    while (src_pink_match_keyword(src_pink_else_keyword)) {
+        if (!(src_pink_match_keyword(src_pink_if_keyword))) {
+            else_block = src_pink_parse_stmt_block();
+            break;
+        }
+        src_pink_Expr (*elseif_cond) = src_pink_parse_paren_expr();
+        src_pink_StmtList elseif_block = src_pink_parse_stmt_block();
+        src_pink_ElseIf elseif = {elseif_cond, elseif_block};
+        std_buf_push((void (**))(&(elseifs)), &(elseif), sizeof(elseif));
+    }
+    return src_pink_new_stmt_if(pos, init, cond, then_block, elseifs, std_buf_len(elseifs), else_block);
+}
+
+src_pink_Stmt (*src_pink_parse_stmt_while(src_pink_SrcPos pos)) {
+    src_pink_Expr (*cond) = src_pink_parse_paren_expr();
+    return src_pink_new_stmt_while(pos, cond, src_pink_parse_stmt_block());
+}
+
+src_pink_Stmt (*src_pink_parse_stmt_do_while(src_pink_SrcPos pos)) {
+    src_pink_StmtList block = src_pink_parse_stmt_block();
+    if (!(src_pink_match_keyword(src_pink_while_keyword))) {
+        src_pink_fatal_error(src_pink_token.pos, "Expected \'while\' after \'do\' block");
+        return NULL;
+    }
+    src_pink_Stmt (*stmt) = src_pink_new_stmt_do_while(pos, src_pink_parse_paren_expr(), block);
+    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    return stmt;
+}
+
+bool src_pink_is_assign_op(void) {
+    return ((SRC_PINK_TOKEN_FIRST_ASSIGN) <= (src_pink_token.kind)) && ((src_pink_token.kind) <= (SRC_PINK_TOKEN_LAST_ASSIGN));
+}
+
+src_pink_Stmt (*src_pink_parse_init_stmt(src_pink_Expr (*left))) {
+    if (src_pink_match_token(SRC_PINK_TOKEN_COLON_ASSIGN)) {
+        if ((left->kind) != (SRC_PINK_EXPR_NAME)) {
+            src_pink_fatal_error(src_pink_token.pos, ":= must be preceded by a name");
+            return NULL;
+        }
+        return src_pink_new_stmt_init(left->pos, left->name, NULL, src_pink_parse_expr());
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        if ((left->kind) != (SRC_PINK_EXPR_NAME)) {
+            src_pink_fatal_error(src_pink_token.pos, ": must be preceded by a name");
+            return NULL;
+        }
+        char const ((*name)) = left->name;
+        src_pink_Typespec (*type) = src_pink_parse_type();
+        src_pink_Expr (*expr) = NULL;
+        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+            expr = src_pink_parse_expr();
+        }
+        return src_pink_new_stmt_init(left->pos, name, type, expr);
+    } else {
+        return NULL;
+    }
+}
+
+src_pink_Stmt (*src_pink_parse_simple_stmt(void)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Expr (*expr) = src_pink_parse_expr();
+    src_pink_Stmt (*stmt) = src_pink_parse_init_stmt(expr);
+    if (!(stmt)) {
+        if (src_pink_is_assign_op()) {
+            src_pink_TokenKind op = src_pink_token.kind;
+            src_pink_next_token();
+            stmt = src_pink_new_stmt_assign(pos, op, expr, src_pink_parse_expr());
+        } else {
+            stmt = src_pink_new_stmt_expr(pos, expr);
+        }
+    }
+    return stmt;
+}
+
+src_pink_Stmt (*src_pink_parse_stmt_for(src_pink_SrcPos pos)) {
+    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+    src_pink_Stmt (*init) = NULL;
+    if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
+        init = src_pink_parse_simple_stmt();
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    src_pink_Expr (*cond) = NULL;
+    if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
+        cond = src_pink_parse_expr();
+    }
+    src_pink_Stmt (*next) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
+        if (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
+            next = src_pink_parse_simple_stmt();
+            if ((next->kind) == (SRC_PINK_STMT_INIT)) {
+                src_pink_error(src_pink_token.pos, "Init statements not allowed in for-statement\'s next clause");
+            }
+        }
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    return src_pink_new_stmt_for(pos, init, cond, next, src_pink_parse_stmt_block());
+}
+
+src_pink_SwitchCasePattern src_pink_parse_switch_case_pattern(void) {
+    src_pink_Expr (*start) = src_pink_parse_expr();
+    src_pink_Expr (*end) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
+        end = src_pink_parse_expr();
+    }
+    return (src_pink_SwitchCasePattern){start, end};
+}
+
+src_pink_SwitchCase src_pink_parse_stmt_switch_case(void) {
+    src_pink_SwitchCasePattern (*patterns) = NULL;
+    bool is_default = false;
+    bool is_first_case = true;
+    while ((src_pink_is_keyword(src_pink_case_keyword)) || (src_pink_is_keyword(src_pink_default_keyword))) {
+        if (src_pink_match_keyword(src_pink_case_keyword)) {
+            if (!(is_first_case)) {
+                src_pink_error(src_pink_token.pos, "Use comma-separated expressions to match multiple values with one case label");
+                is_first_case = false;
+            }
+            src_pink_SwitchCasePattern pattern = src_pink_parse_switch_case_pattern();
+            std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
+            while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
+                pattern = src_pink_parse_switch_case_pattern();
+                std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
+            }
+        } else {
+            src_pink_next_token();
+            if (is_default) {
+                src_pink_error(src_pink_token.pos, "Duplicate default labels in same switch clause");
+            }
+            is_default = true;
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
+    }
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Stmt (*(*stmts)) = {0};
+    while ((((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) && (!(src_pink_is_keyword(src_pink_case_keyword)))) && (!(src_pink_is_keyword(src_pink_default_keyword)))) {
+        src_pink_Stmt (*stmt) = src_pink_parse_stmt();
+        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
+    }
+    return (src_pink_SwitchCase){patterns, std_buf_len(patterns), is_default, src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts))};
+}
+
+src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos)) {
+    src_pink_Expr (*expr) = src_pink_parse_paren_expr();
+    src_pink_SwitchCase (*cases) = {0};
+    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
+    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
+        src_pink_SwitchCase case_stmt = src_pink_parse_stmt_switch_case();
+        std_buf_push((void (**))(&(cases)), &(case_stmt), sizeof(case_stmt));
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    return src_pink_new_stmt_switch(pos, expr, cases, std_buf_len(cases));
+}
+
+src_pink_Stmt (*src_pink_parse_stmt(void)) {
+    src_pink_Notes notes = src_pink_parse_notes();
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Stmt (*stmt) = {0};
+    if (src_pink_match_keyword(src_pink_if_keyword)) {
+        stmt = src_pink_parse_stmt_if(pos);
+    } else if (src_pink_match_keyword(src_pink_while_keyword)) {
+        stmt = src_pink_parse_stmt_while(pos);
+    } else if (src_pink_match_keyword(src_pink_do_keyword)) {
+        stmt = src_pink_parse_stmt_do_while(pos);
+    } else if (src_pink_match_keyword(src_pink_for_keyword)) {
+        stmt = src_pink_parse_stmt_for(pos);
+    } else if (src_pink_match_keyword(src_pink_switch_keyword)) {
+        stmt = src_pink_parse_stmt_switch(pos);
+    } else if (src_pink_is_token(SRC_PINK_TOKEN_LBRACE)) {
+        stmt = src_pink_new_stmt_block(pos, src_pink_parse_stmt_block());
+    } else if (src_pink_match_keyword(src_pink_break_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        stmt = src_pink_new_stmt_break(pos);
+    } else if (src_pink_match_keyword(src_pink_continue_keyword)) {
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        stmt = src_pink_new_stmt_continue(pos);
+    } else if (src_pink_match_keyword(src_pink_return_keyword)) {
+        src_pink_Expr (*expr) = {0};
+        if (!(src_pink_is_token(SRC_PINK_TOKEN_SEMICOLON))) {
+            expr = src_pink_parse_expr();
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        stmt = src_pink_new_stmt_return(pos, expr);
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_POUND)) {
+        src_pink_Note note = src_pink_parse_note();
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        stmt = src_pink_new_stmt_note(pos, note);
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        stmt = src_pink_new_stmt_label(pos, src_pink_parse_name());
+    } else if (src_pink_match_keyword(src_pink_goto_keyword)) {
+        stmt = src_pink_new_stmt_goto(pos, src_pink_parse_name());
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    } else {
+        stmt = src_pink_parse_simple_stmt();
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    }
+    stmt->notes = notes;
+    return stmt;
+}
+
+char const ((*src_pink_parse_name(void))) {
+    char const ((*name)) = src_pink_token.name;
+    src_pink_expect_token(SRC_PINK_TOKEN_NAME);
+    return name;
+}
+
+src_pink_EnumItem src_pink_parse_decl_enum_item(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_Expr (*init) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+        init = src_pink_parse_expr();
+    }
+    return (src_pink_EnumItem){pos, name, init};
+}
+
+src_pink_Decl (*src_pink_parse_decl_enum(src_pink_SrcPos pos)) {
+    char const ((*name)) = NULL;
+    if (src_pink_is_token(SRC_PINK_TOKEN_NAME)) {
+        name = src_pink_parse_name();
+    }
+    src_pink_Typespec (*type) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+        type = src_pink_parse_type();
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
+    src_pink_EnumItem (*items) = NULL;
+    while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
+        src_pink_EnumItem item = src_pink_parse_decl_enum_item();
+        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+            break;
+        }
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    return src_pink_new_decl_enum(pos, name, type, items, std_buf_len(items));
+}
+
+src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    if (src_pink_match_keyword(src_pink_struct_keyword)) {
+        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE, .subaggregate = src_pink_parse_aggregate(SRC_PINK_AGGREGATE_STRUCT)};
+    } else if (src_pink_match_keyword(src_pink_union_keyword)) {
+        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE, .subaggregate = src_pink_parse_aggregate(SRC_PINK_AGGREGATE_UNION)};
+    } else {
+        char const ((*(*names))) = NULL;
+        char const ((*name)) = src_pink_parse_name();
+        std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+        while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
+            name = src_pink_parse_name();
+            std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_COLON);
+        src_pink_Typespec (*type) = src_pink_parse_type();
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_FIELD, .names = names, .num_names = std_buf_len(names), .type = type};
+    }
+}
+
+src_pink_Aggregate (*src_pink_parse_aggregate(src_pink_AggregateKind kind)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
+    src_pink_AggregateItem (*items) = NULL;
+    while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
+        src_pink_AggregateItem item = src_pink_parse_decl_aggregate_item();
+        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    return src_pink_new_aggregate(pos, kind, items, std_buf_len(items));
+}
+
+src_pink_Decl (*src_pink_parse_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind)) {
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_AggregateKind aggregate_kind = ((kind) == (SRC_PINK_DECL_STRUCT) ? SRC_PINK_AGGREGATE_STRUCT : SRC_PINK_AGGREGATE_UNION);
+    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
+        src_pink_Decl (*decl) = src_pink_new_decl_aggregate(pos, kind, name, src_pink_new_aggregate(pos, aggregate_kind, NULL, 0));
+        decl->is_incomplete = true;
+        return decl;
+    } else {
+        return src_pink_new_decl_aggregate(pos, kind, name, src_pink_parse_aggregate(aggregate_kind));
+    }
+}
+
+src_pink_Decl (*src_pink_parse_decl_var(src_pink_SrcPos pos)) {
+    char const ((*name)) = src_pink_parse_name();
+    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+        src_pink_Expr (*expr) = src_pink_parse_expr();
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        return src_pink_new_decl_var(pos, name, NULL, expr);
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        src_pink_Typespec (*type) = src_pink_parse_type();
+        src_pink_Expr (*expr) = NULL;
+        if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+            expr = src_pink_parse_expr();
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+        return src_pink_new_decl_var(pos, name, type, expr);
+    } else {
+        src_pink_fatal_error(src_pink_token.pos, "Expected : or = after var, got %s", src_pink_token_info());
+        return NULL;
+    }
+}
+
+src_pink_Decl (*src_pink_parse_decl_const(src_pink_SrcPos pos)) {
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_Typespec (*type) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        type = src_pink_parse_type();
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
+    src_pink_Expr (*expr) = src_pink_parse_expr();
+    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    return src_pink_new_decl_const(pos, name, type, expr);
+}
+
+src_pink_Decl (*src_pink_parse_decl_typedef(src_pink_SrcPos pos)) {
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_expect_token(SRC_PINK_TOKEN_ASSIGN);
+    src_pink_Typespec (*type) = src_pink_parse_type();
+    src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
+    return src_pink_new_decl_typedef(pos, name, type);
+}
+
+src_pink_FuncParam src_pink_parse_decl_func_param(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_expect_token(SRC_PINK_TOKEN_COLON);
+    src_pink_Typespec (*type) = src_pink_parse_type();
+    return (src_pink_FuncParam){pos, name, type};
+}
+
+src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos)) {
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_expect_token(SRC_PINK_TOKEN_LPAREN);
+    src_pink_FuncParam (*params) = NULL;
+    bool has_varargs = false;
+    while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
+        if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
+            if (has_varargs) {
+                src_pink_error(src_pink_token.pos, "Multiple ellipsis in function declaration");
+            }
+            has_varargs = true;
+        } else {
+            if (has_varargs) {
+                src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function declaration");
+            }
+            src_pink_FuncParam param = src_pink_parse_decl_func_param();
+            std_buf_push((void (**))(&(params)), &(param), sizeof(param));
+        }
+        if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+            break;
+        }
+    }
+    src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    src_pink_Typespec (*ret_type) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
+        ret_type = src_pink_parse_type();
+    }
+    src_pink_StmtList block = {0};
+    bool is_incomplete = {0};
+    if (src_pink_match_token(SRC_PINK_TOKEN_SEMICOLON)) {
+        is_incomplete = true;
+    } else {
+        block = src_pink_parse_stmt_block();
+        is_incomplete = false;
+    }
+    src_pink_Decl (*decl) = src_pink_new_decl_func(pos, name, params, std_buf_len(params), ret_type, has_varargs, block);
+    decl->is_incomplete = is_incomplete;
+    return decl;
+}
+
+src_pink_NoteArg src_pink_parse_note_arg(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    src_pink_Expr (*expr) = src_pink_parse_expr();
+    char const ((*name)) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+        if ((expr->kind) != (SRC_PINK_EXPR_NAME)) {
+            src_pink_fatal_error(src_pink_token.pos, "Left of: operand = in note argument must be a name");
+        }
+        name = expr->name;
+        expr = src_pink_parse_expr();
+    }
+    return (src_pink_NoteArg){.pos = pos, .name = name, .expr = expr};
+}
+
+src_pink_Note src_pink_parse_note(void) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    char const ((*name)) = src_pink_parse_name();
+    src_pink_NoteArg (*args) = NULL;
+    if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
+        src_pink_NoteArg arg = src_pink_parse_note_arg();
+        std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+        while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
+            arg = src_pink_parse_note_arg();
+            std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
+    }
+    return src_pink_new_note(pos, name, args, std_buf_len(args));
+}
+
+src_pink_Notes src_pink_parse_notes(void) {
+    src_pink_Note (*notes) = NULL;
+    while (src_pink_match_token(SRC_PINK_TOKEN_AT)) {
+        src_pink_Note note = src_pink_parse_note();
+        std_buf_push((void (**))(&(notes)), &(note), sizeof(note));
+    }
+    return src_pink_new_notes(notes, std_buf_len(notes));
+}
+
+src_pink_Decl (*src_pink_parse_decl_note(src_pink_SrcPos pos)) {
+    return src_pink_new_decl_note(pos, src_pink_parse_note());
+}
+
+src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
+    char const ((*rename_name)) = {0};
+    bool is_relative = {0};
+    repeat: ;
+    is_relative = false;
+    if (src_pink_match_token(SRC_PINK_TOKEN_DOT)) {
+        is_relative = true;
+    }
+    char const ((*name)) = src_pink_token.name;
+    src_pink_expect_token(SRC_PINK_TOKEN_NAME);
+    if ((!(is_relative)) && (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN))) {
+        if (rename_name) {
+            src_pink_fatal_error(pos, "Only one import assignment is allowed");
+        }
+        rename_name = name;
+        goto repeat;
+    }
+    char const ((*(*names))) = NULL;
+    std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+    while (src_pink_match_token(SRC_PINK_TOKEN_DOT)) {
+        std_buf_push((void (**))(&(names)), &(src_pink_token.name), sizeof(src_pink_token.name));
+        src_pink_expect_token(SRC_PINK_TOKEN_NAME);
+    }
+    bool import_all = false;
+    src_pink_ImportItem (*items) = {0};
+    if (src_pink_match_token(SRC_PINK_TOKEN_LBRACE)) {
+        while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
+            if (src_pink_match_token(SRC_PINK_TOKEN_ELLIPSIS)) {
+                import_all = true;
+            } else {
+                char const ((*item_name)) = src_pink_parse_name();
+                if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
+                    src_pink_ImportItem item = {.name = src_pink_parse_name(), .rename = item_name};
+                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+                } else {
+                    src_pink_ImportItem item = {.name = item_name};
+                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+                }
+                if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
+                    break;
+                }
+            }
+        }
+        src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    }
+    return src_pink_new_decl_import(pos, rename_name, is_relative, names, std_buf_len(names), import_all, items, std_buf_len(items));
+}
+
+src_pink_Decl (*src_pink_parse_decl_opt(void)) {
+    src_pink_SrcPos pos = src_pink_token.pos;
+    if (src_pink_match_keyword(src_pink_enum_keyword)) {
+        return src_pink_parse_decl_enum(pos);
+    } else if (src_pink_match_keyword(src_pink_struct_keyword)) {
+        return src_pink_parse_decl_aggregate(pos, SRC_PINK_DECL_STRUCT);
+    } else if (src_pink_match_keyword(src_pink_union_keyword)) {
+        return src_pink_parse_decl_aggregate(pos, SRC_PINK_DECL_UNION);
+    } else if (src_pink_match_keyword(src_pink_const_keyword)) {
+        return src_pink_parse_decl_const(pos);
+    } else if (src_pink_match_keyword(src_pink_typedef_keyword)) {
+        return src_pink_parse_decl_typedef(pos);
+    } else if (src_pink_match_keyword(src_pink_func_keyword)) {
+        return src_pink_parse_decl_func(pos);
+    } else if (src_pink_match_keyword(src_pink_var_keyword)) {
+        return src_pink_parse_decl_var(pos);
+    } else if (src_pink_match_keyword(src_pink_import_keyword)) {
+        return src_pink_parse_decl_import(pos);
+    } else if (src_pink_match_token(SRC_PINK_TOKEN_POUND)) {
+        return src_pink_parse_decl_note(pos);
+    } else {
+        return NULL;
+    }
+}
+
+src_pink_Decl (*src_pink_parse_decl(void)) {
+    src_pink_Notes notes = src_pink_parse_notes();
+    src_pink_Decl (*decl) = src_pink_parse_decl_opt();
+    if (!(decl)) {
+        src_pink_fatal_error(src_pink_token.pos, "Expected declaration keyword, got %s", src_pink_token_info());
+    }
+    decl->notes = notes;
+    return decl;
+}
+
+src_pink_Decls (*src_pink_parse_decls(void)) {
+    src_pink_Decl (*(*decls)) = NULL;
+    while (!(src_pink_is_token(SRC_PINK_TOKEN_EOF))) {
+        src_pink_Decl (*decl) = src_pink_parse_decl();
+        std_buf_push((void (**))(&(decls)), &(decl), sizeof(decl));
+    }
+    return src_pink_new_decls(decls, std_buf_len(decls));
 }
 
 char const ((*std_str_intern(char const ((*str))))) {
     return std_str_intern_range(str, (str) + (strlen(str)));
 }
 
-void std_buf_push(void (*(*b)), void (*elem), size_t elem_size) {
-    std_buf_fit(b, (1) + (std_buf_len(*(b))), elem_size);
-    memcpy(((char *)(*(b))) + ((elem_size) * ((std_buf__hdr(*(b))->len)++)), elem, elem_size);
+size_t std_clamp_max(size_t x, size_t max) {
+    return std_min(x, max);
 }
 
 void std_os_path_copy(char (path[MAX_PATH]), char const ((*src))) {
@@ -8829,34 +9796,8 @@ void std_os_path_join(char (path[MAX_PATH]), char const ((*src))) {
     snprintf(ptr, ((path) + (MAX_PATH)) - (ptr), "/%s", src);
 }
 
-void std_os_path_absolute(char (path[MAX_PATH])) {
-    char (rel_path[MAX_PATH]) = {0};
-    std_os_path_copy(rel_path, path);
-    realpath(rel_path, path);
-}
-
-std_Arena std_intern_arena;
-char const ((*std_str_intern_range(char const ((*start)), char const ((*end))))) {
-    size_t len = (end) - (start);
-    ullong hash = std_hash_bytes(start, len);
-    uint64_t key = (hash ? hash : 1);
-    std_Intern (*intern) = std_map_get_from_uint64(&(std_interns), key);
-    for (std_Intern (*it) = intern; it; it = it->next) {
-        if (((it->len) == (len)) && ((strncmp(it->str, start, len)) == (0))) {
-            return it->str;
-        }
-    }
-    std_Intern (*new_intern) = std_arena_alloc(&(std_intern_arena), ((offsetof(std_Intern, str)) + (len)) + (1));
-    new_intern->len = len;
-    new_intern->next = intern;
-    memcpy(new_intern->str, start, len);
-    new_intern->str[len] = 0;
-    std_map_put_from_uint64(&(std_interns), key, new_intern);
-    return new_intern->str;
-}
-
-size_t std_clamp_max(size_t x, size_t max) {
-    return std_min(x, max);
+void std_map_put(std_Map (*map), void const ((*key)), void (*val)) {
+    std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), (uint64_t)((uintptr_t)(val)));
 }
 
 void std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help))) {
@@ -8982,6 +9923,10 @@ void std_os_print_flags_usage(void) {
     }
 }
 
+size_t std_buf_len(void (*b)) {
+    return (b ? std_buf__hdr(b)->len : 0);
+}
+
 bool std_write_file(char const ((*path)), char const ((*buf)), size_t len) {
     FILE (*file) = fopen(path, "w");
     if (!(file)) {
@@ -8992,6 +9937,35 @@ bool std_write_file(char const ((*path)), char const ((*buf)), size_t len) {
     return (n) == (1);
 }
 
+void std_buf_push(void (*(*b)), void (*elem), size_t elem_size) {
+    std_buf_fit(b, (1) + (std_buf_len(*(b))), elem_size);
+    memcpy(((char *)(*(b))) + ((elem_size) * ((std_buf__hdr(*(b))->len)++)), elem, elem_size);
+}
+
+std_Arena std_intern_arena;
+char const ((*std_str_intern_range(char const ((*start)), char const ((*end))))) {
+    size_t len = (end) - (start);
+    ullong hash = std_hash_bytes(start, len);
+    uint64_t key = (hash ? hash : 1);
+    std_Intern (*intern) = std_map_get_from_uint64(&(std_interns), key);
+    for (std_Intern (*it) = intern; it; it = it->next) {
+        if (((it->len) == (len)) && ((strncmp(it->str, start, len)) == (0))) {
+            return it->str;
+        }
+    }
+    std_Intern (*new_intern) = std_arena_alloc(&(std_intern_arena), ((offsetof(std_Intern, str)) + (len)) + (1));
+    new_intern->len = len;
+    new_intern->next = intern;
+    memcpy(new_intern->str, start, len);
+    new_intern->str[len] = 0;
+    std_map_put_from_uint64(&(std_interns), key, new_intern);
+    return new_intern->str;
+}
+
+void (*std_map_get(std_Map (*map), void const ((*key)))) {
+    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)))));
+}
+
 void (*std_xcalloc(size_t num_elems, size_t elem_size)) {
     void (*ptr) = calloc(num_elems, elem_size);
     if (!(ptr)) {
@@ -8999,6 +9973,112 @@ void (*std_xcalloc(size_t num_elems, size_t elem_size)) {
         exit(1);
     }
     return ptr;
+}
+
+uint64_t std_hash_mix(uint64_t x, uint64_t y) {
+    x ^= y;
+    x *= 0xff51afd7ed558ccd;
+    x ^= (x) >> (32);
+    return x;
+}
+
+uint64_t std_hash_ptr(void const ((*ptr))) {
+    return std_hash_uint64((uintptr_t)(ptr));
+}
+
+uint64_t std_hash_uint64(uint64_t x) {
+    x *= 0xff51afd7ed558ccd;
+    x ^= (x) >> (32);
+    return x;
+}
+
+void (*std_map_get_from_uint64(std_Map (*map), uint64_t key)) {
+    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, key)));
+}
+
+void (*std_xmalloc(size_t num_bytes)) {
+    void (*ptr) = malloc(num_bytes);
+    if (!(ptr)) {
+        perror("xmalloc failed");
+        exit(1);
+    }
+    return ptr;
+}
+
+void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val)) {
+    std_map_put_uint64_from_uint64(map, key, (uint64_t)((uintptr_t)(val)));
+}
+
+uint64_t std_hash_bytes(void const ((*ptr)), size_t len) {
+    uint64_t x = 0xcbf29ce484222325;
+    char const ((*buf)) = (char const (*))(ptr);
+    for (size_t i = 0; (i) < (len); (i)++) {
+        x ^= buf[i];
+        x *= 0x100000001b3;
+        x ^= (x) >> (32);
+    }
+    return x;
+}
+
+void (*std_memdup(void (*src), size_t size)) {
+    void (*dest) = std_xmalloc(size);
+    memcpy(dest, src, size);
+    return dest;
+}
+
+size_t std_max(size_t x, size_t y) {
+    return ((x) >= (y) ? x : y);
+}
+
+uintptr_t std_align_up(uintptr_t n, size_t a) {
+    return std_align_down(((n) + (a)) - (1), a);
+}
+
+void (*std_arena_alloc(std_Arena (*arena), size_t size)) {
+    if ((size) > ((size_t)(((arena->end) - (arena->ptr))))) {
+        std_arena_grow(arena, size);
+    }
+    char (*ptr) = arena->ptr;
+    arena->ptr = std_align_up_ptr((arena->ptr) + (size), STD_ARENA_ALIGNMENT);
+    return ptr;
+}
+
+void std_buf_printf(char (*(*buf)), char const ((*fmt)), ...) {
+    va_list args = {0};
+    va_start_ptr(&(args), &(fmt));
+    ullong cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
+    int n = (1) + (vsnprintf(std_buf_end(*(buf), 1), cap, fmt, args));
+    va_end_ptr(&(args));
+    if ((n) > (cap)) {
+        std_buf_fit((void (**))(buf), (n) + (std_buf_len(*(buf))), 1);
+        va_start_ptr(&(args), &(fmt));
+        ullong new_cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
+        n = (1) + (vsnprintf(std_buf_end(*(buf), 1), new_cap, fmt, args));
+        va_end_ptr(&(args));
+    }
+    std_buf__hdr(*(buf))->len += (n) - (1);
+}
+
+char (*std_strf(char const ((*fmt)), ...)) {
+    va_list args = {0};
+    va_start_ptr(&(args), &(fmt));
+    int n = (1) + (vsnprintf(NULL, 0, fmt, args));
+    va_end_ptr(&(args));
+    char (*str) = std_xmalloc(n);
+    va_start_ptr(&(args), &(fmt));
+    vsnprintf(str, n, fmt, args);
+    va_end_ptr(&(args));
+    return str;
+}
+
+void (*std_buf_end(void (*b), size_t elem_size)) {
+    return ((char *)(b)) + ((elem_size) * (std_buf_len(b)));
+}
+
+void std_os_path_absolute(char (path[MAX_PATH])) {
+    char (rel_path[MAX_PATH]) = {0};
+    std_os_path_copy(rel_path, path);
+    realpath(rel_path, path);
 }
 
 void std_fatal(char const ((*fmt)), ...) {
@@ -9017,10 +10097,6 @@ uint64_t std_map_get_uint64(std_Map (*map), void (*key)) {
 
 void std_map_put_uint64(std_Map (*map), void (*key), uint64_t val) {
     std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), val);
-}
-
-size_t std_max(size_t x, size_t y) {
-    return ((x) >= (y) ? x : y);
 }
 
 void std_os_dir_list(std_os_DirListIter (*iter), char const ((*path))) {
@@ -9105,101 +10181,20 @@ char (*std_read_file(char const ((*path)))) {
     return buf;
 }
 
-uint64_t std_hash_mix(uint64_t x, uint64_t y) {
-    x ^= y;
-    x *= 0xff51afd7ed558ccd;
-    x ^= (x) >> (32);
-    return x;
+size_t std_min(size_t x, size_t y) {
+    return ((x) <= (y) ? x : y);
 }
 
-uint64_t std_hash_ptr(void const ((*ptr))) {
-    return std_hash_uint64((uintptr_t)(ptr));
-}
-
-uint64_t std_hash_uint64(uint64_t x) {
-    x *= 0xff51afd7ed558ccd;
-    x ^= (x) >> (32);
-    return x;
-}
-
-void (*std_map_get_from_uint64(std_Map (*map), uint64_t key)) {
-    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, key)));
-}
-
-void (*std_xmalloc(size_t num_bytes)) {
-    void (*ptr) = malloc(num_bytes);
-    if (!(ptr)) {
-        perror("xmalloc failed");
-        exit(1);
-    }
-    return ptr;
-}
-
-void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val)) {
-    std_map_put_uint64_from_uint64(map, key, (uint64_t)((uintptr_t)(val)));
-}
-
-uint64_t std_hash_bytes(void const ((*ptr)), size_t len) {
-    uint64_t x = 0xcbf29ce484222325;
-    char const ((*buf)) = (char const (*))(ptr);
-    for (size_t i = 0; (i) < (len); (i)++) {
-        x ^= buf[i];
-        x *= 0x100000001b3;
-        x ^= (x) >> (32);
-    }
-    return x;
-}
-
-void (*std_memdup(void (*src), size_t size)) {
-    void (*dest) = std_xmalloc(size);
-    memcpy(dest, src, size);
-    return dest;
-}
-
-uintptr_t std_align_up(uintptr_t n, size_t a) {
-    return std_align_down(((n) + (a)) - (1), a);
-}
-
-void std_arena_grow(std_Arena (*arena), size_t min_size) {
-    ullong size = std_align_up(std_clamp_min(min_size, STD_ARENA_BLOCK_SIZE), STD_ARENA_ALIGNMENT);
-    arena->ptr = std_xmalloc(size);
-    arena->end = (arena->ptr) + (size);
-    std_buf_push((void (**))(&(arena->blocks)), &(arena->ptr), sizeof(arena->ptr));
-}
-
-void (*std_align_up_ptr(void (*p), size_t a)) {
-    return (void *)(std_align_up((uintptr_t)(p), a));
-}
-
-size_t std_buf_cap(void const ((*b))) {
-    return (b ? std_buf__hdr((void *)(b))->cap : 0);
-}
-
-void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size) {
-    if ((new_len) > (std_buf_cap(*(b)))) {
-        *(b) = std_buf__grow(*(b), new_len, elem_size);
-    }
-}
-
-std_BufHdr (*std_buf__hdr(void (*b))) {
-    return (std_BufHdr *)((((char *)(b)) - (offsetof(std_BufHdr, buf))));
-}
-
-uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key) {
-    if ((map->len) == (0)) {
-        return 0;
-    }
-    ullong i = (size_t)(std_hash_uint64(key));
-    for (;;) {
-        i &= (map->cap) - (1);
-        if ((map->keys[i]) == (key)) {
-            return map->vals[i];
-        } else if (!(map->keys[i])) {
-            return 0;
+void std_os_path_normalize(char (*path)) {
+    char (*ptr) = {0};
+    for (ptr = path; *(ptr); (ptr)++) {
+        if ((*(ptr)) == ('\\')) {
+            *(ptr) = '/';
         }
-        (i)++;
     }
-    return 0;
+    if (((ptr) != (path)) && ((ptr[-(1)]) == ('/'))) {
+        ptr[-(1)] = 0;
+    }
 }
 
 void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val) {
@@ -9225,23 +10220,6 @@ void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val) 
     }
 }
 
-void std_os_path_normalize(char (*path)) {
-    char (*ptr) = {0};
-    for (ptr = path; *(ptr); (ptr)++) {
-        if ((*(ptr)) == ('\\')) {
-            *(ptr) = '/';
-        }
-    }
-    if (((ptr) != (path)) && ((ptr[-(1)]) == ('/'))) {
-        ptr[-(1)] = 0;
-    }
-}
-
-std_Map std_interns;
-size_t std_min(size_t x, size_t y) {
-    return ((x) <= (y) ? x : y);
-}
-
 std_os_FlagDef (*std_os_flag_defs);
 std_os_FlagDef (*std_os_get_flag_def(char const ((*name)))) {
     for (size_t i = 0; (i) < (std_buf_len(std_os_flag_defs)); (i)++) {
@@ -9262,16 +10240,68 @@ char (*std_os_path_file(char (path[MAX_PATH]))) {
     return path;
 }
 
-bool std_os_dir_excluded(std_os_DirListIter (*iter)) {
-    return (iter->valid) && ((((strcmp(iter->name, ".")) == (0)) || ((strcmp(iter->name, "..")) == (0))));
+std_BufHdr (*std_buf__hdr(void (*b))) {
+    return (std_BufHdr *)((((char *)(b)) - (offsetof(std_BufHdr, buf))));
+}
+
+void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size) {
+    if ((new_len) > (std_buf_cap(*(b)))) {
+        *(b) = std_buf__grow(*(b), new_len, elem_size);
+    }
+}
+
+std_Map std_interns;
+uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key) {
+    if ((map->len) == (0)) {
+        return 0;
+    }
+    ullong i = (size_t)(std_hash_uint64(key));
+    for (;;) {
+        i &= (map->cap) - (1);
+        if ((map->keys[i]) == (key)) {
+            return map->vals[i];
+        } else if (!(map->keys[i])) {
+            return 0;
+        }
+        (i)++;
+    }
+    return 0;
 }
 
 uintptr_t std_align_down(uintptr_t n, size_t a) {
     return (n) & (~(((a) - (1))));
 }
 
-size_t std_clamp_min(size_t x, size_t min) {
-    return std_max(x, min);
+void std_arena_grow(std_Arena (*arena), size_t min_size) {
+    ullong size = std_align_up(std_clamp_min(min_size, STD_ARENA_BLOCK_SIZE), STD_ARENA_ALIGNMENT);
+    arena->ptr = std_xmalloc(size);
+    arena->end = (arena->ptr) + (size);
+    std_buf_push((void (**))(&(arena->blocks)), &(arena->ptr), sizeof(arena->ptr));
+}
+
+void (*std_align_up_ptr(void (*p), size_t a)) {
+    return (void *)(std_align_up((uintptr_t)(p), a));
+}
+
+size_t std_buf_cap(void const ((*b))) {
+    return (b ? std_buf__hdr((void *)(b))->cap : 0);
+}
+
+bool std_os_dir_excluded(std_os_DirListIter (*iter)) {
+    return (iter->valid) && ((((strcmp(iter->name, ".")) == (0)) || ((strcmp(iter->name, "..")) == (0))));
+}
+
+void std_map_grow(std_Map (*map), size_t new_cap) {
+    new_cap = std_clamp_min(new_cap, 16);
+    std_Map new_map = {.keys = std_xcalloc(new_cap, sizeof(uint64_t)), .vals = std_xmalloc((new_cap) * (sizeof(uint64_t))), .cap = new_cap};
+    for (size_t i = 0; (i) < (map->cap); (i)++) {
+        if (map->keys[i]) {
+            std_map_put_uint64_from_uint64(&(new_map), map->keys[i], map->vals[i]);
+        }
+    }
+    free((void *)(map->keys));
+    free(map->vals);
+    *(map) = new_map;
 }
 
 void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size)) {
@@ -9288,17 +10318,8 @@ void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size)) {
     return new_hdr->buf;
 }
 
-void std_map_grow(std_Map (*map), size_t new_cap) {
-    new_cap = std_clamp_min(new_cap, 16);
-    std_Map new_map = {.keys = std_xcalloc(new_cap, sizeof(uint64_t)), .vals = std_xmalloc((new_cap) * (sizeof(uint64_t))), .cap = new_cap};
-    for (size_t i = 0; (i) < (map->cap); (i)++) {
-        if (map->keys[i]) {
-            std_map_put_uint64_from_uint64(&(new_map), map->keys[i], map->vals[i]);
-        }
-    }
-    free((void *)(map->keys));
-    free(map->vals);
-    *(map) = new_map;
+size_t std_clamp_min(size_t x, size_t min) {
+    return std_max(x, min);
 }
 
 void (*std_xrealloc(void (*ptr), size_t num_bytes)) {

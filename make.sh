@@ -1,3 +1,5 @@
+set -e
+
 export PINK_HOME="$(dirname "$(readlink -f "$0")")"/src
 export PINK_OS=linux
 
