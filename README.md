@@ -1,4 +1,6 @@
-# Pink
+<p align="center">
+  <img src="./assets/pink.png" width="512" />
+</p>
 
 Friendly C-Like Systems Programming Language
 
