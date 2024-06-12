@@ -58,12 +58,12 @@ typedef struct _finddata64i32_t FindData;
 
 // Forward declarations
 typedef struct TypeInfo TypeInfo;
-typedef struct std_Arena std_Arena;
+typedef struct old_std_Arena old_std_Arena;
 typedef struct src_pink_SrcPos src_pink_SrcPos;
 typedef struct src_pink_Note src_pink_Note;
 typedef struct src_pink_Notes src_pink_Notes;
 typedef struct src_pink_StmtList src_pink_StmtList;
-typedef struct std_Map std_Map;
+typedef struct old_std_Map old_std_Map;
 typedef struct src_pink_Token src_pink_Token;
 typedef struct src_pink_CompoundField src_pink_CompoundField;
 typedef struct src_pink_SwitchCasePattern src_pink_SwitchCasePattern;
@@ -72,7 +72,7 @@ typedef struct src_pink_EnumItem src_pink_EnumItem;
 typedef struct src_pink_AggregateItem src_pink_AggregateItem;
 typedef struct src_pink_FuncParam src_pink_FuncParam;
 typedef struct src_pink_NoteArg src_pink_NoteArg;
-typedef union std_Val std_Val;
+typedef union old_std_Val old_std_Val;
 typedef struct src_pink_Sym src_pink_Sym;
 typedef struct src_pink_Operand src_pink_Operand;
 typedef struct src_pink_Label src_pink_Label;
@@ -119,13 +119,13 @@ typedef struct src_pink_ImportItem src_pink_ImportItem;
 typedef struct src_pink_ElseIf src_pink_ElseIf;
 typedef struct src_pink_Package src_pink_Package;
 typedef struct src_pink_TypeField src_pink_TypeField;
-typedef struct std_os_DirListIter std_os_DirListIter;
+typedef struct old_std_os_DirListIter old_std_os_DirListIter;
 typedef struct src_pink_CachedArrayType src_pink_CachedArrayType;
 typedef struct src_pink_CachedFuncType src_pink_CachedFuncType;
-typedef struct std_BufHdr std_BufHdr;
-typedef struct std_Intern std_Intern;
-typedef struct std_os_FlagDefPtr std_os_FlagDefPtr;
-typedef struct std_os_FlagDef std_os_FlagDef;
+typedef struct old_std_BufHdr old_std_BufHdr;
+typedef struct old_std_Intern old_std_Intern;
+typedef struct old_std_os_FlagDefPtr old_std_os_FlagDefPtr;
+typedef struct old_std_os_FlagDef old_std_os_FlagDef;
 
 // Sorted declarations
 int main(int argc, char const ((*(*argv))));
@@ -223,13 +223,13 @@ TypeInfo const ((*get_typeinfo(typeid type)));
 
 #define UINTPTR_MIN (UINT64_MIN)
 
-struct std_Arena {
+struct old_std_Arena {
     char (*ptr);
     char (*end);
     char (*(*blocks));
 };
 
-extern std_Arena src_pink_ast_arena;
+extern old_std_Arena src_pink_ast_arena;
 
 void (*src_pink_ast_alloc(size_t size));
 
@@ -562,14 +562,14 @@ char (*src_pink_type_to_cdecl(src_pink_Type (*type), char const ((*str))));
 
 char const ((*src_pink_gen_expr_str(src_pink_Expr (*expr))));
 
-struct std_Map {
+struct old_std_Map {
     uint64_t (*keys);
     uint64_t (*vals);
     size_t len;
     size_t cap;
 };
 
-extern std_Map src_pink_gen_name_map;
+extern old_std_Map src_pink_gen_name_map;
 
 char const ((*src_pink_get_gen_name_or_default(void const ((*ptr)), char const ((*default_name)))));
 
@@ -669,7 +669,7 @@ void src_pink_gen_sorted_decls(void);
 
 void src_pink_gen_defs(void);
 
-extern std_Map src_pink_gen_foreign_headers_map;
+extern old_std_Map src_pink_gen_foreign_headers_map;
 
 extern char const ((*(*src_pink_gen_foreign_headers_buf)));
 
@@ -1229,7 +1229,7 @@ extern src_pink_Package (*src_pink_current_package);
 
 extern src_pink_Package (*src_pink_builtin_package);
 
-extern std_Map src_pink_package_map;
+extern old_std_Map src_pink_package_map;
 
 extern src_pink_Package (*(*src_pink_package_list));
 
@@ -1253,7 +1253,7 @@ extern src_pink_Sym (*(*src_pink_reachable_syms));
 
 extern src_pink_Sym (*(*src_pink_sorted_syms));
 
-union std_Val {
+union old_std_Val {
     bool b;
     char c;
     uchar uc;
@@ -1280,7 +1280,7 @@ struct src_pink_Sym {
     union {
         struct {
             src_pink_Type (*type);
-            std_Val val;
+            old_std_Val val;
         };
         src_pink_Package (*package);
     };
@@ -1322,7 +1322,7 @@ struct src_pink_Operand {
     src_pink_Type (*type);
     bool is_lvalue;
     bool is_const;
-    std_Val val;
+    old_std_Val val;
 };
 
 extern src_pink_Operand src_pink_operand_null;
@@ -1331,7 +1331,7 @@ src_pink_Operand src_pink_operand_rvalue(src_pink_Type (*type));
 
 src_pink_Operand src_pink_operand_lvalue(src_pink_Type (*type));
 
-src_pink_Operand src_pink_operand_const(src_pink_Type (*type), std_Val val);
+src_pink_Operand src_pink_operand_const(src_pink_Type (*type), old_std_Val val);
 
 src_pink_Type (*src_pink_type_decay(src_pink_Type (*type)));
 
@@ -1349,25 +1349,25 @@ void src_pink_promote_operand(src_pink_Operand (*operand));
 
 void src_pink_unify_arithmetic_operands(src_pink_Operand (*left), src_pink_Operand (*right));
 
-extern std_Map src_pink_resolved_val_map;
+extern old_std_Map src_pink_resolved_val_map;
 
-std_Val src_pink_get_resolved_val(void (*ptr));
+old_std_Val src_pink_get_resolved_val(void (*ptr));
 
-void src_pink_set_resolved_val(void (*ptr), std_Val val);
+void src_pink_set_resolved_val(void (*ptr), old_std_Val val);
 
-extern std_Map src_pink_resolved_type_map;
+extern old_std_Map src_pink_resolved_type_map;
 
 src_pink_Type (*src_pink_get_resolved_type(void (*ptr)));
 
 void src_pink_set_resolved_type(void (*ptr), src_pink_Type (*type));
 
-extern std_Map src_pink_resolved_sym_map;
+extern old_std_Map src_pink_resolved_sym_map;
 
 src_pink_Sym (*src_pink_get_resolved_sym(void const ((*ptr))));
 
 void src_pink_set_resolved_sym(void const ((*ptr)), src_pink_Sym (*sym));
 
-extern std_Map src_pink_resolved_expected_type_map;
+extern old_std_Map src_pink_resolved_expected_type_map;
 
 src_pink_Type (*src_pink_get_resolved_expected_type(src_pink_Expr (*expr)));
 
@@ -1391,7 +1391,7 @@ src_pink_Type (*src_pink_resolve_init(src_pink_SrcPos pos, src_pink_Typespec (*t
 
 src_pink_Type (*src_pink_resolve_decl_var(src_pink_Decl (*decl)));
 
-src_pink_Type (*src_pink_resolve_decl_const(src_pink_Decl (*decl), std_Val (*val)));
+src_pink_Type (*src_pink_resolve_decl_const(src_pink_Decl (*decl), old_std_Val (*val)));
 
 src_pink_Type (*src_pink_resolve_decl_func(src_pink_Decl (*decl)));
 
@@ -1455,9 +1455,9 @@ llong src_pink_eval_binary_op_ll(src_pink_TokenKind op, llong left, llong right)
 
 ullong src_pink_eval_binary_op_ull(src_pink_TokenKind op, ullong left, ullong right);
 
-std_Val src_pink_eval_unary_op(src_pink_TokenKind op, src_pink_Type (*type), std_Val val);
+old_std_Val src_pink_eval_unary_op(src_pink_TokenKind op, src_pink_Type (*type), old_std_Val val);
 
-std_Val src_pink_eval_binary_op(src_pink_TokenKind op, src_pink_Type (*type), std_Val left, std_Val right);
+old_std_Val src_pink_eval_binary_op(src_pink_TokenKind op, src_pink_Type (*type), old_std_Val left, old_std_Val right);
 
 src_pink_Operand src_pink_resolve_name_operand(src_pink_SrcPos pos, char const ((*name)));
 
@@ -1493,7 +1493,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
 
 src_pink_Operand src_pink_resolve_const_expr(src_pink_Expr (*expr));
 
-extern std_Map src_pink_decl_note_names;
+extern old_std_Map src_pink_decl_note_names;
 
 void src_pink_init_builtin_syms(void);
 
@@ -1637,7 +1637,7 @@ extern src_pink_Type (*src_pink_type_usize);
 
 extern src_pink_Type (*src_pink_type_ssize);
 
-extern std_Map src_pink_typeid_map;
+extern old_std_Map src_pink_typeid_map;
 
 src_pink_Type (*src_pink_get_type_from_typeid(int typeid));
 
@@ -1681,21 +1681,21 @@ size_t src_pink_type_sizeof(src_pink_Type (*type));
 
 size_t src_pink_type_alignof(src_pink_Type (*type));
 
-extern std_Map src_pink_cached_ptr_types;
+extern old_std_Map src_pink_cached_ptr_types;
 
 src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base)));
 
-extern std_Map src_pink_cached_const_types;
+extern old_std_Map src_pink_cached_const_types;
 
 src_pink_Type (*src_pink_type_const(src_pink_Type (*base)));
 
 src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type)));
 
-extern std_Map src_pink_cached_array_types;
+extern old_std_Map src_pink_cached_array_types;
 
 src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems));
 
-extern std_Map src_pink_cached_func_types;
+extern old_std_Map src_pink_cached_func_types;
 
 src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs));
 
@@ -1735,7 +1735,7 @@ struct Any {
     typeid type;
 };
 
-void (*std_arena_alloc(std_Arena (*arena), size_t size));
+void (*old_std_arena_alloc(old_std_Arena (*arena), size_t size));
 
 struct src_pink_StmtIf {
     src_pink_Stmt (*init);
@@ -1990,38 +1990,38 @@ struct src_pink_ElseIf {
     src_pink_StmtList block;
 };
 
-void std_buf_printf(char (*(*buf)), char const ((*fmt)), ...);
+void old_std_buf_printf(char (*(*buf)), char const ((*fmt)), ...);
 
-char (*std_strf(char const ((*fmt)), ...));
+char (*old_std_strf(char const ((*fmt)), ...));
 
-void (*std_map_get(std_Map (*map), void const ((*key))));
+void (*old_std_map_get(old_std_Map (*map), void const ((*key))));
 
 struct src_pink_Package {
     char const ((*path));
     char (full_path[MAX_PATH]);
     src_pink_Decl (*(*decls));
     size_t num_decls;
-    std_Map syms_map;
+    old_std_Map syms_map;
     src_pink_Sym (*(*syms));
     char const ((*external_name));
     bool always_reachable;
 };
 
-void std_map_put(std_Map (*map), void const ((*key)), void (*val));
+void old_std_map_put(old_std_Map (*map), void const ((*key)), void (*val));
 
-void (*std_buf_end(void (*b), size_t elem_size));
+void (*old_std_buf_end(void (*b), size_t elem_size));
 
-size_t std_buf_len(void (*b));
+size_t old_std_buf_len(void (*b));
 
-char const ((*std_str_intern(char const ((*str)))));
+char const ((*old_std_str_intern(char const ((*str)))));
 
-void std_buf_push(void (*(*b)), void (*elem), size_t elem_size);
+void old_std_buf_push(void (*(*b)), void (*elem), size_t elem_size);
 
-void std_os_path_copy(char (path[MAX_PATH]), char const ((*src)));
+void old_std_os_path_copy(char (path[MAX_PATH]), char const ((*src)));
 
-void std_os_path_join(char (path[MAX_PATH]), char const ((*src)));
+void old_std_os_path_join(char (path[MAX_PATH]), char const ((*src)));
 
-void std_os_path_absolute(char (path[MAX_PATH]));
+void old_std_os_path_absolute(char (path[MAX_PATH]));
 
 struct src_pink_TypeField {
     char const ((*name));
@@ -2029,35 +2029,35 @@ struct src_pink_TypeField {
     size_t offset;
 };
 
-extern std_Arena std_intern_arena;
+extern old_std_Arena old_std_intern_arena;
 
-char const ((*std_str_intern_range(char const ((*start)), char const ((*end)))));
+char const ((*old_std_str_intern_range(char const ((*start)), char const ((*end)))));
 
-size_t std_clamp_max(size_t x, size_t max);
+size_t old_std_clamp_max(size_t x, size_t max);
 
-void std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help)));
+void old_std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help)));
 
-void std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options);
+void old_std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options);
 
-void std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help)));
+void old_std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help)));
 
-char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr)))))));
+char const ((*old_std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr)))))));
 
-void std_os_print_flags_usage(void);
+void old_std_os_print_flags_usage(void);
 
-bool std_write_file(char const ((*path)), char const ((*buf)), size_t len);
+bool old_std_write_file(char const ((*path)), char const ((*buf)), size_t len);
 
-void (*std_xcalloc(size_t num_elems, size_t elem_size));
+void (*old_std_xcalloc(size_t num_elems, size_t elem_size));
 
-void std_fatal(char const ((*fmt)), ...);
+void old_std_fatal(char const ((*fmt)), ...);
 
-uint64_t std_map_get_uint64(std_Map (*map), void (*key));
+uint64_t old_std_map_get_uint64(old_std_Map (*map), void (*key));
 
-void std_map_put_uint64(std_Map (*map), void (*key), uint64_t val);
+void old_std_map_put_uint64(old_std_Map (*map), void (*key), uint64_t val);
 
-size_t std_max(size_t x, size_t y);
+size_t old_std_max(size_t x, size_t y);
 
-struct std_os_DirListIter {
+struct old_std_os_DirListIter {
     bool valid;
     bool error;
     char (base[MAX_PATH]);
@@ -2067,127 +2067,127 @@ struct std_os_DirListIter {
     void (*handle);
 };
 
-void std_os_dir_list(std_os_DirListIter (*iter), char const ((*path)));
+void old_std_os_dir_list(old_std_os_DirListIter (*iter), char const ((*path)));
 
-void std_os_dir_list_next(std_os_DirListIter (*iter));
+void old_std_os_dir_list_next(old_std_os_DirListIter (*iter));
 
-char (*std_os_path_ext(char (path[MAX_PATH])));
+char (*old_std_os_path_ext(char (path[MAX_PATH])));
 
-void std_os_dir_list_free(std_os_DirListIter (*iter));
+void old_std_os_dir_list_free(old_std_os_DirListIter (*iter));
 
-bool std_str_islower(char const ((*str)));
+bool old_std_str_islower(char const ((*str)));
 
-void std_buf_free(void (*(*b)));
+void old_std_buf_free(void (*(*b)));
 
-char (*std_read_file(char const ((*path))));
+char (*old_std_read_file(char const ((*path))));
 
 struct src_pink_CachedArrayType {
     src_pink_Type (*type);
     src_pink_CachedArrayType (*next);
 };
 
-uint64_t std_hash_mix(uint64_t x, uint64_t y);
+uint64_t old_std_hash_mix(uint64_t x, uint64_t y);
 
-uint64_t std_hash_ptr(void const ((*ptr)));
+uint64_t old_std_hash_ptr(void const ((*ptr)));
 
-uint64_t std_hash_uint64(uint64_t x);
+uint64_t old_std_hash_uint64(uint64_t x);
 
-void (*std_map_get_from_uint64(std_Map (*map), uint64_t key));
+void (*old_std_map_get_from_uint64(old_std_Map (*map), uint64_t key));
 
-void (*std_xmalloc(size_t num_bytes));
+void (*old_std_xmalloc(size_t num_bytes));
 
-void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val));
+void old_std_map_put_from_uint64(old_std_Map (*map), uint64_t key, void (*val));
 
 struct src_pink_CachedFuncType {
     src_pink_Type (*type);
     src_pink_CachedFuncType (*next);
 };
 
-uint64_t std_hash_bytes(void const ((*ptr)), size_t len);
+uint64_t old_std_hash_bytes(void const ((*ptr)), size_t len);
 
-void (*std_memdup(void (*src), size_t size));
+void (*old_std_memdup(void (*src), size_t size));
 
-uintptr_t std_align_up(uintptr_t n, size_t a);
+uintptr_t old_std_align_up(uintptr_t n, size_t a);
 
-void std_arena_grow(std_Arena (*arena), size_t min_size);
+void old_std_arena_grow(old_std_Arena (*arena), size_t min_size);
 
-void (*std_align_up_ptr(void (*p), size_t a));
+void (*old_std_align_up_ptr(void (*p), size_t a));
 
-#define STD_ARENA_ALIGNMENT (8)
+#define OLD_STD_ARENA_ALIGNMENT (8)
 
-size_t std_buf_cap(void const ((*b)));
+size_t old_std_buf_cap(void const ((*b)));
 
-void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size);
+void old_std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size);
 
-std_BufHdr (*std_buf__hdr(void (*b)));
+old_std_BufHdr (*old_std_buf__hdr(void (*b)));
 
-struct std_BufHdr {
+struct old_std_BufHdr {
     size_t len;
     size_t cap;
     char (buf[1]);
 };
 
-uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key);
+uint64_t old_std_map_get_uint64_from_uint64(old_std_Map (*map), uint64_t key);
 
-void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val);
+void old_std_map_put_uint64_from_uint64(old_std_Map (*map), uint64_t key, uint64_t val);
 
-void std_os_path_normalize(char (*path));
+void old_std_os_path_normalize(char (*path));
 
-extern std_Map std_interns;
+extern old_std_Map old_std_interns;
 
-struct std_Intern {
+struct old_std_Intern {
     size_t len;
-    std_Intern (*next);
+    old_std_Intern (*next);
     char (str[1]);
 };
 
-size_t std_min(size_t x, size_t y);
+size_t old_std_min(size_t x, size_t y);
 
-typedef int std_os_FlagKind;
+typedef int old_std_os_FlagKind;
 
-struct std_os_FlagDefPtr {
+struct old_std_os_FlagDefPtr {
     int (*i);
     bool (*b);
     char const ((*(*s)));
 };
 
-struct std_os_FlagDef {
-    std_os_FlagKind kind;
+struct old_std_os_FlagDef {
+    old_std_os_FlagKind kind;
     char const ((*name));
     char const ((*help));
     char const ((*(*options)));
     char const ((*arg_name));
     int num_options;
-    std_os_FlagDefPtr ptr;
+    old_std_os_FlagDefPtr ptr;
 };
 
-#define STD_OS_FLAG_BOOL ((std_os_FlagKind)(0))
+#define OLD_STD_OS_FLAG_BOOL ((old_std_os_FlagKind)(0))
 
-#define STD_OS_FLAG_STR ((std_os_FlagKind)((STD_OS_FLAG_BOOL) + (1)))
+#define OLD_STD_OS_FLAG_STR ((old_std_os_FlagKind)((OLD_STD_OS_FLAG_BOOL) + (1)))
 
-extern std_os_FlagDef (*std_os_flag_defs);
+extern old_std_os_FlagDef (*old_std_os_flag_defs);
 
-#define STD_OS_FLAG_ENUM ((std_os_FlagKind)((STD_OS_FLAG_STR) + (1)))
+#define OLD_STD_OS_FLAG_ENUM ((old_std_os_FlagKind)((OLD_STD_OS_FLAG_STR) + (1)))
 
-std_os_FlagDef (*std_os_get_flag_def(char const ((*name))));
+old_std_os_FlagDef (*old_std_os_get_flag_def(char const ((*name))));
 
-char (*std_os_path_file(char (path[MAX_PATH])));
+char (*old_std_os_path_file(char (path[MAX_PATH])));
 
-void std_os_dir__update(std_os_DirListIter (*iter), bool done, FindData (*fileinfo));
+void old_std_os_dir__update(old_std_os_DirListIter (*iter), bool done, FindData (*fileinfo));
 
-bool std_os_dir_excluded(std_os_DirListIter (*iter));
+bool old_std_os_dir_excluded(old_std_os_DirListIter (*iter));
 
-uintptr_t std_align_down(uintptr_t n, size_t a);
+uintptr_t old_std_align_down(uintptr_t n, size_t a);
 
-size_t std_clamp_min(size_t x, size_t min);
+size_t old_std_clamp_min(size_t x, size_t min);
 
-#define STD_ARENA_BLOCK_SIZE ((1024) * (1024))
+#define OLD_STD_ARENA_BLOCK_SIZE ((1024) * (1024))
 
-void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size));
+void (*old_std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size));
 
-void std_map_grow(std_Map (*map), size_t new_cap);
+void old_std_map_grow(old_std_Map (*map), size_t new_cap);
 
-void (*std_xrealloc(void (*ptr), size_t num_bytes));
+void (*old_std_xrealloc(void (*ptr), size_t num_bytes));
 
 // Typeinfo
 #define TYPEID0(index, kind) ((ullong)(index) | ((ullong)(kind) << 24))
@@ -2246,10 +2246,10 @@ const TypeInfo *typeinfo_table[646] = {
         {"ptr", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(Any, ptr)},
         {"type", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(Any, type)},
     }},
-    [36] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Arena), .align = alignof(std_Arena), .name = "std_Arena", .num_fields = 3, .fields = (TypeFieldInfo[]) {
-        {"ptr", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, ptr)},
-        {"end", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(std_Arena, end)},
-        {"blocks", .type = TYPEID(37, TYPE_PTR, char (**)), .offset = offsetof(std_Arena, blocks)},
+    [36] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_Arena), .align = alignof(old_std_Arena), .name = "old_std_Arena", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"ptr", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(old_std_Arena, ptr)},
+        {"end", .type = TYPEID(22, TYPE_PTR, char *), .offset = offsetof(old_std_Arena, end)},
+        {"blocks", .type = TYPEID(37, TYPE_PTR, char (**)), .offset = offsetof(old_std_Arena, blocks)},
     }},
     [37] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(22, TYPE_PTR, char *)},
     [38] = NULL, // Func
@@ -2631,11 +2631,11 @@ const TypeInfo *typeinfo_table[646] = {
     [178] = NULL, // Func
     [179] = NULL, // Func
     [180] = NULL, // Func
-    [181] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Map), .align = alignof(std_Map), .name = "std_Map", .num_fields = 4, .fields = (TypeFieldInfo[]) {
-        {"keys", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(std_Map, keys)},
-        {"vals", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(std_Map, vals)},
-        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, len)},
-        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Map, cap)},
+    [181] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_Map), .align = alignof(old_std_Map), .name = "old_std_Map", .num_fields = 4, .fields = (TypeFieldInfo[]) {
+        {"keys", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(old_std_Map, keys)},
+        {"vals", .type = TYPEID(182, TYPE_PTR, ullong *), .offset = offsetof(old_std_Map, vals)},
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_Map, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_Map, cap)},
     }},
     [182] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(13, TYPE_ULLONG, ullong)},
     [183] = NULL, // Func
@@ -2651,7 +2651,7 @@ const TypeInfo *typeinfo_table[646] = {
         {"decl", .type = TYPEID(67, TYPE_PTR, src_pink_Decl *), .offset = offsetof(src_pink_Sym, decl)},
         {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Sym, external_name)},
         {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Sym, type)},
-        {"val", .type = TYPEID(266, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Sym, val)},
+        {"val", .type = TYPEID(266, TYPE_UNION, old_std_Val), .offset = offsetof(src_pink_Sym, val)},
         {"package", .type = TYPEID(206, TYPE_PTR, src_pink_Package *), .offset = offsetof(src_pink_Sym, package)},
     }},
     [188] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(187, TYPE_STRUCT, src_pink_Sym)},
@@ -2676,7 +2676,7 @@ const TypeInfo *typeinfo_table[646] = {
         {"full_path", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(src_pink_Package, full_path)},
         {"decls", .type = TYPEID(68, TYPE_PTR, src_pink_Decl (**)), .offset = offsetof(src_pink_Package, decls)},
         {"num_decls", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(src_pink_Package, num_decls)},
-        {"syms_map", .type = TYPEID(181, TYPE_STRUCT, std_Map), .offset = offsetof(src_pink_Package, syms_map)},
+        {"syms_map", .type = TYPEID(181, TYPE_STRUCT, old_std_Map), .offset = offsetof(src_pink_Package, syms_map)},
         {"syms", .type = TYPEID(265, TYPE_PTR, src_pink_Sym (**)), .offset = offsetof(src_pink_Package, syms)},
         {"external_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(src_pink_Package, external_name)},
         {"always_reachable", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Package, always_reachable)},
@@ -2752,20 +2752,20 @@ const TypeInfo *typeinfo_table[646] = {
     [263] = NULL, // Func
     [264] = NULL, // Func
     [265] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(188, TYPE_PTR, src_pink_Sym *)},
-    [266] = &(TypeInfo){TYPE_UNION, .size = sizeof(std_Val), .align = alignof(std_Val), .name = "std_Val", .num_fields = 13, .fields = (TypeFieldInfo[]) {
-        {"b", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_Val, b)},
-        {"c", .type = TYPEID(3, TYPE_CHAR, char), .offset = offsetof(std_Val, c)},
-        {"uc", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(std_Val, uc)},
-        {"sc", .type = TYPEID(5, TYPE_SCHAR, schar), .offset = offsetof(std_Val, sc)},
-        {"s", .type = TYPEID(6, TYPE_SHORT, short), .offset = offsetof(std_Val, s)},
-        {"us", .type = TYPEID(7, TYPE_USHORT, ushort), .offset = offsetof(std_Val, us)},
-        {"i", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_Val, i)},
-        {"u", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(std_Val, u)},
-        {"l", .type = TYPEID(10, TYPE_LONG, long), .offset = offsetof(std_Val, l)},
-        {"ul", .type = TYPEID(11, TYPE_ULONG, ulong), .offset = offsetof(std_Val, ul)},
-        {"ll", .type = TYPEID(12, TYPE_LLONG, llong), .offset = offsetof(std_Val, ll)},
-        {"ull", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, ull)},
-        {"p", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Val, p)},
+    [266] = &(TypeInfo){TYPE_UNION, .size = sizeof(old_std_Val), .align = alignof(old_std_Val), .name = "old_std_Val", .num_fields = 13, .fields = (TypeFieldInfo[]) {
+        {"b", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(old_std_Val, b)},
+        {"c", .type = TYPEID(3, TYPE_CHAR, char), .offset = offsetof(old_std_Val, c)},
+        {"uc", .type = TYPEID(4, TYPE_UCHAR, uchar), .offset = offsetof(old_std_Val, uc)},
+        {"sc", .type = TYPEID(5, TYPE_SCHAR, schar), .offset = offsetof(old_std_Val, sc)},
+        {"s", .type = TYPEID(6, TYPE_SHORT, short), .offset = offsetof(old_std_Val, s)},
+        {"us", .type = TYPEID(7, TYPE_USHORT, ushort), .offset = offsetof(old_std_Val, us)},
+        {"i", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(old_std_Val, i)},
+        {"u", .type = TYPEID(9, TYPE_UINT, uint), .offset = offsetof(old_std_Val, u)},
+        {"l", .type = TYPEID(10, TYPE_LONG, long), .offset = offsetof(old_std_Val, l)},
+        {"ul", .type = TYPEID(11, TYPE_ULONG, ulong), .offset = offsetof(old_std_Val, ul)},
+        {"ll", .type = TYPEID(12, TYPE_LLONG, llong), .offset = offsetof(old_std_Val, ll)},
+        {"ull", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_Val, ull)},
+        {"p", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_Val, p)},
     }},
     [267] = NULL, // No associated type
     [268] = NULL, // No associated type
@@ -2784,7 +2784,7 @@ const TypeInfo *typeinfo_table[646] = {
         {"type", .type = TYPEID(177, TYPE_PTR, src_pink_Type *), .offset = offsetof(src_pink_Operand, type)},
         {"is_lvalue", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_lvalue)},
         {"is_const", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_Operand, is_const)},
-        {"val", .type = TYPEID(266, TYPE_UNION, std_Val), .offset = offsetof(src_pink_Operand, val)},
+        {"val", .type = TYPEID(266, TYPE_UNION, old_std_Val), .offset = offsetof(src_pink_Operand, val)},
     }},
     [281] = NULL, // Func
     [282] = NULL, // Func
@@ -2810,7 +2810,7 @@ const TypeInfo *typeinfo_table[646] = {
     [302] = NULL, // Func
     [303] = NULL, // Func
     [304] = NULL, // Func
-    [305] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(266, TYPE_UNION, std_Val)},
+    [305] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(266, TYPE_UNION, old_std_Val)},
     [306] = NULL, // Func
     [307] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(src_pink_StmtCtx), .align = alignof(src_pink_StmtCtx), .name = "src_pink_StmtCtx", .num_fields = 2, .fields = (TypeFieldInfo[]) {
         {"is_break_legal", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(src_pink_StmtCtx, is_break_legal)},
@@ -2900,7 +2900,7 @@ const TypeInfo *typeinfo_table[646] = {
     [361] = NULL, // Func
     [362] = NULL, // Func
     [363] = NULL, // Func
-    [364] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(36, TYPE_STRUCT, std_Arena)},
+    [364] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(36, TYPE_STRUCT, old_std_Arena)},
     [365] = NULL, // Func
     [366] = NULL, // Func
     [367] = NULL, // Func
@@ -2912,7 +2912,7 @@ const TypeInfo *typeinfo_table[646] = {
     [373] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [67]), .align = alignof(char [67]), .base = TYPEID(3, TYPE_CHAR, char), .count = 67},
     [374] = NULL, // Func
     [375] = NULL, // Func
-    [376] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(181, TYPE_STRUCT, std_Map)},
+    [376] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(181, TYPE_STRUCT, old_std_Map)},
     [377] = NULL, // Func
     [378] = NULL, // Func
     [379] = NULL, // Func
@@ -3028,16 +3028,16 @@ const TypeInfo *typeinfo_table[646] = {
     [489] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [66]), .align = alignof(char [66]), .base = TYPEID(3, TYPE_CHAR, char), .count = 66},
     [490] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [92]), .align = alignof(char [92]), .base = TYPEID(3, TYPE_CHAR, char), .count = 92},
     [491] = NULL, // Func
-    [492] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_DirListIter), .align = alignof(std_os_DirListIter), .name = "std_os_DirListIter", .num_fields = 7, .fields = (TypeFieldInfo[]) {
-        {"valid", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, valid)},
-        {"error", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, error)},
-        {"base", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, base)},
-        {"name", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(std_os_DirListIter, name)},
-        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_os_DirListIter, size)},
-        {"is_dir", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(std_os_DirListIter, is_dir)},
-        {"handle", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(std_os_DirListIter, handle)},
+    [492] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_os_DirListIter), .align = alignof(old_std_os_DirListIter), .name = "old_std_os_DirListIter", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"valid", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(old_std_os_DirListIter, valid)},
+        {"error", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(old_std_os_DirListIter, error)},
+        {"base", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(old_std_os_DirListIter, base)},
+        {"name", .type = TYPEID(171, TYPE_ARRAY, char [256]), .offset = offsetof(old_std_os_DirListIter, name)},
+        {"size", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_os_DirListIter, size)},
+        {"is_dir", .type = TYPEID(2, TYPE_BOOL, bool), .offset = offsetof(old_std_os_DirListIter, is_dir)},
+        {"handle", .type = TYPEID(16, TYPE_PTR, void *), .offset = offsetof(old_std_os_DirListIter, handle)},
     }},
-    [493] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(492, TYPE_STRUCT, std_os_DirListIter)},
+    [493] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(492, TYPE_STRUCT, old_std_os_DirListIter)},
     [494] = NULL, // Func
     [495] = NULL, // Func
     [496] = NULL, // Func
@@ -3055,41 +3055,41 @@ const TypeInfo *typeinfo_table[646] = {
     [508] = NULL, // Func
     [509] = NULL, // Func
     [510] = NULL, // Func
-    [511] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_BufHdr), .align = alignof(std_BufHdr), .name = "std_BufHdr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
-        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, len)},
-        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_BufHdr, cap)},
-        {"buf", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(std_BufHdr, buf)},
+    [511] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_BufHdr), .align = alignof(old_std_BufHdr), .name = "old_std_BufHdr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_BufHdr, len)},
+        {"cap", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_BufHdr, cap)},
+        {"buf", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(old_std_BufHdr, buf)},
     }},
-    [512] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(511, TYPE_STRUCT, std_BufHdr)},
+    [512] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(511, TYPE_STRUCT, old_std_BufHdr)},
     [513] = NULL, // Func
     [514] = NULL, // Func
     [515] = NULL, // Func
     [516] = NULL, // Func
     [517] = NULL, // Func
-    [518] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_Intern), .align = alignof(std_Intern), .name = "std_Intern", .num_fields = 3, .fields = (TypeFieldInfo[]) {
-        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(std_Intern, len)},
-        {"next", .type = TYPEID(519, TYPE_PTR, std_Intern *), .offset = offsetof(std_Intern, next)},
-        {"str", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(std_Intern, str)},
+    [518] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_Intern), .align = alignof(old_std_Intern), .name = "old_std_Intern", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"len", .type = TYPEID(13, TYPE_ULLONG, ullong), .offset = offsetof(old_std_Intern, len)},
+        {"next", .type = TYPEID(519, TYPE_PTR, old_std_Intern *), .offset = offsetof(old_std_Intern, next)},
+        {"str", .type = TYPEID(213, TYPE_ARRAY, char [1]), .offset = offsetof(old_std_Intern, str)},
     }},
-    [519] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(518, TYPE_STRUCT, std_Intern)},
+    [519] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(518, TYPE_STRUCT, old_std_Intern)},
     [520] = NULL, // Func
-    [521] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDef), .align = alignof(std_os_FlagDef), .name = "std_os_FlagDef", .num_fields = 7, .fields = (TypeFieldInfo[]) {
-        {"kind", .type = TYPEID(522, TYPE_NONE, std_os_FlagKind), .offset = offsetof(std_os_FlagDef, kind)},
-        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, name)},
-        {"help", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, help)},
-        {"options", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDef, options)},
-        {"arg_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(std_os_FlagDef, arg_name)},
-        {"num_options", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(std_os_FlagDef, num_options)},
-        {"ptr", .type = TYPEID(523, TYPE_STRUCT, std_os_FlagDefPtr), .offset = offsetof(std_os_FlagDef, ptr)},
+    [521] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_os_FlagDef), .align = alignof(old_std_os_FlagDef), .name = "old_std_os_FlagDef", .num_fields = 7, .fields = (TypeFieldInfo[]) {
+        {"kind", .type = TYPEID(522, TYPE_NONE, old_std_os_FlagKind), .offset = offsetof(old_std_os_FlagDef, kind)},
+        {"name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(old_std_os_FlagDef, name)},
+        {"help", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(old_std_os_FlagDef, help)},
+        {"options", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(old_std_os_FlagDef, options)},
+        {"arg_name", .type = TYPEID(18, TYPE_PTR, char const (*)), .offset = offsetof(old_std_os_FlagDef, arg_name)},
+        {"num_options", .type = TYPEID(8, TYPE_INT, int), .offset = offsetof(old_std_os_FlagDef, num_options)},
+        {"ptr", .type = TYPEID(523, TYPE_STRUCT, old_std_os_FlagDefPtr), .offset = offsetof(old_std_os_FlagDef, ptr)},
     }},
     [522] = NULL, // Enum
-    [523] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(std_os_FlagDefPtr), .align = alignof(std_os_FlagDefPtr), .name = "std_os_FlagDefPtr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
-        {"i", .type = TYPEID(430, TYPE_PTR, int *), .offset = offsetof(std_os_FlagDefPtr, i)},
-        {"b", .type = TYPEID(460, TYPE_PTR, bool *), .offset = offsetof(std_os_FlagDefPtr, b)},
-        {"s", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(std_os_FlagDefPtr, s)},
+    [523] = &(TypeInfo){TYPE_STRUCT, .size = sizeof(old_std_os_FlagDefPtr), .align = alignof(old_std_os_FlagDefPtr), .name = "old_std_os_FlagDefPtr", .num_fields = 3, .fields = (TypeFieldInfo[]) {
+        {"i", .type = TYPEID(430, TYPE_PTR, int *), .offset = offsetof(old_std_os_FlagDefPtr, i)},
+        {"b", .type = TYPEID(460, TYPE_PTR, bool *), .offset = offsetof(old_std_os_FlagDefPtr, b)},
+        {"s", .type = TYPEID(19, TYPE_PTR, char const ((**))), .offset = offsetof(old_std_os_FlagDefPtr, s)},
     }},
-    [524] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(521, TYPE_STRUCT, std_os_FlagDef)},
-    [525] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(524, TYPE_PTR, std_os_FlagDef *)},
+    [524] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(521, TYPE_STRUCT, old_std_os_FlagDef)},
+    [525] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(524, TYPE_PTR, old_std_os_FlagDef *)},
     [526] = NULL, // Func
     [527] = NULL, // Incomplete: FILE
     [528] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID0(527, TYPE_NONE)},
@@ -3247,9 +3247,9 @@ TypeInfo const ((*get_typeinfo(typeid type))) {
     }
 }
 
-std_Arena src_pink_ast_arena;
+old_std_Arena src_pink_ast_arena;
 void (*src_pink_ast_alloc(size_t size)) {
-    void (*ptr) = std_arena_alloc(&(src_pink_ast_arena), size);
+    void (*ptr) = old_std_arena_alloc(&(src_pink_ast_arena), size);
     memset(ptr, 0, size);
     return ptr;
 }
@@ -3258,7 +3258,7 @@ void (*src_pink_ast_dup(void const ((*src)), size_t size)) {
     if ((size) == (0)) {
         return NULL;
     }
-    void (*ptr) = std_arena_alloc(&(src_pink_ast_arena), size);
+    void (*ptr) = old_std_arena_alloc(&(src_pink_ast_arena), size);
     memcpy(ptr, src, size);
     return ptr;
 }
@@ -3799,7 +3799,7 @@ char (*src_pink_gen_postamble_str) =
     "#pragma GCC diagnostic pop\n"
     "#endif\n";
 void src_pink_genln(void) {
-    std_buf_printf(&(src_pink_gen_buf), "\n"
+    old_std_buf_printf(&(src_pink_gen_buf), "\n"
     "%.*s", (src_pink_gen_indent) * (4), "                                                                  ");
     (src_pink_gen_pos.line)++;
 }
@@ -3811,11 +3811,11 @@ bool src_pink_is_incomplete_array_typespec(src_pink_Typespec (*typespec)) {
 char (src_pink_char_to_escape[256]) = {['\0'] = '0', ['\n'] = 'n', ['\r'] = 'r', ['\t'] = 't', ['\v'] = 'v', ['\b'] = 'b', ['\a'] = 'a', ['\\'] = '\\', ['\"'] = '\"', ['\''] = '\''};
 void src_pink_gen_char(char c) {
     if (src_pink_char_to_escape[(uchar)(c)]) {
-        std_buf_printf(&(src_pink_gen_buf), "\'\\%c\'", src_pink_char_to_escape[(uchar)(c)]);
+        old_std_buf_printf(&(src_pink_gen_buf), "\'\\%c\'", src_pink_char_to_escape[(uchar)(c)]);
     } else if (isprint(c)) {
-        std_buf_printf(&(src_pink_gen_buf), "\'%c\'", c);
+        old_std_buf_printf(&(src_pink_gen_buf), "\'%c\'", c);
     } else {
-        std_buf_printf(&(src_pink_gen_buf), "\'\\x%X\'", (uchar)(c));
+        old_std_buf_printf(&(src_pink_gen_buf), "\'\\x%X\'", (uchar)(c));
     }
 }
 
@@ -3824,30 +3824,30 @@ void src_pink_gen_str(char const ((*str)), bool multiline) {
         (src_pink_gen_indent)++;
         src_pink_genln();
     }
-    std_buf_printf(&(src_pink_gen_buf), "\"");
+    old_std_buf_printf(&(src_pink_gen_buf), "\"");
     while (*(str)) {
         char const ((*start)) = str;
         while (((*(str)) && (isprint(*(str)))) && (!(src_pink_char_to_escape[(uchar)(*(str))]))) {
             (str)++;
         }
         if ((start) != (str)) {
-            std_buf_printf(&(src_pink_gen_buf), "%.*s", (str) - (start), start);
+            old_std_buf_printf(&(src_pink_gen_buf), "%.*s", (str) - (start), start);
         }
         if (*(str)) {
             if (src_pink_char_to_escape[(uchar)(*(str))]) {
-                std_buf_printf(&(src_pink_gen_buf), "\\%c", src_pink_char_to_escape[(uchar)(*(str))]);
+                old_std_buf_printf(&(src_pink_gen_buf), "\\%c", src_pink_char_to_escape[(uchar)(*(str))]);
                 if (((str[0]) == ('\n')) && (str[1])) {
-                    std_buf_printf(&(src_pink_gen_buf), "\"");
+                    old_std_buf_printf(&(src_pink_gen_buf), "\"");
                     src_pink_genln();
-                    std_buf_printf(&(src_pink_gen_buf), "\"");
+                    old_std_buf_printf(&(src_pink_gen_buf), "\"");
                 }
             } else {
-                std_buf_printf(&(src_pink_gen_buf), "\\x%X", (uchar)(*(str)));
+                old_std_buf_printf(&(src_pink_gen_buf), "\\x%X", (uchar)(*(str)));
             }
             (str)++;
         }
     }
-    std_buf_printf(&(src_pink_gen_buf), "\"");
+    old_std_buf_printf(&(src_pink_gen_buf), "\"");
     if (multiline) {
         (src_pink_gen_indent)--;
     }
@@ -3859,9 +3859,9 @@ void src_pink_gen_sync_pos(src_pink_SrcPos pos) {
     }
     if (((src_pink_gen_pos.line) != (pos.line)) || ((src_pink_gen_pos.name) != (pos.name))) {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "#line %d", pos.line);
+        old_std_buf_printf(&(src_pink_gen_buf), "#line %d", pos.line);
         if ((src_pink_gen_pos.name) != (pos.name)) {
-            std_buf_printf(&(src_pink_gen_buf), " ");
+            old_std_buf_printf(&(src_pink_gen_buf), " ");
             src_pink_gen_str(pos.name, false);
         }
         src_pink_gen_pos = pos;
@@ -3869,7 +3869,7 @@ void src_pink_gen_sync_pos(src_pink_SrcPos pos) {
 }
 
 char const ((*src_pink_cdecl_paren(char const ((*str)), char c))) {
-    return ((c) && ((c) != ('[')) ? (char const (*))(std_strf("(%s)", str)) : str);
+    return ((c) && ((c) != ('[')) ? (char const (*))(old_std_strf("(%s)", str)) : str);
 }
 
 char const ((*src_pink_cdecl_name(src_pink_Type (*type)))) {
@@ -3884,42 +3884,42 @@ char const ((*src_pink_cdecl_name(src_pink_Type (*type)))) {
 char (*src_pink_type_to_cdecl(src_pink_Type (*type), char const ((*str)))) {
     switch (type->kind) {
     case SRC_PINK_CMPL_TYPE_PTR: {
-        return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(std_strf("*%s", str), *(str)));
+        return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(old_std_strf("*%s", str), *(str)));
         break;
     }
     case SRC_PINK_CMPL_TYPE_CONST: {
-        return src_pink_type_to_cdecl(type->base, std_strf("const %s", src_pink_cdecl_paren(str, *(str))));
+        return src_pink_type_to_cdecl(type->base, old_std_strf("const %s", src_pink_cdecl_paren(str, *(str))));
         break;
     }
     case SRC_PINK_CMPL_TYPE_ARRAY: {
         if ((type->num_elems) == (0)) {
-            return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(std_strf("%s[]", str), *(str)));
+            return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(old_std_strf("%s[]", str), *(str)));
         } else {
-            return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(std_strf("%s[%zu]", str, type->num_elems), *(str)));
+            return src_pink_type_to_cdecl(type->base, src_pink_cdecl_paren(old_std_strf("%s[%zu]", str, type->num_elems), *(str)));
         }
         break;
     }
     case SRC_PINK_CMPL_TYPE_FUNC: {
         {
             char (*result) = NULL;
-            std_buf_printf(&(result), "(*%s)(", str);
+            old_std_buf_printf(&(result), "(*%s)(", str);
             if ((type->function.num_params) == (0)) {
-                std_buf_printf(&(result), "void");
+                old_std_buf_printf(&(result), "void");
             } else {
                 for (size_t i = 0; (i) < (type->function.num_params); (i)++) {
-                    std_buf_printf(&(result), "%s%s", ((i) == (0) ? "" : ", "), src_pink_type_to_cdecl(type->function.params[i], ""));
+                    old_std_buf_printf(&(result), "%s%s", ((i) == (0) ? "" : ", "), src_pink_type_to_cdecl(type->function.params[i], ""));
                 }
             }
             if (type->function.has_varargs) {
-                std_buf_printf(&(result), ", ...");
+                old_std_buf_printf(&(result), ", ...");
             }
-            std_buf_printf(&(result), ")");
+            old_std_buf_printf(&(result), ")");
             return src_pink_type_to_cdecl(type->function.ret, result);
         }
         break;
     }
     default: {
-        return std_strf("%s%s%s", src_pink_cdecl_name(type), (*(str) ? " " : ""), str);
+        return old_std_strf("%s%s%s", src_pink_cdecl_name(type), (*(str) ? " " : ""), str);
         break;
     }
     }
@@ -3934,9 +3934,9 @@ char const ((*src_pink_gen_expr_str(src_pink_Expr (*expr)))) {
     return result;
 }
 
-std_Map src_pink_gen_name_map;
+old_std_Map src_pink_gen_name_map;
 char const ((*src_pink_get_gen_name_or_default(void const ((*ptr)), char const ((*default_name))))) {
-    char const ((*name)) = std_map_get(&(src_pink_gen_name_map), ptr);
+    char const ((*name)) = old_std_map_get(&(src_pink_gen_name_map), ptr);
     if (!(name)) {
         src_pink_Sym (*sym) = src_pink_get_resolved_sym(ptr);
         if (sym) {
@@ -3956,14 +3956,14 @@ char const ((*src_pink_get_gen_name_or_default(void const ((*ptr)), char const (
                         external_name = buf;
                     }
                 }
-                name = std_strf("%s%s", external_name, sym->name);
+                name = old_std_strf("%s%s", external_name, sym->name);
             } else {
                 name = sym->name;
             }
         } else {
             name = default_name;
         }
-        std_map_put(&(src_pink_gen_name_map), ptr, (void *)(name));
+        old_std_map_put(&(src_pink_gen_name_map), ptr, (void *)(name));
     }
     return name;
 }
@@ -3974,44 +3974,44 @@ char const ((*src_pink_get_gen_name(void const ((*ptr))))) {
 
 char (*src_pink_typespec_to_cdecl(src_pink_Typespec (*typespec), char const ((*str)))) {
     if (!(typespec)) {
-        return std_strf("void%s%s", (*(str) ? " " : ""), str);
+        return old_std_strf("void%s%s", (*(str) ? " " : ""), str);
     }
     switch (typespec->kind) {
     case SRC_PINK_TYPESPEC_NAME: {
-        return std_strf("%s%s%s", src_pink_get_gen_name_or_default(typespec, typespec->name), (*(str) ? " " : ""), str);
+        return old_std_strf("%s%s%s", src_pink_get_gen_name_or_default(typespec, typespec->name), (*(str) ? " " : ""), str);
         break;
     }
     case SRC_PINK_TYPESPEC_PTR: {
-        return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(std_strf("*%s", str), *(str)));
+        return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(old_std_strf("*%s", str), *(str)));
         break;
     }
     case SRC_PINK_TYPESPEC_CONST: {
-        return src_pink_typespec_to_cdecl(typespec->base, std_strf("const %s", src_pink_cdecl_paren(str, *(str))));
+        return src_pink_typespec_to_cdecl(typespec->base, old_std_strf("const %s", src_pink_cdecl_paren(str, *(str))));
         break;
     }
     case SRC_PINK_TYPESPEC_ARRAY: {
         if ((typespec->num_elems) == (0)) {
-            return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(std_strf("%s[]", str), *(str)));
+            return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(old_std_strf("%s[]", str), *(str)));
         } else {
-            return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(std_strf("%s[%s]", str, src_pink_gen_expr_str(typespec->num_elems)), *(str)));
+            return src_pink_typespec_to_cdecl(typespec->base, src_pink_cdecl_paren(old_std_strf("%s[%s]", str, src_pink_gen_expr_str(typespec->num_elems)), *(str)));
         }
         break;
     }
     case SRC_PINK_TYPESPEC_FUNC: {
         {
             char (*result) = NULL;
-            std_buf_printf(&(result), "(*%s)(", str);
+            old_std_buf_printf(&(result), "(*%s)(", str);
             if ((typespec->function.num_args) == (0)) {
-                std_buf_printf(&(result), "void");
+                old_std_buf_printf(&(result), "void");
             } else {
                 for (size_t i = 0; (i) < (typespec->function.num_args); (i)++) {
-                    std_buf_printf(&(result), "%s%s", ((i) == (0) ? "" : ", "), src_pink_typespec_to_cdecl(typespec->function.args[i], ""));
+                    old_std_buf_printf(&(result), "%s%s", ((i) == (0) ? "" : ", "), src_pink_typespec_to_cdecl(typespec->function.args[i], ""));
                 }
             }
             if (typespec->function.has_varargs) {
-                std_buf_printf(&(result), ", ...");
+                old_std_buf_printf(&(result), ", ...");
             }
-            std_buf_printf(&(result), ")");
+            old_std_buf_printf(&(result), ")");
             return src_pink_typespec_to_cdecl(typespec->function.ret, result);
         }
         break;
@@ -4025,29 +4025,29 @@ char (*src_pink_typespec_to_cdecl(src_pink_Typespec (*typespec), char const ((*s
 
 void src_pink_gen_func_decl(src_pink_Decl (*decl)) {
     char (*result) = NULL;
-    std_buf_printf(&(result), "%s(", src_pink_get_gen_name(decl));
+    old_std_buf_printf(&(result), "%s(", src_pink_get_gen_name(decl));
     if ((decl->function.num_params) == (0)) {
-        std_buf_printf(&(result), "void");
+        old_std_buf_printf(&(result), "void");
     } else {
         for (size_t i = 0; (i) < (decl->function.num_params); (i)++) {
             src_pink_FuncParam param = decl->function.params[i];
             if ((i) != (0)) {
-                std_buf_printf(&(result), ", ");
+                old_std_buf_printf(&(result), ", ");
             }
-            std_buf_printf(&(result), "%s", src_pink_typespec_to_cdecl(param.type, param.name));
+            old_std_buf_printf(&(result), "%s", src_pink_typespec_to_cdecl(param.type, param.name));
         }
     }
     if (decl->function.has_varargs) {
-        std_buf_printf(&(result), ", ...");
+        old_std_buf_printf(&(result), ", ...");
     }
-    std_buf_printf(&(result), ")");
+    old_std_buf_printf(&(result), ")");
     src_pink_gen_sync_pos(decl->pos);
     if (decl->function.ret_type) {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->function.ret_type, result));
+        old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->function.ret_type, result));
     } else {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "void %s", result);
+        old_std_buf_printf(&(src_pink_gen_buf), "void %s", result);
     }
 }
 
@@ -4056,7 +4056,7 @@ bool src_pink_gen_reachable(src_pink_Sym (*sym)) {
 }
 
 void src_pink_gen_forward_decls(void) {
-    for (src_pink_Sym (*(*it)) = src_pink_sorted_syms; (it) != (std_buf_end(src_pink_sorted_syms, sizeof(*(src_pink_sorted_syms)))); (it)++) {
+    for (src_pink_Sym (*(*it)) = src_pink_sorted_syms; (it) != (old_std_buf_end(src_pink_sorted_syms, sizeof(*(src_pink_sorted_syms)))); (it)++) {
         src_pink_Sym (*sym) = *(it);
         src_pink_Decl (*decl) = sym->decl;
         if ((!(decl)) || (!(src_pink_gen_reachable(sym)))) {
@@ -4071,7 +4071,7 @@ void src_pink_gen_forward_decls(void) {
             {
                 char const ((*name)) = src_pink_get_gen_name(sym);
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "typedef %s %s %s;", ((decl->kind) == (SRC_PINK_DECL_STRUCT) ? "struct" : "union"), name, name);
+                old_std_buf_printf(&(src_pink_gen_buf), "typedef %s %s %s;", ((decl->kind) == (SRC_PINK_DECL_STRUCT) ? "struct" : "union"), name, name);
                 break;
             }
             break;
@@ -4092,14 +4092,14 @@ void src_pink_gen_aggregate_items(src_pink_Aggregate (*aggregate)) {
             for (size_t j = 0; (j) < (item.num_names); (j)++) {
                 src_pink_gen_sync_pos(item.pos);
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "%s;", src_pink_typespec_to_cdecl(item.type, item.names[j]));
+                old_std_buf_printf(&(src_pink_gen_buf), "%s;", src_pink_typespec_to_cdecl(item.type, item.names[j]));
             }
         } else if ((item.kind) == (SRC_PINK_AGGREGATE_ITEM_SUBAGGREGATE)) {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "%s {", ((item.subaggregate->kind) == (SRC_PINK_AGGREGATE_STRUCT) ? "struct" : "union"));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s {", ((item.subaggregate->kind) == (SRC_PINK_AGGREGATE_STRUCT) ? "struct" : "union"));
             src_pink_gen_aggregate_items(item.subaggregate);
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "};");
+            old_std_buf_printf(&(src_pink_gen_buf), "};");
         }
     }
     (src_pink_gen_indent)--;
@@ -4110,45 +4110,45 @@ void src_pink_gen_aggregate(src_pink_Decl (*decl)) {
         return;
     }
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "%s %s {", ((decl->kind) == (SRC_PINK_DECL_STRUCT) ? "struct" : "union"), src_pink_get_gen_name(decl));
+    old_std_buf_printf(&(src_pink_gen_buf), "%s %s {", ((decl->kind) == (SRC_PINK_DECL_STRUCT) ? "struct" : "union"), src_pink_get_gen_name(decl));
     src_pink_gen_aggregate_items(decl->aggregate);
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "};");
+    old_std_buf_printf(&(src_pink_gen_buf), "};");
 }
 
 void src_pink_gen_paren_expr(src_pink_Expr (*expr)) {
-    std_buf_printf(&(src_pink_gen_buf), "(");
+    old_std_buf_printf(&(src_pink_gen_buf), "(");
     src_pink_gen_expr(expr);
-    std_buf_printf(&(src_pink_gen_buf), ")");
+    old_std_buf_printf(&(src_pink_gen_buf), ")");
 }
 
 void src_pink_gen_expr_compound(src_pink_Expr (*expr)) {
     src_pink_Type (*expected_type) = src_pink_get_resolved_expected_type(expr);
     if ((expected_type) && (!(src_pink_is_ptr_type(expected_type)))) {
-        std_buf_printf(&(src_pink_gen_buf), "{");
+        old_std_buf_printf(&(src_pink_gen_buf), "{");
     } else if (expr->compound.type) {
-        std_buf_printf(&(src_pink_gen_buf), "(%s){", src_pink_typespec_to_cdecl(expr->compound.type, ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "(%s){", src_pink_typespec_to_cdecl(expr->compound.type, ""));
     } else {
-        std_buf_printf(&(src_pink_gen_buf), "(%s){", src_pink_type_to_cdecl(src_pink_get_resolved_type(expr), ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "(%s){", src_pink_type_to_cdecl(src_pink_get_resolved_type(expr), ""));
     }
     for (size_t i = 0; (i) < (expr->compound.num_fields); (i)++) {
         if ((i) != (0)) {
-            std_buf_printf(&(src_pink_gen_buf), ", ");
+            old_std_buf_printf(&(src_pink_gen_buf), ", ");
         }
         src_pink_CompoundField field = expr->compound.fields[i];
         if ((field.kind) == (SRC_PINK_FIELD_NAME)) {
-            std_buf_printf(&(src_pink_gen_buf), ".%s = ", field.name);
+            old_std_buf_printf(&(src_pink_gen_buf), ".%s = ", field.name);
         } else if ((field.kind) == (SRC_PINK_FIELD_INDEX)) {
-            std_buf_printf(&(src_pink_gen_buf), "[");
+            old_std_buf_printf(&(src_pink_gen_buf), "[");
             src_pink_gen_expr(field.index);
-            std_buf_printf(&(src_pink_gen_buf), "] = ");
+            old_std_buf_printf(&(src_pink_gen_buf), "] = ");
         }
         src_pink_gen_expr(field.init);
     }
     if ((expr->compound.num_fields) == (0)) {
-        std_buf_printf(&(src_pink_gen_buf), "0");
+        old_std_buf_printf(&(src_pink_gen_buf), "0");
     }
-    std_buf_printf(&(src_pink_gen_buf), "}");
+    old_std_buf_printf(&(src_pink_gen_buf), "}");
 }
 
 char const ((*(src_pink_typeid_kind_names[SRC_PINK_NUM_CMPL_TYPE_KINDS]))) = {[SRC_PINK_CMPL_TYPE_NONE] = "TYPE_NONE", [SRC_PINK_CMPL_TYPE_VOID] = "TYPE_VOID", [SRC_PINK_CMPL_TYPE_BOOL] = "TYPE_BOOL", [SRC_PINK_CMPL_TYPE_CHAR] = "TYPE_CHAR", [SRC_PINK_CMPL_TYPE_UCHAR] = "TYPE_UCHAR", [SRC_PINK_CMPL_TYPE_SCHAR] = "TYPE_SCHAR", [SRC_PINK_CMPL_TYPE_SHORT] = "TYPE_SHORT", [SRC_PINK_CMPL_TYPE_USHORT] = "TYPE_USHORT", [SRC_PINK_CMPL_TYPE_INT] = "TYPE_INT", [SRC_PINK_CMPL_TYPE_UINT] = "TYPE_UINT", [SRC_PINK_CMPL_TYPE_LONG] = "TYPE_LONG", [SRC_PINK_CMPL_TYPE_ULONG] = "TYPE_ULONG", [SRC_PINK_CMPL_TYPE_LLONG] = "TYPE_LLONG", [SRC_PINK_CMPL_TYPE_ULLONG] = "TYPE_ULLONG", [SRC_PINK_CMPL_TYPE_FLOAT] = "TYPE_FLOAT", [SRC_PINK_CMPL_TYPE_DOUBLE] = "TYPE_DOUBLE", [SRC_PINK_CMPL_TYPE_CONST] = "TYPE_CONST", [SRC_PINK_CMPL_TYPE_PTR] = "TYPE_PTR", [SRC_PINK_CMPL_TYPE_ARRAY] = "TYPE_ARRAY", [SRC_PINK_CMPL_TYPE_STRUCT] = "TYPE_STRUCT", [SRC_PINK_CMPL_TYPE_UNION] = "TYPE_UNION", [SRC_PINK_CMPL_TYPE_FUNC] = "TYPE_FUNC"};
@@ -4175,18 +4175,18 @@ bool src_pink_is_excluded_typeinfo(src_pink_Type (*type)) {
 
 void src_pink_gen_typeid(src_pink_Type (*type)) {
     if (((type->size) == (0)) || (src_pink_is_excluded_typeinfo(type))) {
-        std_buf_printf(&(src_pink_gen_buf), "TYPEID0(%d, %s)", type->typeid, src_pink_typeid_kind_name(type));
+        old_std_buf_printf(&(src_pink_gen_buf), "TYPEID0(%d, %s)", type->typeid, src_pink_typeid_kind_name(type));
     } else {
-        std_buf_printf(&(src_pink_gen_buf), "TYPEID(%d, %s, %s)", type->typeid, src_pink_typeid_kind_name(type), src_pink_type_to_cdecl(type, ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "TYPEID(%d, %s, %s)", type->typeid, src_pink_typeid_kind_name(type), src_pink_type_to_cdecl(type, ""));
     }
 }
 
 void src_pink_gen_expr(src_pink_Expr (*expr)) {
     switch (expr->kind) {
     case SRC_PINK_EXPR_PAREN: {
-        std_buf_printf(&(src_pink_gen_buf), "(");
+        old_std_buf_printf(&(src_pink_gen_buf), "(");
         src_pink_gen_expr(expr->paren.expr);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_INT: {
@@ -4195,11 +4195,11 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
             switch (expr->int_lit.mod) {
             case SRC_PINK_MOD_BIN:
             case SRC_PINK_MOD_HEX: {
-                std_buf_printf(&(src_pink_gen_buf), "0x%llx%s", expr->int_lit.val, suffix_name);
+                old_std_buf_printf(&(src_pink_gen_buf), "0x%llx%s", expr->int_lit.val, suffix_name);
                 break;
             }
             case SRC_PINK_MOD_OCT: {
-                std_buf_printf(&(src_pink_gen_buf), "0%llo%s", expr->int_lit.val, suffix_name);
+                old_std_buf_printf(&(src_pink_gen_buf), "0%llo%s", expr->int_lit.val, suffix_name);
                 break;
             }
             case SRC_PINK_MOD_CHAR: {
@@ -4207,7 +4207,7 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
                 break;
             }
             default: {
-                std_buf_printf(&(src_pink_gen_buf), "%llu%s", expr->int_lit.val, suffix_name);
+                old_std_buf_printf(&(src_pink_gen_buf), "%llu%s", expr->int_lit.val, suffix_name);
                 break;
             }
             }
@@ -4218,7 +4218,7 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
         {
             int is_double = (expr->float_lit.suffix) == (SRC_PINK_SUFFIX_D);
             size_t len = (expr->float_lit.end) - (expr->float_lit.start);
-            std_buf_printf(&(src_pink_gen_buf), "%.*s%s", (is_double ? (len) - (1) : len), expr->float_lit.start, (is_double ? "" : "f"));
+            old_std_buf_printf(&(src_pink_gen_buf), "%.*s%s", (is_double ? (len) - (1) : len), expr->float_lit.start, (is_double ? "" : "f"));
         }
         break;
     }
@@ -4227,50 +4227,50 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
         break;
     }
     case SRC_PINK_EXPR_NAME: {
-        std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_get_gen_name_or_default(expr, expr->name));
+        old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_get_gen_name_or_default(expr, expr->name));
         break;
     }
     case SRC_PINK_EXPR_CAST: {
-        std_buf_printf(&(src_pink_gen_buf), "(%s)(", src_pink_typespec_to_cdecl(expr->cast.type, ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "(%s)(", src_pink_typespec_to_cdecl(expr->cast.type, ""));
         src_pink_gen_expr(expr->cast.expr);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_CALL: {
         {
             src_pink_Sym (*sym) = src_pink_get_resolved_sym(expr->call.expr);
             if ((sym) && ((sym->kind) == (SRC_PINK_SYM_TYPE))) {
-                std_buf_printf(&(src_pink_gen_buf), "(%s)", src_pink_get_gen_name(sym));
+                old_std_buf_printf(&(src_pink_gen_buf), "(%s)", src_pink_get_gen_name(sym));
             } else {
                 src_pink_gen_expr(expr->call.expr);
             }
-            std_buf_printf(&(src_pink_gen_buf), "(");
+            old_std_buf_printf(&(src_pink_gen_buf), "(");
             for (size_t i = 0; (i) < (expr->call.num_args); (i)++) {
                 if ((i) != (0)) {
-                    std_buf_printf(&(src_pink_gen_buf), ", ");
+                    old_std_buf_printf(&(src_pink_gen_buf), ", ");
                 }
                 src_pink_gen_expr(expr->call.args[i]);
             }
-            std_buf_printf(&(src_pink_gen_buf), ")");
+            old_std_buf_printf(&(src_pink_gen_buf), ")");
         }
         break;
     }
     case SRC_PINK_EXPR_INDEX: {
         src_pink_gen_expr(expr->index.expr);
-        std_buf_printf(&(src_pink_gen_buf), "[");
+        old_std_buf_printf(&(src_pink_gen_buf), "[");
         src_pink_gen_expr(expr->index.index);
-        std_buf_printf(&(src_pink_gen_buf), "]");
+        old_std_buf_printf(&(src_pink_gen_buf), "]");
         break;
     }
     case SRC_PINK_EXPR_FIELD: {
         {
             src_pink_Sym (*sym) = src_pink_get_resolved_sym(expr);
             if (sym) {
-                std_buf_printf(&(src_pink_gen_buf), "(%s)", src_pink_get_gen_name(sym));
+                old_std_buf_printf(&(src_pink_gen_buf), "(%s)", src_pink_get_gen_name(sym));
             } else {
                 src_pink_gen_expr(expr->field.expr);
                 src_pink_Type (*type) = src_pink_unqualify_type(src_pink_get_resolved_type(expr->field.expr));
-                std_buf_printf(&(src_pink_gen_buf), "%s%s", ((type->kind) == (SRC_PINK_CMPL_TYPE_PTR) ? "->" : "."), expr->field.name);
+                old_std_buf_printf(&(src_pink_gen_buf), "%s%s", ((type->kind) == (SRC_PINK_CMPL_TYPE_PTR) ? "->" : "."), expr->field.name);
             }
         }
         break;
@@ -4280,45 +4280,45 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
         break;
     }
     case SRC_PINK_EXPR_UNARY: {
-        std_buf_printf(&(src_pink_gen_buf), "%s(", src_pink_token_kind_name(expr->unary.op));
+        old_std_buf_printf(&(src_pink_gen_buf), "%s(", src_pink_token_kind_name(expr->unary.op));
         src_pink_gen_expr(expr->unary.expr);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_BINARY: {
-        std_buf_printf(&(src_pink_gen_buf), "(");
+        old_std_buf_printf(&(src_pink_gen_buf), "(");
         src_pink_gen_expr(expr->binary.left);
-        std_buf_printf(&(src_pink_gen_buf), ") %s (", src_pink_token_kind_name(expr->binary.op));
+        old_std_buf_printf(&(src_pink_gen_buf), ") %s (", src_pink_token_kind_name(expr->binary.op));
         src_pink_gen_expr(expr->binary.right);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_TERNARY: {
-        std_buf_printf(&(src_pink_gen_buf), "(");
+        old_std_buf_printf(&(src_pink_gen_buf), "(");
         src_pink_gen_expr(expr->ternary.cond);
-        std_buf_printf(&(src_pink_gen_buf), " ? ");
+        old_std_buf_printf(&(src_pink_gen_buf), " ? ");
         src_pink_gen_expr(expr->ternary.then_expr);
-        std_buf_printf(&(src_pink_gen_buf), " : ");
+        old_std_buf_printf(&(src_pink_gen_buf), " : ");
         src_pink_gen_expr(expr->ternary.else_expr);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_SIZEOF_EXPR: {
-        std_buf_printf(&(src_pink_gen_buf), "sizeof(");
+        old_std_buf_printf(&(src_pink_gen_buf), "sizeof(");
         src_pink_gen_expr(expr->sizeof_expr);
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_EXPR_SIZEOF_TYPE: {
-        std_buf_printf(&(src_pink_gen_buf), "sizeof(%s)", src_pink_typespec_to_cdecl(expr->sizeof_type, ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "sizeof(%s)", src_pink_typespec_to_cdecl(expr->sizeof_type, ""));
         break;
     }
     case SRC_PINK_EXPR_ALIGNOF_EXPR: {
-        std_buf_printf(&(src_pink_gen_buf), "alignof(%s)", src_pink_type_to_cdecl(src_pink_get_resolved_type(expr->alignof_expr), ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "alignof(%s)", src_pink_type_to_cdecl(src_pink_get_resolved_type(expr->alignof_expr), ""));
         break;
     }
     case SRC_PINK_EXPR_ALIGNOF_TYPE: {
-        std_buf_printf(&(src_pink_gen_buf), "alignof(%s)", src_pink_typespec_to_cdecl(expr->alignof_type, ""));
+        old_std_buf_printf(&(src_pink_gen_buf), "alignof(%s)", src_pink_typespec_to_cdecl(expr->alignof_type, ""));
         break;
     }
     case SRC_PINK_EXPR_TYPEOF_EXPR: {
@@ -4336,16 +4336,16 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
         break;
     }
     case SRC_PINK_EXPR_OFFSETOF: {
-        std_buf_printf(&(src_pink_gen_buf), "offsetof(%s, %s)", src_pink_typespec_to_cdecl(expr->offsetof_field.type, ""), expr->offsetof_field.name);
+        old_std_buf_printf(&(src_pink_gen_buf), "offsetof(%s, %s)", src_pink_typespec_to_cdecl(expr->offsetof_field.type, ""), expr->offsetof_field.name);
         break;
     }
     case SRC_PINK_EXPR_MODIFY: {
         if (!(expr->modify.post)) {
-            std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_token_kind_name(expr->modify.op));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_token_kind_name(expr->modify.op));
         }
         src_pink_gen_paren_expr(expr->modify.expr);
         if (expr->modify.post) {
-            std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_token_kind_name(expr->modify.op));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_token_kind_name(expr->modify.op));
         }
         break;
     }
@@ -4357,14 +4357,14 @@ void src_pink_gen_expr(src_pink_Expr (*expr)) {
 }
 
 void src_pink_gen_stmt_block(src_pink_StmtList block) {
-    std_buf_printf(&(src_pink_gen_buf), "{");
+    old_std_buf_printf(&(src_pink_gen_buf), "{");
     (src_pink_gen_indent)++;
     for (size_t i = 0; (i) < (block.num_stmts); (i)++) {
         src_pink_gen_stmt(block.stmts[i]);
     }
     (src_pink_gen_indent)--;
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "}");
+    old_std_buf_printf(&(src_pink_gen_buf), "}");
 }
 
 void src_pink_gen_simple_stmt(src_pink_Stmt (*stmt)) {
@@ -4380,21 +4380,21 @@ void src_pink_gen_simple_stmt(src_pink_Stmt (*stmt)) {
                 src_pink_Expr (*size) = src_pink_new_expr_int(init_typespec->pos, src_pink_get_resolved_type(stmt->init.expr)->num_elems, 0, 0);
                 init_typespec = src_pink_new_typespec_array(init_typespec->pos, init_typespec->base, size);
             }
-            std_buf_printf(&(src_pink_gen_buf), "%s = ", src_pink_typespec_to_cdecl(stmt->init.type, stmt->init.name));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s = ", src_pink_typespec_to_cdecl(stmt->init.type, stmt->init.name));
             if (stmt->init.expr) {
                 src_pink_gen_expr(stmt->init.expr);
             } else {
-                std_buf_printf(&(src_pink_gen_buf), "{0}");
+                old_std_buf_printf(&(src_pink_gen_buf), "{0}");
             }
         } else {
-            std_buf_printf(&(src_pink_gen_buf), "%s = ", src_pink_type_to_cdecl(src_pink_unqualify_type(src_pink_get_resolved_type(stmt->init.expr)), stmt->init.name));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s = ", src_pink_type_to_cdecl(src_pink_unqualify_type(src_pink_get_resolved_type(stmt->init.expr)), stmt->init.name));
             src_pink_gen_expr(stmt->init.expr);
         }
         break;
     }
     case SRC_PINK_STMT_ASSIGN: {
         src_pink_gen_expr(stmt->assign.left);
-        std_buf_printf(&(src_pink_gen_buf), " %s ", src_pink_token_kind_name(stmt->assign.op));
+        old_std_buf_printf(&(src_pink_gen_buf), " %s ", src_pink_token_kind_name(stmt->assign.op));
         src_pink_gen_expr(stmt->assign.right);
         break;
     }
@@ -4414,22 +4414,22 @@ void src_pink_gen_stmt(src_pink_Stmt (*stmt)) {
     switch (stmt->kind) {
     case SRC_PINK_STMT_RETURN: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "return");
+        old_std_buf_printf(&(src_pink_gen_buf), "return");
         if (stmt->expr) {
-            std_buf_printf(&(src_pink_gen_buf), " ");
+            old_std_buf_printf(&(src_pink_gen_buf), " ");
             src_pink_gen_expr(stmt->expr);
         }
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         break;
     }
     case SRC_PINK_STMT_BREAK: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "break;");
+        old_std_buf_printf(&(src_pink_gen_buf), "break;");
         break;
     }
     case SRC_PINK_STMT_CONTINUE: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "continue;");
+        old_std_buf_printf(&(src_pink_gen_buf), "continue;");
         break;
     }
     case SRC_PINK_STMT_BLOCK: {
@@ -4440,185 +4440,185 @@ void src_pink_gen_stmt(src_pink_Stmt (*stmt)) {
     case SRC_PINK_STMT_NOTE: {
         if ((stmt->note.name) == (src_pink_assert_name)) {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "assert(");
+            old_std_buf_printf(&(src_pink_gen_buf), "assert(");
             src_pink_gen_expr(stmt->note.args[0].expr);
-            std_buf_printf(&(src_pink_gen_buf), ");");
+            old_std_buf_printf(&(src_pink_gen_buf), ");");
         }
         break;
     }
     case SRC_PINK_STMT_IF: {
         if (stmt->if_stmt.init) {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "{");
+            old_std_buf_printf(&(src_pink_gen_buf), "{");
             (src_pink_gen_indent)++;
             src_pink_gen_stmt(stmt->if_stmt.init);
         }
         src_pink_gen_sync_pos(stmt->pos);
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "if (");
+        old_std_buf_printf(&(src_pink_gen_buf), "if (");
         if (stmt->if_stmt.cond) {
             src_pink_gen_expr(stmt->if_stmt.cond);
         } else {
-            std_buf_printf(&(src_pink_gen_buf), "%s", stmt->if_stmt.init->init.name);
+            old_std_buf_printf(&(src_pink_gen_buf), "%s", stmt->if_stmt.init->init.name);
         }
-        std_buf_printf(&(src_pink_gen_buf), ") ");
+        old_std_buf_printf(&(src_pink_gen_buf), ") ");
         src_pink_gen_stmt_block(stmt->if_stmt.then_block);
         for (size_t i = 0; (i) < (stmt->if_stmt.num_elseifs); (i)++) {
             src_pink_ElseIf elseif = stmt->if_stmt.elseifs[i];
-            std_buf_printf(&(src_pink_gen_buf), " else if (");
+            old_std_buf_printf(&(src_pink_gen_buf), " else if (");
             src_pink_gen_expr(elseif.cond);
-            std_buf_printf(&(src_pink_gen_buf), ") ");
+            old_std_buf_printf(&(src_pink_gen_buf), ") ");
             src_pink_gen_stmt_block(elseif.block);
         }
         if (stmt->if_stmt.else_block.stmts) {
-            std_buf_printf(&(src_pink_gen_buf), " else ");
+            old_std_buf_printf(&(src_pink_gen_buf), " else ");
             src_pink_gen_stmt_block(stmt->if_stmt.else_block);
         } else {
             src_pink_Note (*complete_note) = src_pink_get_stmt_note(stmt, src_pink_complete_name);
             if (complete_note) {
-                std_buf_printf(&(src_pink_gen_buf), " else {");
+                old_std_buf_printf(&(src_pink_gen_buf), " else {");
                 (src_pink_gen_indent)++;
                 src_pink_gen_sync_pos(complete_note->pos);
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "assert(\"@complete if/elseif chain failed to handle case\" && 0);");
+                old_std_buf_printf(&(src_pink_gen_buf), "assert(\"@complete if/elseif chain failed to handle case\" && 0);");
                 (src_pink_gen_indent)--;
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "}");
+                old_std_buf_printf(&(src_pink_gen_buf), "}");
             }
         }
         if (stmt->if_stmt.init) {
             (src_pink_gen_indent)--;
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "}");
+            old_std_buf_printf(&(src_pink_gen_buf), "}");
         }
         break;
     }
     case SRC_PINK_STMT_WHILE: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "while (");
+        old_std_buf_printf(&(src_pink_gen_buf), "while (");
         src_pink_gen_expr(stmt->while_stmt.cond);
-        std_buf_printf(&(src_pink_gen_buf), ") ");
+        old_std_buf_printf(&(src_pink_gen_buf), ") ");
         src_pink_gen_stmt_block(stmt->while_stmt.block);
         break;
     }
     case SRC_PINK_STMT_DO_WHILE: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "do ");
+        old_std_buf_printf(&(src_pink_gen_buf), "do ");
         src_pink_gen_stmt_block(stmt->while_stmt.block);
-        std_buf_printf(&(src_pink_gen_buf), " while (");
+        old_std_buf_printf(&(src_pink_gen_buf), " while (");
         src_pink_gen_expr(stmt->while_stmt.cond);
-        std_buf_printf(&(src_pink_gen_buf), ");");
+        old_std_buf_printf(&(src_pink_gen_buf), ");");
         break;
     }
     case SRC_PINK_STMT_FOR: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "for (");
+        old_std_buf_printf(&(src_pink_gen_buf), "for (");
         if (stmt->for_stmt.init) {
             src_pink_gen_simple_stmt(stmt->for_stmt.init);
         }
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         if (stmt->for_stmt.cond) {
-            std_buf_printf(&(src_pink_gen_buf), " ");
+            old_std_buf_printf(&(src_pink_gen_buf), " ");
             src_pink_gen_expr(stmt->for_stmt.cond);
         }
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         if (stmt->for_stmt.next) {
-            std_buf_printf(&(src_pink_gen_buf), " ");
+            old_std_buf_printf(&(src_pink_gen_buf), " ");
             src_pink_gen_simple_stmt(stmt->for_stmt.next);
         }
-        std_buf_printf(&(src_pink_gen_buf), ") ");
+        old_std_buf_printf(&(src_pink_gen_buf), ") ");
         src_pink_gen_stmt_block(stmt->for_stmt.block);
         break;
     }
     case SRC_PINK_STMT_SWITCH: {
         {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "switch (");
+            old_std_buf_printf(&(src_pink_gen_buf), "switch (");
             src_pink_gen_expr(stmt->switch_stmt.expr);
-            std_buf_printf(&(src_pink_gen_buf), ") {");
+            old_std_buf_printf(&(src_pink_gen_buf), ") {");
             bool has_default = false;
             for (size_t i = 0; (i) < (stmt->switch_stmt.num_cases); (i)++) {
                 src_pink_SwitchCase switch_case = stmt->switch_stmt.cases[i];
                 for (size_t j = 0; (j) < (switch_case.num_patterns); (j)++) {
                     src_pink_SwitchCasePattern pattern = switch_case.patterns[j];
                     if (pattern.end) {
-                        std_Val start_val = src_pink_get_resolved_val(pattern.start);
-                        std_Val end_val = src_pink_get_resolved_val(pattern.end);
+                        old_std_Val start_val = src_pink_get_resolved_val(pattern.start);
+                        old_std_Val end_val = src_pink_get_resolved_val(pattern.end);
                         if ((src_pink_is_char_lit(pattern.start)) && (src_pink_is_char_lit(pattern.end))) {
                             src_pink_genln();
                             for (int c = (int)(start_val.ll); (c) <= ((int)(end_val.ll)); (c)++) {
-                                std_buf_printf(&(src_pink_gen_buf), "case ");
+                                old_std_buf_printf(&(src_pink_gen_buf), "case ");
                                 src_pink_gen_char(c);
-                                std_buf_printf(&(src_pink_gen_buf), ": ");
+                                old_std_buf_printf(&(src_pink_gen_buf), ": ");
                             }
                         } else {
                             src_pink_genln();
-                            std_buf_printf(&(src_pink_gen_buf), "// ");
+                            old_std_buf_printf(&(src_pink_gen_buf), "// ");
                             src_pink_gen_expr(pattern.start);
-                            std_buf_printf(&(src_pink_gen_buf), "...");
+                            old_std_buf_printf(&(src_pink_gen_buf), "...");
                             src_pink_gen_expr(pattern.end);
                             src_pink_genln();
                             for (llong ll = start_val.ll; (ll) <= (end_val.ll); (ll)++) {
-                                std_buf_printf(&(src_pink_gen_buf), "case %lld: ", ll);
+                                old_std_buf_printf(&(src_pink_gen_buf), "case %lld: ", ll);
                             }
                         }
                     } else {
                         src_pink_genln();
-                        std_buf_printf(&(src_pink_gen_buf), "case ");
+                        old_std_buf_printf(&(src_pink_gen_buf), "case ");
                         src_pink_gen_expr(pattern.start);
-                        std_buf_printf(&(src_pink_gen_buf), ":");
+                        old_std_buf_printf(&(src_pink_gen_buf), ":");
                     }
                 }
                 if (switch_case.is_default) {
                     has_default = true;
                     src_pink_genln();
-                    std_buf_printf(&(src_pink_gen_buf), "default:");
+                    old_std_buf_printf(&(src_pink_gen_buf), "default:");
                 }
-                std_buf_printf(&(src_pink_gen_buf), " ");
-                std_buf_printf(&(src_pink_gen_buf), "{");
+                old_std_buf_printf(&(src_pink_gen_buf), " ");
+                old_std_buf_printf(&(src_pink_gen_buf), "{");
                 (src_pink_gen_indent)++;
                 src_pink_StmtList block = switch_case.block;
                 for (size_t j = 0; (j) < (block.num_stmts); (j)++) {
                     src_pink_gen_stmt(block.stmts[j]);
                 }
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "break;");
+                old_std_buf_printf(&(src_pink_gen_buf), "break;");
                 (src_pink_gen_indent)--;
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "}");
+                old_std_buf_printf(&(src_pink_gen_buf), "}");
             }
             if (!(has_default)) {
                 src_pink_Note (*note) = src_pink_get_stmt_note(stmt, src_pink_complete_name);
                 if (note) {
                     src_pink_genln();
-                    std_buf_printf(&(src_pink_gen_buf), "default:");
+                    old_std_buf_printf(&(src_pink_gen_buf), "default:");
                     (src_pink_gen_indent)++;
                     src_pink_genln();
-                    std_buf_printf(&(src_pink_gen_buf), "assert(\"@complete switch failed to handle case\" && 0);");
+                    old_std_buf_printf(&(src_pink_gen_buf), "assert(\"@complete switch failed to handle case\" && 0);");
                     src_pink_genln();
-                    std_buf_printf(&(src_pink_gen_buf), "break;");
+                    old_std_buf_printf(&(src_pink_gen_buf), "break;");
                     (src_pink_gen_indent)--;
                 }
             }
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "}");
+            old_std_buf_printf(&(src_pink_gen_buf), "}");
         }
         break;
     }
     case SRC_PINK_STMT_LABEL: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "%s: ;", stmt->label);
+        old_std_buf_printf(&(src_pink_gen_buf), "%s: ;", stmt->label);
         break;
     }
     case SRC_PINK_STMT_GOTO: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "goto %s;", stmt->label);
+        old_std_buf_printf(&(src_pink_gen_buf), "goto %s;", stmt->label);
         break;
     }
     default: {
         src_pink_genln();
         src_pink_gen_simple_stmt(stmt);
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         break;
     }
     }
@@ -4633,31 +4633,31 @@ void src_pink_gen_decl(src_pink_Sym (*sym)) {
     switch (decl->kind) {
     case SRC_PINK_DECL_CONST: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "#define %s (", src_pink_get_gen_name(sym));
+        old_std_buf_printf(&(src_pink_gen_buf), "#define %s (", src_pink_get_gen_name(sym));
         if (decl->const_decl.type) {
-            std_buf_printf(&(src_pink_gen_buf), "(%s)(", src_pink_typespec_to_cdecl(decl->const_decl.type, ""));
+            old_std_buf_printf(&(src_pink_gen_buf), "(%s)(", src_pink_typespec_to_cdecl(decl->const_decl.type, ""));
         }
         src_pink_gen_expr(decl->const_decl.expr);
         if (decl->const_decl.type) {
-            std_buf_printf(&(src_pink_gen_buf), ")");
+            old_std_buf_printf(&(src_pink_gen_buf), ")");
         }
-        std_buf_printf(&(src_pink_gen_buf), ")");
+        old_std_buf_printf(&(src_pink_gen_buf), ")");
         break;
     }
     case SRC_PINK_DECL_VAR: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "extern ");
+        old_std_buf_printf(&(src_pink_gen_buf), "extern ");
         if ((decl->var_decl.type) && (!(src_pink_is_incomplete_array_typespec(decl->var_decl.type)))) {
-            std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->var_decl.type, src_pink_get_gen_name(sym)));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->var_decl.type, src_pink_get_gen_name(sym)));
         } else {
-            std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_type_to_cdecl(sym->type, src_pink_get_gen_name(sym)));
+            old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_type_to_cdecl(sym->type, src_pink_get_gen_name(sym)));
         }
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         break;
     }
     case SRC_PINK_DECL_FUNC: {
         src_pink_gen_func_decl(decl);
-        std_buf_printf(&(src_pink_gen_buf), ";");
+        old_std_buf_printf(&(src_pink_gen_buf), ";");
         break;
     }
     case SRC_PINK_DECL_STRUCT:
@@ -4667,16 +4667,16 @@ void src_pink_gen_decl(src_pink_Sym (*sym)) {
     }
     case SRC_PINK_DECL_TYPEDEF: {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "typedef %s;", src_pink_typespec_to_cdecl(decl->typedef_decl.type, src_pink_get_gen_name(sym)));
+        old_std_buf_printf(&(src_pink_gen_buf), "typedef %s;", src_pink_typespec_to_cdecl(decl->typedef_decl.type, src_pink_get_gen_name(sym)));
         break;
     }
     case SRC_PINK_DECL_ENUM: {
         if (decl->enum_decl.type) {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "typedef %s;", src_pink_typespec_to_cdecl(decl->enum_decl.type, src_pink_get_gen_name(decl)));
+            old_std_buf_printf(&(src_pink_gen_buf), "typedef %s;", src_pink_typespec_to_cdecl(decl->enum_decl.type, src_pink_get_gen_name(decl)));
         } else {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "typedef int %s;", src_pink_get_gen_name(decl));
+            old_std_buf_printf(&(src_pink_gen_buf), "typedef int %s;", src_pink_get_gen_name(decl));
         }
         break;
     }
@@ -4693,7 +4693,7 @@ void src_pink_gen_decl(src_pink_Sym (*sym)) {
 }
 
 void src_pink_gen_sorted_decls(void) {
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_sorted_syms)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(src_pink_sorted_syms)); (i)++) {
         if ((src_pink_sorted_syms[i]->reachable) == (SRC_PINK_REACHABLE_NATURAL)) {
             src_pink_gen_decl(src_pink_sorted_syms[i]);
         }
@@ -4701,7 +4701,7 @@ void src_pink_gen_sorted_decls(void) {
 }
 
 void src_pink_gen_defs(void) {
-    for (src_pink_Sym (*(*it)) = src_pink_sorted_syms; (it) != (std_buf_end(src_pink_sorted_syms, sizeof(*(src_pink_sorted_syms)))); (it)++) {
+    for (src_pink_Sym (*(*it)) = src_pink_sorted_syms; (it) != (old_std_buf_end(src_pink_sorted_syms, sizeof(*(src_pink_sorted_syms)))); (it)++) {
         src_pink_Sym (*sym) = *(it);
         src_pink_Decl (*decl) = sym->decl;
         if ((((((sym->state) != (SRC_PINK_SYM_RESOLVED)) || (!(decl))) || (src_pink_is_decl_foreign(decl))) || (decl->is_incomplete)) || ((sym->reachable) != (SRC_PINK_REACHABLE_NATURAL))) {
@@ -4709,47 +4709,47 @@ void src_pink_gen_defs(void) {
         }
         if ((decl->kind) == (SRC_PINK_DECL_FUNC)) {
             src_pink_gen_func_decl(decl);
-            std_buf_printf(&(src_pink_gen_buf), " ");
+            old_std_buf_printf(&(src_pink_gen_buf), " ");
             src_pink_gen_stmt_block(decl->function.block);
             src_pink_genln();
         } else if ((decl->kind) == (SRC_PINK_DECL_VAR)) {
             if ((decl->var_decl.type) && (!(src_pink_is_incomplete_array_typespec(decl->var_decl.type)))) {
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->var_decl.type, src_pink_get_gen_name(sym)));
+                old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_typespec_to_cdecl(decl->var_decl.type, src_pink_get_gen_name(sym)));
             } else {
                 src_pink_genln();
-                std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_type_to_cdecl(sym->type, src_pink_get_gen_name(sym)));
+                old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_type_to_cdecl(sym->type, src_pink_get_gen_name(sym)));
             }
             if (decl->var_decl.expr) {
-                std_buf_printf(&(src_pink_gen_buf), " = ");
+                old_std_buf_printf(&(src_pink_gen_buf), " = ");
                 src_pink_gen_expr(decl->var_decl.expr);
             }
-            std_buf_printf(&(src_pink_gen_buf), ";");
+            old_std_buf_printf(&(src_pink_gen_buf), ";");
         }
     }
 }
 
-std_Map src_pink_gen_foreign_headers_map;
+old_std_Map src_pink_gen_foreign_headers_map;
 char const ((*(*src_pink_gen_foreign_headers_buf)));
 void src_pink_add_foreign_header(char const ((*name))) {
-    name = std_str_intern(name);
-    if (!(std_map_get(&(src_pink_gen_foreign_headers_map), name))) {
-        std_map_put(&(src_pink_gen_foreign_headers_map), name, (void *)(1));
-        std_buf_push((void (**))(&(src_pink_gen_foreign_headers_buf)), &(name), sizeof(name));
+    name = old_std_str_intern(name);
+    if (!(old_std_map_get(&(src_pink_gen_foreign_headers_map), name))) {
+        old_std_map_put(&(src_pink_gen_foreign_headers_map), name, (void *)(1));
+        old_std_buf_push((void (**))(&(src_pink_gen_foreign_headers_buf)), &(name), sizeof(name));
     }
 }
 
 char const ((*(*src_pink_gen_foreign_sources_buf)));
 void src_pink_add_foreign_source(char const ((*name))) {
-    char const ((*interned)) = std_str_intern(name);
-    std_buf_push((void (**))(&(src_pink_gen_foreign_sources_buf)), &(interned), sizeof(interned));
+    char const ((*interned)) = old_std_str_intern(name);
+    old_std_buf_push((void (**))(&(src_pink_gen_foreign_sources_buf)), &(interned), sizeof(interned));
 }
 
 void src_pink_gen_include(char const ((*path))) {
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "#include ");
+    old_std_buf_printf(&(src_pink_gen_buf), "#include ");
     if ((*(path)) == ('<')) {
-        std_buf_printf(&(src_pink_gen_buf), "%s", path);
+        old_std_buf_printf(&(src_pink_gen_buf), "%s", path);
     } else {
         src_pink_gen_str(path, false);
     }
@@ -4758,15 +4758,15 @@ void src_pink_gen_include(char const ((*path))) {
 void src_pink_gen_foreign_headers(void) {
     if (src_pink_gen_foreign_headers_buf) {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "// Foreign header files");
-        for (size_t i = 0; (i) < (std_buf_len(src_pink_gen_foreign_headers_buf)); (i)++) {
+        old_std_buf_printf(&(src_pink_gen_buf), "// Foreign header files");
+        for (size_t i = 0; (i) < (old_std_buf_len(src_pink_gen_foreign_headers_buf)); (i)++) {
             src_pink_gen_include(src_pink_gen_foreign_headers_buf[i]);
         }
     }
 }
 
 void src_pink_gen_foreign_sources(void) {
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_gen_foreign_sources_buf)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(src_pink_gen_foreign_sources_buf)); (i)++) {
         src_pink_gen_include(src_pink_gen_foreign_sources_buf[i]);
     }
 }
@@ -4774,11 +4774,11 @@ void src_pink_gen_foreign_sources(void) {
 char const ((*(*src_pink_gen_sources_buf)));
 void src_pink_put_include_path(char (path[MAX_PATH]), src_pink_Package (*package), char const ((*filename))) {
     if ((*(filename)) == ('<')) {
-        std_os_path_copy(path, filename);
+        old_std_os_path_copy(path, filename);
     } else {
-        std_os_path_copy(path, package->full_path);
-        std_os_path_join(path, filename);
-        std_os_path_absolute(path);
+        old_std_os_path_copy(path, package->full_path);
+        old_std_os_path_join(path, filename);
+        old_std_os_path_absolute(path);
     }
 }
 
@@ -4788,15 +4788,15 @@ void src_pink_preprocess_package(src_pink_Package (*package)) {
     if (!(package->external_name)) {
         char (*external_name) = NULL;
         for (char const ((*ptr)) = package->path; *(ptr); (ptr)++) {
-            std_buf_printf(&(external_name), "%c", ((*(ptr)) == ('/') ? '_' : *(ptr)));
+            old_std_buf_printf(&(external_name), "%c", ((*(ptr)) == ('/') ? '_' : *(ptr)));
         }
-        std_buf_printf(&(external_name), "_");
-        package->external_name = std_str_intern(external_name);
+        old_std_buf_printf(&(external_name), "_");
+        package->external_name = old_std_str_intern(external_name);
     }
-    char const ((*header_name)) = std_str_intern("header");
-    char const ((*source_name)) = std_str_intern("source");
-    char const ((*preamble_name)) = std_str_intern("preamble");
-    char const ((*postamble_name)) = std_str_intern("postamble");
+    char const ((*header_name)) = old_std_str_intern("header");
+    char const ((*source_name)) = old_std_str_intern("source");
+    char const ((*preamble_name)) = old_std_str_intern("preamble");
+    char const ((*postamble_name)) = old_std_str_intern("postamble");
     for (size_t i = 0; (i) < (package->num_decls); (i)++) {
         src_pink_Decl (*decl) = package->decls[i];
         if ((decl->kind) != (SRC_PINK_DECL_NOTE)) {
@@ -4820,9 +4820,9 @@ void src_pink_preprocess_package(src_pink_Package (*package)) {
                     src_pink_put_include_path(path, package, str);
                     src_pink_add_foreign_source(path);
                 } else if ((arg.name) == (preamble_name)) {
-                    std_buf_printf(&(src_pink_gen_preamble_buf), "%s\n", str);
+                    old_std_buf_printf(&(src_pink_gen_preamble_buf), "%s\n", str);
                 } else if ((arg.name) == (postamble_name)) {
-                    std_buf_printf(&(src_pink_gen_postamble_buf), "%s\n", str);
+                    old_std_buf_printf(&(src_pink_gen_postamble_buf), "%s\n", str);
                 } else {
                     src_pink_fatal_error(decl->pos, "Unknown #foreign named argument \'%s\'", arg.name);
                 }
@@ -4832,17 +4832,17 @@ void src_pink_preprocess_package(src_pink_Package (*package)) {
 }
 
 void src_pink_preprocess_packages(void) {
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(src_pink_package_list)); (i)++) {
         src_pink_preprocess_package(src_pink_package_list[i]);
     }
 }
 
 void src_pink_gen_typeinfo_header(char const ((*kind)), src_pink_Type (*type)) {
     if ((src_pink_type_sizeof(type)) == (0)) {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){%s, .size = 0, .align = 0", kind);
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){%s, .size = 0, .align = 0", kind);
     } else {
         char (*ctype) = src_pink_type_to_cdecl(type, "");
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){%s, .size = sizeof(%s), .align = alignof(%s)", kind, ctype, ctype);
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){%s, .size = sizeof(%s), .align = alignof(%s)", kind, ctype, ctype);
     }
 }
 
@@ -4851,11 +4851,11 @@ void src_pink_gen_typeinfo_fields(src_pink_Type (*type)) {
     for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
         src_pink_TypeField field = type->aggregate.fields[i];
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "{");
+        old_std_buf_printf(&(src_pink_gen_buf), "{");
         src_pink_gen_str(field.name, false);
-        std_buf_printf(&(src_pink_gen_buf), ", .type = ");
+        old_std_buf_printf(&(src_pink_gen_buf), ", .type = ");
         src_pink_gen_typeid(field.type);
-        std_buf_printf(&(src_pink_gen_buf), ", .offset = offsetof(%s, %s)},", src_pink_get_gen_name(type->sym), field.name);
+        old_std_buf_printf(&(src_pink_gen_buf), ", .offset = offsetof(%s, %s)},", src_pink_get_gen_name(type->sym), field.name);
     }
     (src_pink_gen_indent)--;
 }
@@ -4863,142 +4863,142 @@ void src_pink_gen_typeinfo_fields(src_pink_Type (*type)) {
 void src_pink_gen_typeinfo(src_pink_Type (*type)) {
     switch (type->kind) {
     case SRC_PINK_CMPL_TYPE_BOOL: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_BOOL, .size = sizeof(bool), .align = sizeof(bool), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_BOOL, .size = sizeof(bool), .align = sizeof(bool), .name = ");
         src_pink_gen_str("bool", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_CHAR: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_CHAR, .size = sizeof(char), .align = sizeof(char), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_CHAR, .size = sizeof(char), .align = sizeof(char), .name = ");
         src_pink_gen_str("char", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_UCHAR: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_UCHAR, .size = sizeof(uchar), .align = sizeof(uchar), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_UCHAR, .size = sizeof(uchar), .align = sizeof(uchar), .name = ");
         src_pink_gen_str("uchar", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_SCHAR: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_SCHAR, .size = sizeof(schar), .align = sizeof(schar), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_SCHAR, .size = sizeof(schar), .align = sizeof(schar), .name = ");
         src_pink_gen_str("schar", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_SHORT: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_SHORT, .size = sizeof(short), .align = sizeof(short), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_SHORT, .size = sizeof(short), .align = sizeof(short), .name = ");
         src_pink_gen_str("short", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_USHORT: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_USHORT, .size = sizeof(ushort), .align = sizeof(ushort), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_USHORT, .size = sizeof(ushort), .align = sizeof(ushort), .name = ");
         src_pink_gen_str("ushort", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_INT: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_INT, .size = sizeof(int), .align = sizeof(int), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_INT, .size = sizeof(int), .align = sizeof(int), .name = ");
         src_pink_gen_str("int", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_UINT: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_UINT, .size = sizeof(uint), .align = sizeof(uint), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_UINT, .size = sizeof(uint), .align = sizeof(uint), .name = ");
         src_pink_gen_str("uint", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_LONG: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_LONG, .size = sizeof(long), .align = sizeof(long), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_LONG, .size = sizeof(long), .align = sizeof(long), .name = ");
         src_pink_gen_str("long", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_ULONG: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_ULONG, .size = sizeof(ulong), .align = sizeof(ulong), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_ULONG, .size = sizeof(ulong), .align = sizeof(ulong), .name = ");
         src_pink_gen_str("ulong", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_LLONG: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_LLONG, .size = sizeof(llong), .align = sizeof(llong), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_LLONG, .size = sizeof(llong), .align = sizeof(llong), .name = ");
         src_pink_gen_str("llong", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_ULLONG: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_ULLONG, .size = sizeof(ullong), .align = sizeof(ullong), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_ULLONG, .size = sizeof(ullong), .align = sizeof(ullong), .name = ");
         src_pink_gen_str("ullong", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_FLOAT: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_FLOAT, .size = sizeof(float), .align = sizeof(float), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_FLOAT, .size = sizeof(float), .align = sizeof(float), .name = ");
         src_pink_gen_str("float", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_DOUBLE: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_DOUBLE, .size = sizeof(double), .align = sizeof(double), .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_DOUBLE, .size = sizeof(double), .align = sizeof(double), .name = ");
         src_pink_gen_str("double", false);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_VOID: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_VOID, .name = \"void\", .size = 0, .align = 0},");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_VOID, .name = \"void\", .size = 0, .align = 0},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_PTR: {
-        std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = ");
+        old_std_buf_printf(&(src_pink_gen_buf), "&(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = ");
         src_pink_gen_typeid(type->base);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_CONST: {
         src_pink_gen_typeinfo_header("TYPE_CONST", type);
-        std_buf_printf(&(src_pink_gen_buf), ", .base = ");
+        old_std_buf_printf(&(src_pink_gen_buf), ", .base = ");
         src_pink_gen_typeid(type->base);
-        std_buf_printf(&(src_pink_gen_buf), "},");
+        old_std_buf_printf(&(src_pink_gen_buf), "},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_ARRAY: {
         if (src_pink_is_incomplete_array_type(type)) {
-            std_buf_printf(&(src_pink_gen_buf), "NULL, // Incomplete array type");
+            old_std_buf_printf(&(src_pink_gen_buf), "NULL, // Incomplete array type");
         } else {
             src_pink_gen_typeinfo_header("TYPE_ARRAY", type);
-            std_buf_printf(&(src_pink_gen_buf), ", .base = ");
+            old_std_buf_printf(&(src_pink_gen_buf), ", .base = ");
             src_pink_gen_typeid(type->base);
-            std_buf_printf(&(src_pink_gen_buf), ", .count = %d},", type->num_elems);
+            old_std_buf_printf(&(src_pink_gen_buf), ", .count = %d},", type->num_elems);
         }
         break;
     }
     case SRC_PINK_CMPL_TYPE_STRUCT:
     case SRC_PINK_CMPL_TYPE_UNION: {
         src_pink_gen_typeinfo_header(((type->kind) == (SRC_PINK_CMPL_TYPE_STRUCT) ? "TYPE_STRUCT" : "TYPE_UNION"), type);
-        std_buf_printf(&(src_pink_gen_buf), ", .name = ");
+        old_std_buf_printf(&(src_pink_gen_buf), ", .name = ");
         src_pink_gen_str(src_pink_get_gen_name(type->sym), false);
-        std_buf_printf(&(src_pink_gen_buf), ", .num_fields = %d, .fields = (TypeFieldInfo[]) {", type->aggregate.num_fields);
+        old_std_buf_printf(&(src_pink_gen_buf), ", .num_fields = %d, .fields = (TypeFieldInfo[]) {", type->aggregate.num_fields);
         src_pink_gen_typeinfo_fields(type);
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "}},");
+        old_std_buf_printf(&(src_pink_gen_buf), "}},");
         break;
     }
     case SRC_PINK_CMPL_TYPE_FUNC: {
-        std_buf_printf(&(src_pink_gen_buf), "NULL, // Func");
+        old_std_buf_printf(&(src_pink_gen_buf), "NULL, // Func");
         break;
     }
     case SRC_PINK_CMPL_TYPE_ENUM: {
-        std_buf_printf(&(src_pink_gen_buf), "NULL, // Enum");
+        old_std_buf_printf(&(src_pink_gen_buf), "NULL, // Enum");
         break;
     }
     case SRC_PINK_CMPL_TYPE_INCOMPLETE: {
-        std_buf_printf(&(src_pink_gen_buf), "NULL, // Incomplete: %s", src_pink_get_gen_name(type->sym));
+        old_std_buf_printf(&(src_pink_gen_buf), "NULL, // Incomplete: %s", src_pink_get_gen_name(type->sym));
         break;
     }
     default: {
-        std_buf_printf(&(src_pink_gen_buf), "NULL, // Unhandled");
+        old_std_buf_printf(&(src_pink_gen_buf), "NULL, // Unhandled");
         break;
     }
     }
@@ -5006,65 +5006,65 @@ void src_pink_gen_typeinfo(src_pink_Type (*type)) {
 
 void src_pink_gen_typeinfos(void) {
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "#define TYPEID0(index, kind) ((ullong)(index) | ((ullong)(kind) << 24))");
+    old_std_buf_printf(&(src_pink_gen_buf), "#define TYPEID0(index, kind) ((ullong)(index) | ((ullong)(kind) << 24))");
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "#define TYPEID(index, kind, ...) ((ullong)(index) | ((ullong)sizeof(__VA_ARGS__) << 32) | ((ullong)(kind) << 24))");
+    old_std_buf_printf(&(src_pink_gen_buf), "#define TYPEID(index, kind, ...) ((ullong)(index) | ((ullong)sizeof(__VA_ARGS__) << 32) | ((ullong)(kind) << 24))");
     src_pink_genln();
     if (src_pink_flag_notypeinfo) {
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "int num_typeinfos;");
+        old_std_buf_printf(&(src_pink_gen_buf), "int num_typeinfos;");
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "const TypeInfo **typeinfos;");
+        old_std_buf_printf(&(src_pink_gen_buf), "const TypeInfo **typeinfos;");
     } else {
         int num_typeinfos = src_pink_next_typeid;
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "const TypeInfo *typeinfo_table[%d] = {", num_typeinfos);
+        old_std_buf_printf(&(src_pink_gen_buf), "const TypeInfo *typeinfo_table[%d] = {", num_typeinfos);
         (src_pink_gen_indent)++;
         for (int typeid = 0; (typeid) < (num_typeinfos); (typeid)++) {
             src_pink_genln();
-            std_buf_printf(&(src_pink_gen_buf), "[%d] = ", typeid);
+            old_std_buf_printf(&(src_pink_gen_buf), "[%d] = ", typeid);
             src_pink_Type (*type) = src_pink_get_type_from_typeid(typeid);
             if ((type) && (!(src_pink_is_excluded_typeinfo(type)))) {
                 src_pink_gen_typeinfo(type);
             } else {
-                std_buf_printf(&(src_pink_gen_buf), "NULL, // No associated type");
+                old_std_buf_printf(&(src_pink_gen_buf), "NULL, // No associated type");
             }
         }
         (src_pink_gen_indent)--;
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "};");
+        old_std_buf_printf(&(src_pink_gen_buf), "};");
         src_pink_genln();
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "int num_typeinfos = %d;", num_typeinfos);
+        old_std_buf_printf(&(src_pink_gen_buf), "int num_typeinfos = %d;", num_typeinfos);
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;");
+        old_std_buf_printf(&(src_pink_gen_buf), "const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;");
     }
 }
 
 void src_pink_gen_package_external_names(void) {
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(src_pink_package_list)); (i)++) {
     }
 }
 
 void src_pink_gen_preamble(void) {
-    std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_preamble_str);
+    old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_preamble_str);
     if (src_pink_gen_preamble_buf) {
         src_pink_genln();
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "// Foreign preamble");
+        old_std_buf_printf(&(src_pink_gen_buf), "// Foreign preamble");
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_preamble_buf);
+        old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_preamble_buf);
     }
 }
 
 void src_pink_gen_postamble(void) {
-    std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_postamble_str);
+    old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_postamble_str);
     if (src_pink_gen_postamble_buf) {
         src_pink_genln();
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "// Foreign postamble");
+        old_std_buf_printf(&(src_pink_gen_buf), "// Foreign postamble");
         src_pink_genln();
-        std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_postamble_buf);
+        old_std_buf_printf(&(src_pink_gen_buf), "%s", src_pink_gen_postamble_buf);
     }
 }
 
@@ -5075,21 +5075,21 @@ void src_pink_gen_all(void) {
     src_pink_gen_foreign_headers();
     src_pink_genln();
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "// Forward declarations");
+    old_std_buf_printf(&(src_pink_gen_buf), "// Forward declarations");
     src_pink_gen_forward_decls();
     src_pink_genln();
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "// Sorted declarations");
+    old_std_buf_printf(&(src_pink_gen_buf), "// Sorted declarations");
     src_pink_gen_sorted_decls();
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "// Typeinfo");
+    old_std_buf_printf(&(src_pink_gen_buf), "// Typeinfo");
     src_pink_gen_typeinfos();
     src_pink_genln();
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "// Definitions");
+    old_std_buf_printf(&(src_pink_gen_buf), "// Definitions");
     src_pink_gen_defs();
     src_pink_genln();
-    std_buf_printf(&(src_pink_gen_buf), "// Foreign source files");
+    old_std_buf_printf(&(src_pink_gen_buf), "// Foreign source files");
     src_pink_gen_foreign_sources();
     src_pink_genln();
     src_pink_gen_postamble();
@@ -5129,8 +5129,8 @@ char const ((*src_pink_assert_name));
 char const ((*src_pink_declare_note_name));
 char const ((*src_pink_static_assert_name));
 char const ((*src_pink_init_keyword(char const ((*keyword))))) {
-    keyword = std_str_intern(keyword);
-    std_buf_push((void (**))(&(src_pink_keywords)), (void *)(&(keyword)), sizeof(keyword));
+    keyword = old_std_str_intern(keyword);
+    old_std_buf_push((void (**))(&(src_pink_keywords)), (void *)(&(keyword)), sizeof(keyword));
     return keyword;
 }
 
@@ -5140,7 +5140,7 @@ void src_pink_init_keywords(void) {
         return;
     }
     src_pink_typedef_keyword = src_pink_init_keyword("typedef");
-    char (*arena_end) = std_intern_arena.end;
+    char (*arena_end) = old_std_intern_arena.end;
     src_pink_enum_keyword = src_pink_init_keyword("enum");
     src_pink_struct_keyword = src_pink_init_keyword("struct");
     src_pink_union_keyword = src_pink_init_keyword("union");
@@ -5166,12 +5166,12 @@ void src_pink_init_keywords(void) {
     src_pink_default_keyword = src_pink_init_keyword("default");
     src_pink_first_keyword = src_pink_typedef_keyword;
     src_pink_last_keyword = src_pink_default_keyword;
-    src_pink_always_name = std_str_intern("always");
-    src_pink_foreign_name = std_str_intern("foreign");
-    src_pink_complete_name = std_str_intern("complete");
-    src_pink_assert_name = std_str_intern("assert");
-    src_pink_declare_note_name = std_str_intern("declare_note");
-    src_pink_static_assert_name = std_str_intern("static_assert");
+    src_pink_always_name = old_std_str_intern("always");
+    src_pink_foreign_name = old_std_str_intern("foreign");
+    src_pink_complete_name = old_std_str_intern("complete");
+    src_pink_assert_name = old_std_str_intern("assert");
+    src_pink_declare_note_name = old_std_str_intern("declare_note");
+    src_pink_static_assert_name = old_std_str_intern("static_assert");
     src_pink_keywords_inited = true;
 }
 
@@ -5410,7 +5410,7 @@ void src_pink_scan_str(void) {
                 break;
             }
             if ((*(src_pink_stream)) != ('\r')) {
-                std_buf_push((void (**))(&(str)), (void *)(src_pink_stream), 1);
+                old_std_buf_push((void (**))(&(str)), (void *)(src_pink_stream), 1);
             }
             if ((*(src_pink_stream)) == ('\n')) {
                 (src_pink_token.pos.line)++;
@@ -5441,7 +5441,7 @@ void src_pink_scan_str(void) {
             } else {
                 (src_pink_stream)++;
             }
-            std_buf_push((void (**))(&(str)), &(val), 1);
+            old_std_buf_push((void (**))(&(str)), &(val), 1);
         }
         if (*(src_pink_stream)) {
             (src_pink_stream)++;
@@ -5450,7 +5450,7 @@ void src_pink_scan_str(void) {
         }
     }
     int nul = '\0';
-    std_buf_push((void (**))(&(str)), &(nul), 1);
+    old_std_buf_push((void (**))(&(str)), &(nul), 1);
     src_pink_token.kind = SRC_PINK_TOKEN_STR;
     src_pink_token.str_val = str;
 }
@@ -5575,7 +5575,7 @@ void src_pink_next_token(void) {
         while ((isalnum(*(src_pink_stream))) || ((*(src_pink_stream)) == ('_'))) {
             (src_pink_stream)++;
         }
-        src_pink_token.name = std_str_intern_range(src_pink_token.start, src_pink_stream);
+        src_pink_token.name = old_std_str_intern_range(src_pink_token.start, src_pink_stream);
         src_pink_token.kind = (src_pink_is_keyword_name(src_pink_token.name) ? SRC_PINK_TOKEN_KEYWORD : SRC_PINK_TOKEN_NAME);
         break;
     }
@@ -5905,7 +5905,7 @@ src_pink_Typespec (*src_pink_parse_type_func(void)) {
                 src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function type");
             }
             src_pink_Typespec (*param) = src_pink_parse_type_func_param();
-            std_buf_push((void (**))(&(args)), &(param), sizeof(param));
+            old_std_buf_push((void (**))(&(args)), &(param), sizeof(param));
         }
         if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
             break;
@@ -5916,7 +5916,7 @@ src_pink_Typespec (*src_pink_parse_type_func(void)) {
     if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
         ret = src_pink_parse_type();
     }
-    return src_pink_new_typespec_func(pos, args, std_buf_len(args), ret, has_varargs);
+    return src_pink_new_typespec_func(pos, args, old_std_buf_len(args), ret, has_varargs);
 }
 
 src_pink_Typespec (*src_pink_parse_type_base(void)) {
@@ -5984,13 +5984,13 @@ src_pink_Expr (*src_pink_parse_expr_compound(src_pink_Typespec (*type))) {
     src_pink_CompoundField (*fields) = NULL;
     while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
         src_pink_CompoundField field = src_pink_parse_expr_compound_field();
-        std_buf_push((void (**))(&(fields)), &(field), sizeof(field));
+        old_std_buf_push((void (**))(&(fields)), &(field), sizeof(field));
         if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
             break;
         }
     }
     src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_expr_compound(pos, type, fields, std_buf_len(fields));
+    return src_pink_new_expr_compound(pos, type, fields, old_std_buf_len(fields));
 }
 
 src_pink_Expr (*src_pink_parse_expr_operand(void)) {
@@ -6091,13 +6091,13 @@ src_pink_Expr (*src_pink_parse_expr_base(void)) {
             src_pink_Expr (*(*args)) = NULL;
             while (!(src_pink_is_token(SRC_PINK_TOKEN_RPAREN))) {
                 src_pink_Expr (*arg) = src_pink_parse_expr();
-                std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+                old_std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
                 if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
                     break;
                 }
             }
             src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
-            expr = src_pink_new_expr_call(pos, expr, args, std_buf_len(args));
+            expr = src_pink_new_expr_call(pos, expr, args, old_std_buf_len(args));
         } else if (src_pink_match_token(SRC_PINK_TOKEN_LBRACKET)) {
             src_pink_Expr (*index) = src_pink_parse_expr();
             src_pink_expect_token(SRC_PINK_TOKEN_RBRACKET);
@@ -6227,10 +6227,10 @@ src_pink_StmtList src_pink_parse_stmt_block(void) {
     src_pink_Stmt (*(*stmts)) = NULL;
     while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
         src_pink_Stmt (*stmt) = src_pink_parse_stmt();
-        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
+        old_std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
     }
     src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts));
+    return src_pink_new_stmt_list(pos, stmts, old_std_buf_len(stmts));
 }
 
 src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos)) {
@@ -6256,9 +6256,9 @@ src_pink_Stmt (*src_pink_parse_stmt_if(src_pink_SrcPos pos)) {
         src_pink_Expr (*elseif_cond) = src_pink_parse_paren_expr();
         src_pink_StmtList elseif_block = src_pink_parse_stmt_block();
         src_pink_ElseIf elseif = {elseif_cond, elseif_block};
-        std_buf_push((void (**))(&(elseifs)), &(elseif), sizeof(elseif));
+        old_std_buf_push((void (**))(&(elseifs)), &(elseif), sizeof(elseif));
     }
-    return src_pink_new_stmt_if(pos, init, cond, then_block, elseifs, std_buf_len(elseifs), else_block);
+    return src_pink_new_stmt_if(pos, init, cond, then_block, elseifs, old_std_buf_len(elseifs), else_block);
 }
 
 src_pink_Stmt (*src_pink_parse_stmt_while(src_pink_SrcPos pos)) {
@@ -6365,10 +6365,10 @@ src_pink_SwitchCase src_pink_parse_stmt_switch_case(void) {
                 is_first_case = false;
             }
             src_pink_SwitchCasePattern pattern = src_pink_parse_switch_case_pattern();
-            std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
+            old_std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
             while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
                 pattern = src_pink_parse_switch_case_pattern();
-                std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
+                old_std_buf_push((void (**))(&(patterns)), &(pattern), sizeof(pattern));
             }
         } else {
             src_pink_next_token();
@@ -6383,9 +6383,9 @@ src_pink_SwitchCase src_pink_parse_stmt_switch_case(void) {
     src_pink_Stmt (*(*stmts)) = {0};
     while ((((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) && (!(src_pink_is_keyword(src_pink_case_keyword)))) && (!(src_pink_is_keyword(src_pink_default_keyword)))) {
         src_pink_Stmt (*stmt) = src_pink_parse_stmt();
-        std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
+        old_std_buf_push((void (**))(&(stmts)), &(stmt), sizeof(stmt));
     }
-    return (src_pink_SwitchCase){patterns, std_buf_len(patterns), is_default, src_pink_new_stmt_list(pos, stmts, std_buf_len(stmts))};
+    return (src_pink_SwitchCase){patterns, old_std_buf_len(patterns), is_default, src_pink_new_stmt_list(pos, stmts, old_std_buf_len(stmts))};
 }
 
 src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos)) {
@@ -6394,10 +6394,10 @@ src_pink_Stmt (*src_pink_parse_stmt_switch(src_pink_SrcPos pos)) {
     src_pink_expect_token(SRC_PINK_TOKEN_LBRACE);
     while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
         src_pink_SwitchCase case_stmt = src_pink_parse_stmt_switch_case();
-        std_buf_push((void (**))(&(cases)), &(case_stmt), sizeof(case_stmt));
+        old_std_buf_push((void (**))(&(cases)), &(case_stmt), sizeof(case_stmt));
     }
     src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_stmt_switch(pos, expr, cases, std_buf_len(cases));
+    return src_pink_new_stmt_switch(pos, expr, cases, old_std_buf_len(cases));
 }
 
 src_pink_Stmt (*src_pink_parse_stmt(void)) {
@@ -6475,13 +6475,13 @@ src_pink_Decl (*src_pink_parse_decl_enum(src_pink_SrcPos pos)) {
     src_pink_EnumItem (*items) = NULL;
     while (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE))) {
         src_pink_EnumItem item = src_pink_parse_decl_enum_item();
-        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+        old_std_buf_push((void (**))(&(items)), &(item), sizeof(item));
         if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
             break;
         }
     }
     src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_decl_enum(pos, name, type, items, std_buf_len(items));
+    return src_pink_new_decl_enum(pos, name, type, items, old_std_buf_len(items));
 }
 
 src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void) {
@@ -6493,15 +6493,15 @@ src_pink_AggregateItem src_pink_parse_decl_aggregate_item(void) {
     } else {
         char const ((*(*names))) = NULL;
         char const ((*name)) = src_pink_parse_name();
-        std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+        old_std_buf_push((void (**))(&(names)), &(name), sizeof(name));
         while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
             name = src_pink_parse_name();
-            std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+            old_std_buf_push((void (**))(&(names)), &(name), sizeof(name));
         }
         src_pink_expect_token(SRC_PINK_TOKEN_COLON);
         src_pink_Typespec (*type) = src_pink_parse_type();
         src_pink_expect_token(SRC_PINK_TOKEN_SEMICOLON);
-        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_FIELD, .names = names, .num_names = std_buf_len(names), .type = type};
+        return (src_pink_AggregateItem){.pos = pos, .kind = SRC_PINK_AGGREGATE_ITEM_FIELD, .names = names, .num_names = old_std_buf_len(names), .type = type};
     }
 }
 
@@ -6511,10 +6511,10 @@ src_pink_Aggregate (*src_pink_parse_aggregate(src_pink_AggregateKind kind)) {
     src_pink_AggregateItem (*items) = NULL;
     while ((!(src_pink_is_token_eof())) && (!(src_pink_is_token(SRC_PINK_TOKEN_RBRACE)))) {
         src_pink_AggregateItem item = src_pink_parse_decl_aggregate_item();
-        std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+        old_std_buf_push((void (**))(&(items)), &(item), sizeof(item));
     }
     src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
-    return src_pink_new_aggregate(pos, kind, items, std_buf_len(items));
+    return src_pink_new_aggregate(pos, kind, items, old_std_buf_len(items));
 }
 
 src_pink_Decl (*src_pink_parse_decl_aggregate(src_pink_SrcPos pos, src_pink_DeclKind kind)) {
@@ -6593,7 +6593,7 @@ src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos)) {
                 src_pink_error(src_pink_token.pos, "Ellipsis must be last parameter in function declaration");
             }
             src_pink_FuncParam param = src_pink_parse_decl_func_param();
-            std_buf_push((void (**))(&(params)), &(param), sizeof(param));
+            old_std_buf_push((void (**))(&(params)), &(param), sizeof(param));
         }
         if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
             break;
@@ -6612,7 +6612,7 @@ src_pink_Decl (*src_pink_parse_decl_func(src_pink_SrcPos pos)) {
         block = src_pink_parse_stmt_block();
         is_incomplete = false;
     }
-    src_pink_Decl (*decl) = src_pink_new_decl_func(pos, name, params, std_buf_len(params), ret_type, has_varargs, block);
+    src_pink_Decl (*decl) = src_pink_new_decl_func(pos, name, params, old_std_buf_len(params), ret_type, has_varargs, block);
     decl->is_incomplete = is_incomplete;
     return decl;
 }
@@ -6637,23 +6637,23 @@ src_pink_Note src_pink_parse_note(void) {
     src_pink_NoteArg (*args) = NULL;
     if (src_pink_match_token(SRC_PINK_TOKEN_LPAREN)) {
         src_pink_NoteArg arg = src_pink_parse_note_arg();
-        std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+        old_std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
         while (src_pink_match_token(SRC_PINK_TOKEN_COMMA)) {
             arg = src_pink_parse_note_arg();
-            std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+            old_std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
         }
         src_pink_expect_token(SRC_PINK_TOKEN_RPAREN);
     }
-    return src_pink_new_note(pos, name, args, std_buf_len(args));
+    return src_pink_new_note(pos, name, args, old_std_buf_len(args));
 }
 
 src_pink_Notes src_pink_parse_notes(void) {
     src_pink_Note (*notes) = NULL;
     while (src_pink_match_token(SRC_PINK_TOKEN_AT)) {
         src_pink_Note note = src_pink_parse_note();
-        std_buf_push((void (**))(&(notes)), &(note), sizeof(note));
+        old_std_buf_push((void (**))(&(notes)), &(note), sizeof(note));
     }
-    return src_pink_new_notes(notes, std_buf_len(notes));
+    return src_pink_new_notes(notes, old_std_buf_len(notes));
 }
 
 src_pink_Decl (*src_pink_parse_decl_note(src_pink_SrcPos pos)) {
@@ -6678,9 +6678,9 @@ src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
         goto repeat;
     }
     char const ((*(*names))) = NULL;
-    std_buf_push((void (**))(&(names)), &(name), sizeof(name));
+    old_std_buf_push((void (**))(&(names)), &(name), sizeof(name));
     while (src_pink_match_token(SRC_PINK_TOKEN_DOT)) {
-        std_buf_push((void (**))(&(names)), &(src_pink_token.name), sizeof(src_pink_token.name));
+        old_std_buf_push((void (**))(&(names)), &(src_pink_token.name), sizeof(src_pink_token.name));
         src_pink_expect_token(SRC_PINK_TOKEN_NAME);
     }
     bool import_all = false;
@@ -6693,10 +6693,10 @@ src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
                 char const ((*item_name)) = src_pink_parse_name();
                 if (src_pink_match_token(SRC_PINK_TOKEN_ASSIGN)) {
                     src_pink_ImportItem item = {.name = src_pink_parse_name(), .rename = item_name};
-                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+                    old_std_buf_push((void (**))(&(items)), &(item), sizeof(item));
                 } else {
                     src_pink_ImportItem item = {.name = item_name};
-                    std_buf_push((void (**))(&(items)), &(item), sizeof(item));
+                    old_std_buf_push((void (**))(&(items)), &(item), sizeof(item));
                 }
                 if (!(src_pink_match_token(SRC_PINK_TOKEN_COMMA))) {
                     break;
@@ -6705,7 +6705,7 @@ src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
         }
         src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
     }
-    return src_pink_new_decl_import(pos, rename_name, is_relative, names, std_buf_len(names), import_all, items, std_buf_len(items));
+    return src_pink_new_decl_import(pos, rename_name, is_relative, names, old_std_buf_len(names), import_all, items, old_std_buf_len(items));
 }
 
 src_pink_Decl (*src_pink_parse_decl_opt(void)) {
@@ -6747,9 +6747,9 @@ src_pink_Decls (*src_pink_parse_decls(void)) {
     src_pink_Decl (*(*decls)) = NULL;
     while (!(src_pink_is_token(SRC_PINK_TOKEN_EOF))) {
         src_pink_Decl (*decl) = src_pink_parse_decl();
-        std_buf_push((void (**))(&(decls)), &(decl), sizeof(decl));
+        old_std_buf_push((void (**))(&(decls)), &(decl), sizeof(decl));
     }
-    return src_pink_new_decls(decls, std_buf_len(decls));
+    return src_pink_new_decls(decls, old_std_buf_len(decls));
 }
 
 char const ((*(src_pink_static_package_search_paths[SRC_PINK_MAX_SEARCH_PATHS])));
@@ -6759,12 +6759,12 @@ void src_pink_add_package_search_path(char const ((*path))) {
     if (src_pink_flag_verbose) {
         printf("Adding package search path %s\n", path);
     }
-    src_pink_package_search_paths[(src_pink_num_package_search_paths)++] = std_str_intern(path);
+    src_pink_package_search_paths[(src_pink_num_package_search_paths)++] = old_std_str_intern(path);
 }
 
 void src_pink_add_package_search_path_range(char const ((*start)), char const ((*end))) {
     char (path[MAX_PATH]) = {0};
-    size_t len = std_clamp_max((end) - (start), (MAX_PATH) - (1));
+    size_t len = old_std_clamp_max((end) - (start), (MAX_PATH) - (1));
     memcpy(path, start, len);
     path[len] = 0;
     src_pink_add_package_search_path(path);
@@ -6777,8 +6777,8 @@ void src_pink_init_package_search_paths(void) {
         exit(1);
     }
     char (path[MAX_PATH]) = {0};
-    std_os_path_copy(path, pinkhome_var);
-    std_os_path_join(path, "pinklib");
+    old_std_os_path_copy(path, pinkhome_var);
+    old_std_os_path_join(path, "pinklib");
     src_pink_add_package_search_path(path);
     src_pink_add_package_search_path(".");
     src_pink_add_package_search_path("./deps/");
@@ -6802,7 +6802,7 @@ void src_pink_init_compiler(void) {
     src_pink_init_package_search_paths();
     src_pink_init_keywords();
     src_pink_init_builtin_types();
-    std_map_put(&(src_pink_decl_note_names), src_pink_declare_note_name, (void *)(1));
+    old_std_map_put(&(src_pink_decl_note_names), src_pink_declare_note_name, (void *)(1));
 }
 
 void src_pink_parse_env_vars(void) {
@@ -6830,19 +6830,19 @@ int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void)
     src_pink_parse_env_vars();
     char const ((*output_name)) = {0};
     bool flag_check = false;
-    std_os_add_flag_str("o", &(output_name), "file", "Output file (default: out_<main-package>.c)");
-    std_os_add_flag_enum("os", &(src_pink_target_os), "Target operating system", src_pink_os_names, SRC_PINK_NUM_OSES);
-    std_os_add_flag_enum("arch", &(src_pink_target_arch), "Target machine architecture", src_pink_arch_names, SRC_PINK_NUM_ARCHES);
-    std_os_add_flag_bool("check", &(flag_check), "Semantic checking with no code generation");
-    std_os_add_flag_bool("lazy", &(src_pink_flag_lazy), "Only compile what\'s reachable from the main package");
-    std_os_add_flag_bool("nosourcemap", &(src_pink_flag_nosourcemap), "Don\'t generate any source map information");
-    std_os_add_flag_bool("notypeinfo", &(src_pink_flag_notypeinfo), "Don\'t generate any typeinfo tables");
-    std_os_add_flag_bool("fullgen", &(src_pink_flag_fullgen), "Force full code generation even for non-reachable symbols");
-    std_os_add_flag_bool("verbose", &(src_pink_flag_verbose), "Extra diagnostic information");
-    char const ((*program_name)) = std_os_parse_flags(&(argc), &(argv));
+    old_std_os_add_flag_str("o", &(output_name), "file", "Output file (default: out_<main-package>.c)");
+    old_std_os_add_flag_enum("os", &(src_pink_target_os), "Target operating system", src_pink_os_names, SRC_PINK_NUM_OSES);
+    old_std_os_add_flag_enum("arch", &(src_pink_target_arch), "Target machine architecture", src_pink_arch_names, SRC_PINK_NUM_ARCHES);
+    old_std_os_add_flag_bool("check", &(flag_check), "Semantic checking with no code generation");
+    old_std_os_add_flag_bool("lazy", &(src_pink_flag_lazy), "Only compile what\'s reachable from the main package");
+    old_std_os_add_flag_bool("nosourcemap", &(src_pink_flag_nosourcemap), "Don\'t generate any source map information");
+    old_std_os_add_flag_bool("notypeinfo", &(src_pink_flag_notypeinfo), "Don\'t generate any typeinfo tables");
+    old_std_os_add_flag_bool("fullgen", &(src_pink_flag_fullgen), "Force full code generation even for non-reachable symbols");
+    old_std_os_add_flag_bool("verbose", &(src_pink_flag_verbose), "Extra diagnostic information");
+    char const ((*program_name)) = old_std_os_parse_flags(&(argc), &(argv));
     if ((argc) != (1)) {
         printf("Usage: %s [flags] <main-package>\n", program_name);
-        std_os_print_flags_usage();
+        old_std_os_print_flags_usage();
         return 1;
     }
     char const ((*package_name)) = argv[0];
@@ -6856,13 +6856,13 @@ int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void)
         printf("error: Failed to compile package \'builtin\'.\n");
         return 1;
     }
-    src_pink_builtin_package->external_name = std_str_intern("");
+    src_pink_builtin_package->external_name = old_std_str_intern("");
     src_pink_Package (*main_package) = src_pink_import_package(package_name);
     if (!(main_package)) {
         printf("error: Failed to compile package \'%s\'\n", package_name);
         return 1;
     }
-    char const ((*main_name)) = std_str_intern("main");
+    char const ((*main_name)) = old_std_str_intern("main");
     src_pink_Sym (*main_sym) = src_pink_get_package_sym(main_package, main_name);
     if (!(main_sym)) {
         printf("error: No \'main\' entry point defined in package \'%s\'\n", package_name);
@@ -6871,18 +6871,18 @@ int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void)
     main_sym->external_name = main_name;
     src_pink_reachable_phase = SRC_PINK_REACHABLE_NATURAL;
     src_pink_resolve_sym(main_sym);
-    for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(src_pink_package_list)); (i)++) {
         if (src_pink_package_list[i]->always_reachable) {
             src_pink_resolve_package_syms(src_pink_package_list[i]);
         }
     }
     src_pink_finalize_reachable_syms();
     if (src_pink_flag_verbose) {
-        printf("Reached %d symbols in %d packages from %s/main\n", (int)(std_buf_len(src_pink_reachable_syms)), (int)(std_buf_len(src_pink_package_list)), package_name);
+        printf("Reached %d symbols in %d packages from %s/main\n", (int)(old_std_buf_len(src_pink_reachable_syms)), (int)(old_std_buf_len(src_pink_package_list)), package_name);
     }
     if (!(src_pink_flag_lazy)) {
         src_pink_reachable_phase = SRC_PINK_REACHABLE_FORCED;
-        for (size_t i = 0; (i) < (std_buf_len(src_pink_package_list)); (i)++) {
+        for (size_t i = 0; (i) < (old_std_buf_len(src_pink_package_list)); (i)++) {
             src_pink_resolve_package_syms(src_pink_package_list[i]);
         }
         src_pink_finalize_reachable_syms();
@@ -6890,14 +6890,14 @@ int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void)
     if (!(flag_check)) {
         char (c_path[MAX_PATH]) = {0};
         if (output_name) {
-            std_os_path_copy(c_path, output_name);
+            old_std_os_path_copy(c_path, output_name);
         } else {
             snprintf(c_path, sizeof(c_path), "out_%s.%s", package_name, extension);
         }
         gen_all();
         char (*c_code) = src_pink_gen_buf;
         src_pink_gen_buf = NULL;
-        if (!(std_write_file(c_path, c_code, std_buf_len(c_code)))) {
+        if (!(old_std_write_file(c_path, c_code, old_std_buf_len(c_code)))) {
             printf("error: Failed to write file: %s\n", c_path);
             return 1;
         }
@@ -6907,18 +6907,18 @@ int src_pink_pink_entry(int argc, char const ((*(*argv))), void (*gen_all)(void)
 
 src_pink_Package (*src_pink_current_package);
 src_pink_Package (*src_pink_builtin_package);
-std_Map src_pink_package_map;
+old_std_Map src_pink_package_map;
 src_pink_Package (*(*src_pink_package_list));
 uint8_t src_pink_reachable_phase = SRC_PINK_REACHABLE_NATURAL;
 src_pink_Sym (*src_pink_get_package_sym(src_pink_Package (*package), char const ((*name)))) {
-    return std_map_get(&(package->syms_map), name);
+    return old_std_map_get(&(package->syms_map), name);
 }
 
 void src_pink_add_package(src_pink_Package (*package)) {
-    src_pink_Package (*old_package) = std_map_get(&(src_pink_package_map), package->path);
+    src_pink_Package (*old_package) = old_std_map_get(&(src_pink_package_map), package->path);
     if ((old_package) != (package)) {
-        std_map_put(&(src_pink_package_map), package->path, package);
-        std_buf_push((void (**))(&(src_pink_package_list)), &(package), sizeof(package));
+        old_std_map_put(&(src_pink_package_map), package->path, package);
+        old_std_buf_push((void (**))(&(src_pink_package_list)), &(package), sizeof(package));
     }
 }
 
@@ -6941,7 +6941,7 @@ bool src_pink_is_local_sym(src_pink_Sym (*sym)) {
 }
 
 src_pink_Sym (*src_pink_sym_new(src_pink_SymKind kind, char const ((*name)), src_pink_Decl (*decl))) {
-    src_pink_Sym (*sym) = std_xcalloc(1, sizeof(src_pink_Sym));
+    src_pink_Sym (*sym) = old_std_xcalloc(1, sizeof(src_pink_Sym));
     sym->kind = kind;
     sym->name = name;
     sym->decl = decl;
@@ -7023,7 +7023,7 @@ bool src_pink_sym_push_var(char const ((*name)), src_pink_Type (*type)) {
         return false;
     }
     if ((src_pink_local_syms_end) == ((src_pink_local_syms) + (SRC_PINK_MAX_LOCAL_SYMS))) {
-        std_fatal("Too many local symbols");
+        old_std_fatal("Too many local symbols");
     }
     *((src_pink_local_syms_end)++) = (src_pink_Sym){.name = name, .kind = SRC_PINK_SYM_VAR, .state = SRC_PINK_SYM_RESOLVED, .type = type};
     return true;
@@ -7038,7 +7038,7 @@ void src_pink_sym_leave(src_pink_Sym (*sym)) {
 }
 
 void src_pink_sym_global_put(char const ((*name)), src_pink_Sym (*sym)) {
-    src_pink_Sym (*old_sym) = std_map_get(&(src_pink_current_package->syms_map), name);
+    src_pink_Sym (*old_sym) = old_std_map_get(&(src_pink_current_package->syms_map), name);
     if (old_sym) {
         if ((sym) == (old_sym)) {
             return;
@@ -7052,12 +7052,12 @@ void src_pink_sym_global_put(char const ((*name)), src_pink_Sym (*sym)) {
         }
         src_pink_fatal_error(pos, "Duplicate definition of global symbol \'%s\'.", name);
     }
-    std_map_put(&(src_pink_current_package->syms_map), name, sym);
-    std_buf_push((void (**))(&(src_pink_current_package->syms)), &(sym), sizeof(sym));
+    old_std_map_put(&(src_pink_current_package->syms_map), name, sym);
+    old_std_buf_push((void (**))(&(src_pink_current_package->syms)), &(sym), sizeof(sym));
 }
 
 src_pink_Sym (*src_pink_sym_global_type(char const ((*name)), src_pink_Type (*type))) {
-    name = std_str_intern(name);
+    name = old_std_str_intern(name);
     src_pink_Sym (*sym) = src_pink_sym_new(SRC_PINK_SYM_TYPE, name, NULL);
     sym->state = SRC_PINK_SYM_RESOLVED;
     sym->type = type;
@@ -7073,7 +7073,7 @@ src_pink_Sym (*src_pink_sym_global_decl(src_pink_Decl (*decl))) {
         src_pink_sym_global_put(sym->name, sym);
     }
     if ((decl->kind) == (SRC_PINK_DECL_ENUM)) {
-        src_pink_Typespec (*enum_typespec) = src_pink_new_typespec_name(decl->pos, (sym ? sym->name : std_str_intern("int")));
+        src_pink_Typespec (*enum_typespec) = src_pink_new_typespec_name(decl->pos, (sym ? sym->name : old_std_str_intern("int")));
         char const ((*prev_item_name)) = NULL;
         for (size_t i = 0; (i) < (decl->enum_decl.num_items); (i)++) {
             src_pink_EnumItem item = decl->enum_decl.items[i];
@@ -7097,45 +7097,45 @@ src_pink_Sym (*src_pink_sym_global_decl(src_pink_Decl (*decl))) {
 void src_pink_put_type_name(char (*(*buf)), src_pink_Type (*type)) {
     char const ((*type_name)) = src_pink_type_names[type->kind];
     if (type_name) {
-        std_buf_printf(buf, "%s", type_name);
+        old_std_buf_printf(buf, "%s", type_name);
     } else {
         switch (type->kind) {
         case SRC_PINK_CMPL_TYPE_STRUCT:
         case SRC_PINK_CMPL_TYPE_UNION:
         case SRC_PINK_CMPL_TYPE_ENUM:
         case SRC_PINK_CMPL_TYPE_INCOMPLETE: {
-            std_buf_printf(buf, "%s", type->sym->name);
+            old_std_buf_printf(buf, "%s", type->sym->name);
             break;
         }
         case SRC_PINK_CMPL_TYPE_CONST: {
             src_pink_put_type_name(buf, type->base);
-            std_buf_printf(buf, " const");
+            old_std_buf_printf(buf, " const");
             break;
         }
         case SRC_PINK_CMPL_TYPE_PTR: {
             src_pink_put_type_name(buf, type->base);
-            std_buf_printf(buf, "*");
+            old_std_buf_printf(buf, "*");
             break;
         }
         case SRC_PINK_CMPL_TYPE_ARRAY: {
             src_pink_put_type_name(buf, type->base);
-            std_buf_printf(buf, "[%zu]", type->num_elems);
+            old_std_buf_printf(buf, "[%zu]", type->num_elems);
             break;
         }
         case SRC_PINK_CMPL_TYPE_FUNC: {
-            std_buf_printf(buf, "func(");
+            old_std_buf_printf(buf, "func(");
             for (size_t i = 0; (i) < (type->function.num_params); (i)++) {
                 if ((i) != (0)) {
-                    std_buf_printf(buf, ", ");
+                    old_std_buf_printf(buf, ", ");
                 }
                 src_pink_put_type_name(buf, type->function.params[i]);
             }
             if (type->function.has_varargs) {
-                std_buf_printf(buf, "...");
+                old_std_buf_printf(buf, "...");
             }
-            std_buf_printf(buf, ")");
+            old_std_buf_printf(buf, ")");
             if ((type->function.ret) != (src_pink_type_void)) {
-                std_buf_printf(buf, ": ");
+                old_std_buf_printf(buf, ": ");
                 src_pink_put_type_name(buf, type->function.ret);
             }
             break;
@@ -7163,7 +7163,7 @@ src_pink_Operand src_pink_operand_lvalue(src_pink_Type (*type)) {
     return (src_pink_Operand){.type = type, .is_lvalue = true};
 }
 
-src_pink_Operand src_pink_operand_const(src_pink_Type (*type), std_Val val) {
+src_pink_Operand src_pink_operand_const(src_pink_Type (*type), old_std_Val val) {
     return (src_pink_Operand){.type = src_pink_unqualify_type(type), .is_const = true, .val = val};
 }
 
@@ -7296,48 +7296,48 @@ void src_pink_unify_arithmetic_operands(src_pink_Operand (*left), src_pink_Opera
     }
 }
 
-std_Map src_pink_resolved_val_map;
-std_Val src_pink_get_resolved_val(void (*ptr)) {
-    uint64_t u64 = std_map_get_uint64(&(src_pink_resolved_val_map), ptr);
-    std_Val val = {0};
+old_std_Map src_pink_resolved_val_map;
+old_std_Val src_pink_get_resolved_val(void (*ptr)) {
+    uint64_t u64 = old_std_map_get_uint64(&(src_pink_resolved_val_map), ptr);
+    old_std_Val val = {0};
     memcpy(&(val), &(u64), sizeof(u64));
     return val;
 }
 
-void src_pink_set_resolved_val(void (*ptr), std_Val val) {
+void src_pink_set_resolved_val(void (*ptr), old_std_Val val) {
     uint64_t u64 = {0};
     memcpy(&(u64), &(val), sizeof(val));
-    std_map_put_uint64(&(src_pink_resolved_val_map), ptr, u64);
+    old_std_map_put_uint64(&(src_pink_resolved_val_map), ptr, u64);
 }
 
-std_Map src_pink_resolved_type_map;
+old_std_Map src_pink_resolved_type_map;
 src_pink_Type (*src_pink_get_resolved_type(void (*ptr))) {
-    return std_map_get(&(src_pink_resolved_type_map), ptr);
+    return old_std_map_get(&(src_pink_resolved_type_map), ptr);
 }
 
 void src_pink_set_resolved_type(void (*ptr), src_pink_Type (*type)) {
-    std_map_put(&(src_pink_resolved_type_map), ptr, type);
+    old_std_map_put(&(src_pink_resolved_type_map), ptr, type);
 }
 
-std_Map src_pink_resolved_sym_map;
+old_std_Map src_pink_resolved_sym_map;
 src_pink_Sym (*src_pink_get_resolved_sym(void const ((*ptr)))) {
-    return std_map_get(&(src_pink_resolved_sym_map), ptr);
+    return old_std_map_get(&(src_pink_resolved_sym_map), ptr);
 }
 
 void src_pink_set_resolved_sym(void const ((*ptr)), src_pink_Sym (*sym)) {
     if (!(src_pink_is_local_sym(sym))) {
-        std_map_put(&(src_pink_resolved_sym_map), ptr, sym);
+        old_std_map_put(&(src_pink_resolved_sym_map), ptr, sym);
     }
 }
 
-std_Map src_pink_resolved_expected_type_map;
+old_std_Map src_pink_resolved_expected_type_map;
 src_pink_Type (*src_pink_get_resolved_expected_type(src_pink_Expr (*expr))) {
-    return std_map_get(&(src_pink_resolved_expected_type_map), expr);
+    return old_std_map_get(&(src_pink_resolved_expected_type_map), expr);
 }
 
 void src_pink_set_resolved_expected_type(src_pink_Expr (*expr), src_pink_Type (*type)) {
     if ((expr) && (type)) {
-        std_map_put(&(src_pink_resolved_expected_type_map), expr, type);
+        old_std_map_put(&(src_pink_resolved_expected_type_map), expr, type);
     }
 }
 
@@ -7408,7 +7408,7 @@ src_pink_Type (*src_pink_resolve_typespec(src_pink_Typespec (*typespec))) {
                 if ((arg) == (src_pink_type_void)) {
                     src_pink_fatal_error(typespec->pos, "Function parameter type cannot be void");
                 }
-                std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
+                old_std_buf_push((void (**))(&(args)), &(arg), sizeof(arg));
             }
             src_pink_Type (*ret) = src_pink_type_void;
             if (typespec->function.ret) {
@@ -7417,7 +7417,7 @@ src_pink_Type (*src_pink_resolve_typespec(src_pink_Typespec (*typespec))) {
             if (src_pink_is_array_type(ret)) {
                 src_pink_fatal_error(typespec->pos, "Function return type cannot be array");
             }
-            result = src_pink_type_func(args, std_buf_len(args), ret, false);
+            result = src_pink_type_func(args, old_std_buf_len(args), ret, false);
         }
         break;
     }
@@ -7442,12 +7442,12 @@ src_pink_Type (*src_pink_complete_aggregate(src_pink_Type (*type), src_pink_Aggr
             }
             for (size_t j = 0; (j) < (item.num_names); (j)++) {
                 src_pink_TypeField type_field = {item.names[j], item_type};
-                std_buf_push((void (**))(&(fields)), &(type_field), sizeof(type_field));
+                old_std_buf_push((void (**))(&(fields)), &(type_field), sizeof(type_field));
             }
         } else {
             src_pink_Type (*item_type) = src_pink_complete_aggregate(NULL, item.subaggregate);
             src_pink_TypeField type_field = {NULL, item_type};
-            std_buf_push((void (**))(&(fields)), &(type_field), sizeof(type_field));
+            old_std_buf_push((void (**))(&(fields)), &(type_field), sizeof(type_field));
         }
     }
     if (!(type)) {
@@ -7455,9 +7455,9 @@ src_pink_Type (*src_pink_complete_aggregate(src_pink_Type (*type), src_pink_Aggr
         type->kind = SRC_PINK_CMPL_TYPE_COMPLETING;
     }
     if ((aggregate->kind) == (SRC_PINK_AGGREGATE_STRUCT)) {
-        src_pink_type_complete_struct(type, fields, std_buf_len(fields));
+        src_pink_type_complete_struct(type, fields, old_std_buf_len(fields));
     } else {
-        src_pink_type_complete_union(type, fields, std_buf_len(fields));
+        src_pink_type_complete_union(type, fields, old_std_buf_len(fields));
     }
     if ((type->aggregate.num_fields) == (0)) {
         src_pink_fatal_error(aggregate->pos, "No fields");
@@ -7483,7 +7483,7 @@ void src_pink_complete_type(src_pink_Type (*type)) {
     }
     type->kind = SRC_PINK_CMPL_TYPE_COMPLETING;
     src_pink_complete_aggregate(type, decl->aggregate);
-    std_buf_push((void (**))(&(src_pink_sorted_syms)), &(type->sym), sizeof(type->sym));
+    old_std_buf_push((void (**))(&(src_pink_sorted_syms)), &(type->sym), sizeof(type->sym));
     src_pink_leave_package(old_package);
 }
 
@@ -7533,7 +7533,7 @@ src_pink_Type (*src_pink_resolve_decl_var(src_pink_Decl (*decl))) {
     return src_pink_resolve_init(decl->pos, decl->var_decl.type, decl->var_decl.expr);
 }
 
-src_pink_Type (*src_pink_resolve_decl_const(src_pink_Decl (*decl), std_Val (*val))) {
+src_pink_Type (*src_pink_resolve_decl_const(src_pink_Decl (*decl), old_std_Val (*val))) {
     src_pink_Operand result = src_pink_resolve_const_expr(decl->const_decl.expr);
     if (!(src_pink_is_scalar_type(result.type))) {
         src_pink_fatal_error(decl->pos, "Const declarations must have scalar type");
@@ -7556,7 +7556,7 @@ src_pink_Type (*src_pink_resolve_decl_func(src_pink_Decl (*decl))) {
         if ((param) == (src_pink_type_void)) {
             src_pink_fatal_error(decl->pos, "Function parameter type cannot be void");
         }
-        std_buf_push((void (**))(&(params)), &(param), sizeof(param));
+        old_std_buf_push((void (**))(&(params)), &(param), sizeof(param));
     }
     src_pink_Type (*ret_type) = src_pink_type_void;
     if (decl->function.ret_type) {
@@ -7566,7 +7566,7 @@ src_pink_Type (*src_pink_resolve_decl_func(src_pink_Decl (*decl))) {
     if (src_pink_is_array_type(ret_type)) {
         src_pink_fatal_error(decl->pos, "Function return type cannot be array");
     }
-    return src_pink_type_func(params, std_buf_len(params), ret_type, decl->function.has_varargs);
+    return src_pink_type_func(params, old_std_buf_len(params), ret_type, decl->function.has_varargs);
 }
 
 src_pink_Label (src_pink_labels[SRC_PINK_MAX_LABELS]);
@@ -7904,7 +7904,7 @@ void src_pink_resolve_sym(src_pink_Sym (*sym)) {
         return;
     }
     if (!(src_pink_is_local_sym(sym))) {
-        std_buf_push((void (**))(&(src_pink_reachable_syms)), &(sym), sizeof(sym));
+        old_std_buf_push((void (**))(&(src_pink_reachable_syms)), &(sym), sizeof(sym));
         sym->reachable = src_pink_reachable_phase;
     }
     sym->state = SRC_PINK_SYM_RESOLVING;
@@ -7948,7 +7948,7 @@ void src_pink_resolve_sym(src_pink_Sym (*sym)) {
     src_pink_leave_package(old_package);
     sym->state = SRC_PINK_SYM_RESOLVED;
     if ((decl->is_incomplete) || ((((decl->kind) != (SRC_PINK_DECL_STRUCT)) && ((decl->kind) != (SRC_PINK_DECL_UNION))))) {
-        std_buf_push((void (**))(&(src_pink_sorted_syms)), &(sym), sizeof(sym));
+        old_std_buf_push((void (**))(&(src_pink_sorted_syms)), &(sym), sizeof(sym));
     }
 }
 
@@ -8223,7 +8223,7 @@ ullong src_pink_eval_binary_op_ull(src_pink_TokenKind op, ullong left, ullong ri
     return 0;
 }
 
-std_Val src_pink_eval_unary_op(src_pink_TokenKind op, src_pink_Type (*type), std_Val val) {
+old_std_Val src_pink_eval_unary_op(src_pink_TokenKind op, src_pink_Type (*type), old_std_Val val) {
     if (src_pink_is_integer_type(type)) {
         src_pink_Operand operand = src_pink_operand_const(type, val);
         if (src_pink_is_signed_type(type)) {
@@ -8236,11 +8236,11 @@ std_Val src_pink_eval_unary_op(src_pink_TokenKind op, src_pink_Type (*type), std
         cast_operand(&(operand), type);
         return operand.val;
     } else {
-        return (std_Val){0};
+        return (old_std_Val){0};
     }
 }
 
-std_Val src_pink_eval_binary_op(src_pink_TokenKind op, src_pink_Type (*type), std_Val left, std_Val right) {
+old_std_Val src_pink_eval_binary_op(src_pink_TokenKind op, src_pink_Type (*type), old_std_Val left, old_std_Val right) {
     if (src_pink_is_integer_type(type)) {
         src_pink_Operand left_operand = src_pink_operand_const(type, left);
         src_pink_Operand right_operand = src_pink_operand_const(type, right);
@@ -8248,16 +8248,16 @@ std_Val src_pink_eval_binary_op(src_pink_TokenKind op, src_pink_Type (*type), st
         if (src_pink_is_signed_type(type)) {
             cast_operand(&(left_operand), src_pink_type_llong);
             cast_operand(&(right_operand), src_pink_type_llong);
-            result_operand = src_pink_operand_const(src_pink_type_llong, (std_Val){.ll = src_pink_eval_binary_op_ll(op, left_operand.val.ll, right_operand.val.ll)});
+            result_operand = src_pink_operand_const(src_pink_type_llong, (old_std_Val){.ll = src_pink_eval_binary_op_ll(op, left_operand.val.ll, right_operand.val.ll)});
         } else {
             cast_operand(&(left_operand), src_pink_type_ullong);
             cast_operand(&(right_operand), src_pink_type_ullong);
-            result_operand = src_pink_operand_const(src_pink_type_ullong, (std_Val){.ull = src_pink_eval_binary_op_ull(op, left_operand.val.ull, right_operand.val.ull)});
+            result_operand = src_pink_operand_const(src_pink_type_ullong, (old_std_Val){.ull = src_pink_eval_binary_op_ull(op, left_operand.val.ull, right_operand.val.ull)});
         }
         cast_operand(&(result_operand), type);
         return result_operand.val;
     } else {
-        return (std_Val){0};
+        return (old_std_Val){0};
     }
 }
 
@@ -8490,7 +8490,7 @@ src_pink_Operand src_pink_resolve_expr_binary_op(src_pink_TokenKind op, char con
                 } else {
                     i = (left.val.b) || (right.val.b);
                 }
-                return src_pink_operand_const(src_pink_type_int, (std_Val){.i = i});
+                return src_pink_operand_const(src_pink_type_int, (old_std_Val){.i = i});
             } else {
                 return src_pink_operand_rvalue(src_pink_type_int);
             }
@@ -8574,7 +8574,7 @@ src_pink_Operand src_pink_resolve_expr_compound(src_pink_Expr (*expr), src_pink_
             if (!(src_pink_resolve_typed_init(field.pos, type->base, field.init))) {
                 src_pink_fatal_error(field.pos, "Invalid type in compound literal initializer for array type. Expected %s", src_pink_get_type_name(type->base));
             }
-            max_index = std_max(max_index, index);
+            max_index = old_std_max(max_index, index);
             (index)++;
         }
         if ((type->num_elems) == (0)) {
@@ -8691,7 +8691,7 @@ src_pink_Operand src_pink_resolve_expr_int(src_pink_Expr (*expr)) {
     ullong ulong_max = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_ULONG].max;
     ullong llong_max = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_LLONG].max;
     ullong val = expr->int_lit.val;
-    src_pink_Operand operand = src_pink_operand_const(src_pink_type_ullong, (std_Val){.ull = val});
+    src_pink_Operand operand = src_pink_operand_const(src_pink_type_ullong, (old_std_Val){.ull = val});
     src_pink_Type (*type) = src_pink_type_ullong;
     if ((expr->int_lit.mod) == (SRC_PINK_MOD_NONE)) {
         bool overflow = false;
@@ -8847,7 +8847,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
         break;
     }
     case SRC_PINK_EXPR_FLOAT: {
-        result = src_pink_operand_const(((expr->float_lit.suffix) == (SRC_PINK_SUFFIX_D) ? src_pink_type_double : src_pink_type_float), (std_Val){0});
+        result = src_pink_operand_const(((expr->float_lit.suffix) == (SRC_PINK_SUFFIX_D) ? src_pink_type_double : src_pink_type_float), (old_std_Val){0});
         break;
     }
     case SRC_PINK_EXPR_STR: {
@@ -8910,7 +8910,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
                 src_pink_Sym (*sym) = src_pink_resolve_name(expr->sizeof_expr->name);
                 if ((sym) && ((sym->kind) == (SRC_PINK_SYM_TYPE))) {
                     src_pink_complete_type(sym->type);
-                    result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_sizeof(sym->type)});
+                    result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_sizeof(sym->type)});
                     src_pink_set_resolved_type(expr->sizeof_expr, sym->type);
                     src_pink_set_resolved_sym(expr->sizeof_expr, sym);
                     break;
@@ -8918,7 +8918,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
             }
             src_pink_Type (*type) = src_pink_resolve_expr(expr->sizeof_expr).type;
             src_pink_complete_type(type);
-            result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_sizeof(type)});
+            result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_sizeof(type)});
         }
         break;
     }
@@ -8926,7 +8926,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
         {
             src_pink_Type (*type) = src_pink_resolve_typespec(expr->sizeof_type);
             src_pink_complete_type(type);
-            result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_sizeof(type)});
+            result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_sizeof(type)});
         }
         break;
     }
@@ -8936,7 +8936,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
                 src_pink_Sym (*sym) = src_pink_resolve_name(expr->alignof_expr->name);
                 if ((sym) && ((sym->kind) == (SRC_PINK_SYM_TYPE))) {
                     src_pink_complete_type(sym->type);
-                    result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_alignof(sym->type)});
+                    result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_alignof(sym->type)});
                     src_pink_set_resolved_type(expr->alignof_expr, sym->type);
                     src_pink_set_resolved_sym(expr->alignof_expr, sym);
                     break;
@@ -8944,7 +8944,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
             }
             src_pink_Type (*type) = src_pink_resolve_expr(expr->alignof_expr).type;
             src_pink_complete_type(type);
-            result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_alignof(type)});
+            result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_alignof(type)});
         }
         break;
     }
@@ -8952,14 +8952,14 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
         {
             src_pink_Type (*type) = src_pink_resolve_typespec(expr->alignof_type);
             src_pink_complete_type(type);
-            result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = src_pink_type_alignof(type)});
+            result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = src_pink_type_alignof(type)});
         }
         break;
     }
     case SRC_PINK_EXPR_TYPEOF_TYPE: {
         {
             src_pink_Type (*type) = src_pink_resolve_typespec(expr->typeof_type);
-            result = src_pink_operand_const(src_pink_type_ullong, (std_Val){.ull = type->typeid});
+            result = src_pink_operand_const(src_pink_type_ullong, (old_std_Val){.ull = type->typeid});
         }
         break;
     }
@@ -8968,14 +8968,14 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
             if ((expr->typeof_expr->kind) == (SRC_PINK_EXPR_NAME)) {
                 src_pink_Sym (*sym) = src_pink_resolve_name(expr->typeof_expr->name);
                 if ((sym) && ((sym->kind) == (SRC_PINK_SYM_TYPE))) {
-                    result = src_pink_operand_const(src_pink_type_ullong, (std_Val){.ull = sym->type->typeid});
+                    result = src_pink_operand_const(src_pink_type_ullong, (old_std_Val){.ull = sym->type->typeid});
                     src_pink_set_resolved_type(expr->typeof_expr, sym->type);
                     src_pink_set_resolved_sym(expr->typeof_expr, sym);
                     break;
                 }
             }
             src_pink_Type (*type) = src_pink_resolve_expr(expr->typeof_expr).type;
-            result = src_pink_operand_const(src_pink_type_ullong, (std_Val){.ull = type->typeid});
+            result = src_pink_operand_const(src_pink_type_ullong, (old_std_Val){.ull = type->typeid});
         }
         break;
     }
@@ -8990,7 +8990,7 @@ src_pink_Operand src_pink_resolve_expected_expr(src_pink_Expr (*expr), src_pink_
             if ((field) < (0)) {
                 src_pink_fatal_error(expr->pos, "No field \'%s\' in type", expr->offsetof_field.name);
             }
-            result = src_pink_operand_const(src_pink_type_usize, (std_Val){.ull = type->aggregate.fields[field].offset});
+            result = src_pink_operand_const(src_pink_type_usize, (old_std_Val){.ull = type->aggregate.fields[field].offset});
         }
         break;
     }
@@ -9015,7 +9015,7 @@ src_pink_Operand src_pink_resolve_const_expr(src_pink_Expr (*expr)) {
     return operand;
 }
 
-std_Map src_pink_decl_note_names;
+old_std_Map src_pink_decl_note_names;
 void src_pink_init_builtin_syms(void) {
     src_pink_sym_global_type("void", src_pink_type_void);
     src_pink_sym_global_type("bool", src_pink_type_bool);
@@ -9038,7 +9038,7 @@ void src_pink_add_package_decls(src_pink_Package (*package)) {
     for (size_t i = 0; (i) < (package->num_decls); (i)++) {
         src_pink_Decl (*decl) = package->decls[i];
         if ((decl->kind) == (SRC_PINK_DECL_NOTE)) {
-            if (!(std_map_get(&(src_pink_decl_note_names), decl->note.name))) {
+            if (!(old_std_map_get(&(src_pink_decl_note_names), decl->note.name))) {
                 src_pink_warning(decl->pos, "Unknown declaration #directive \'%s\'", decl->note.name);
             }
             if ((decl->note.name) == (src_pink_declare_note_name)) {
@@ -9049,7 +9049,7 @@ void src_pink_add_package_decls(src_pink_Package (*package)) {
                 if ((arg->kind) != (SRC_PINK_EXPR_NAME)) {
                     src_pink_fatal_error(decl->pos, "#declare_note argument must be name");
                 }
-                std_map_put(&(src_pink_decl_note_names), arg->name, (void *)(1));
+                old_std_map_put(&(src_pink_decl_note_names), arg->name, (void *)(1));
             } else if ((decl->note.name) == (src_pink_static_assert_name)) {
                 if (!(src_pink_flag_lazy)) {
                     src_pink_resolve_static_assert(decl->note);
@@ -9064,13 +9064,13 @@ void src_pink_add_package_decls(src_pink_Package (*package)) {
 
 bool src_pink_is_package_dir(char const ((*search_path)), char const ((*package_path))) {
     char (path[MAX_PATH]) = {0};
-    std_os_path_copy(path, search_path);
-    std_os_path_join(path, package_path);
-    std_os_DirListIter iter = {0};
-    for (std_os_dir_list(&(iter), path); iter.valid; std_os_dir_list_next(&(iter))) {
-        char const ((*ext)) = std_os_path_ext(iter.name);
+    old_std_os_path_copy(path, search_path);
+    old_std_os_path_join(path, package_path);
+    old_std_os_DirListIter iter = {0};
+    for (old_std_os_dir_list(&(iter), path); iter.valid; old_std_os_dir_list_next(&(iter))) {
+        char const ((*ext)) = old_std_os_path_ext(iter.name);
         if (((ext) != (iter.name)) && ((strcmp(ext, "pink")) == (0))) {
-            std_os_dir_list_free(&(iter));
+            old_std_os_dir_list_free(&(iter));
             return true;
         }
     }
@@ -9080,8 +9080,8 @@ bool src_pink_is_package_dir(char const ((*search_path)), char const ((*package_
 bool src_pink_copy_package_full_path(char (dest[MAX_PATH]), char const ((*package_path))) {
     for (int i = 0; (i) < (src_pink_num_package_search_paths); (i)++) {
         if (src_pink_is_package_dir(src_pink_package_search_paths[i], package_path)) {
-            std_os_path_copy(dest, src_pink_package_search_paths[i]);
-            std_os_path_join(dest, package_path);
+            old_std_os_path_copy(dest, src_pink_package_search_paths[i]);
+            old_std_os_path_join(dest, package_path);
             return true;
         }
     }
@@ -9089,10 +9089,10 @@ bool src_pink_copy_package_full_path(char (dest[MAX_PATH]), char const ((*packag
 }
 
 src_pink_Package (*src_pink_import_package(char const ((*package_path)))) {
-    package_path = std_str_intern(package_path);
-    src_pink_Package (*package) = std_map_get(&(src_pink_package_map), package_path);
+    package_path = old_std_str_intern(package_path);
+    src_pink_Package (*package) = old_std_map_get(&(src_pink_package_map), package_path);
     if (!(package)) {
-        package = std_xcalloc(1, sizeof(src_pink_Package));
+        package = old_std_xcalloc(1, sizeof(src_pink_Package));
         package->path = package_path;
         if (src_pink_flag_verbose) {
             printf("Importing %s\n", package_path);
@@ -9109,8 +9109,8 @@ src_pink_Package (*src_pink_import_package(char const ((*package_path)))) {
 }
 
 void src_pink_import_all_package_symbols(src_pink_Package (*package)) {
-    char const ((*main_name)) = std_str_intern("main");
-    for (size_t i = 0; (i) < (std_buf_len(package->syms)); (i)++) {
+    char const ((*main_name)) = old_std_str_intern("main");
+    for (size_t i = 0; (i) < (old_std_buf_len(package->syms)); (i)++) {
         if (((package->syms[i]->home_package) == (package)) && ((package->syms[i]->name) != (main_name))) {
             src_pink_sym_global_put(package->syms[i]->name, package->syms[i]);
         }
@@ -9138,19 +9138,19 @@ void src_pink_process_package_imports(src_pink_Package (*package)) {
         } else if ((decl->kind) == (SRC_PINK_DECL_IMPORT)) {
             char (*path_buf) = NULL;
             if (decl->import_decl.is_relative) {
-                std_buf_printf(&(path_buf), "%s/", package->path);
+                old_std_buf_printf(&(path_buf), "%s/", package->path);
             }
             for (size_t k = 0; (k) < (decl->import_decl.num_names); (k)++) {
-                if (!(std_str_islower(decl->import_decl.names[k]))) {
+                if (!(old_std_str_islower(decl->import_decl.names[k]))) {
                     src_pink_fatal_error(decl->pos, "Import name must be lower case: \'%s\'", decl->import_decl.names[k]);
                 }
-                std_buf_printf(&(path_buf), "%s%s", ((k) == (0) ? "" : "/"), decl->import_decl.names[k]);
+                old_std_buf_printf(&(path_buf), "%s%s", ((k) == (0) ? "" : "/"), decl->import_decl.names[k]);
             }
             src_pink_Package (*imported_package) = src_pink_import_package(path_buf);
             if (!(imported_package)) {
                 src_pink_fatal_error(decl->pos, "Failed to import package \'%s\'", path_buf);
             }
-            std_buf_free((void (**))(&(path_buf)));
+            old_std_buf_free((void (**))(&(path_buf)));
             src_pink_import_package_symbols(decl, imported_package);
             if (decl->import_decl.import_all) {
                 src_pink_import_all_package_symbols(imported_package);
@@ -9165,14 +9165,14 @@ void src_pink_process_package_imports(src_pink_Package (*package)) {
 
 bool src_pink_parse_package(src_pink_Package (*package)) {
     src_pink_Decl (*(*decls)) = NULL;
-    std_os_DirListIter iter = {0};
-    for (std_os_dir_list(&(iter), package->full_path); iter.valid; std_os_dir_list_next(&(iter))) {
+    old_std_os_DirListIter iter = {0};
+    for (old_std_os_dir_list(&(iter), package->full_path); iter.valid; old_std_os_dir_list_next(&(iter))) {
         if (((iter.is_dir) || ((iter.name[0]) == ('_'))) || ((iter.name[0]) == ('.'))) {
             continue;
         }
         char (name[MAX_PATH]) = {0};
-        std_os_path_copy(name, iter.name);
-        char (*ext) = std_os_path_ext(name);
+        old_std_os_path_copy(name, iter.name);
+        char (*ext) = old_std_os_path_ext(name);
         if (((ext) == (name)) || ((strcmp(ext, "pink")) != (0))) {
             continue;
         }
@@ -9181,21 +9181,21 @@ bool src_pink_parse_package(src_pink_Package (*package)) {
             continue;
         }
         char (path[MAX_PATH]) = {0};
-        std_os_path_copy(path, iter.base);
-        std_os_path_join(path, iter.name);
-        std_os_path_absolute(path);
-        char const ((*code)) = std_read_file(path);
+        old_std_os_path_copy(path, iter.base);
+        old_std_os_path_join(path, iter.name);
+        old_std_os_path_absolute(path);
+        char const ((*code)) = old_std_read_file(path);
         if (!(code)) {
             src_pink_fatal_error((src_pink_SrcPos){.name = path}, "Failed to read source file");
         }
-        src_pink_init_stream(std_str_intern(path), code);
+        src_pink_init_stream(old_std_str_intern(path), code);
         src_pink_Decls (*file_decls) = src_pink_parse_decls();
         for (size_t i = 0; (i) < (file_decls->num_decls); (i)++) {
-            std_buf_push((void (**))(&(decls)), &(file_decls->decls[i]), sizeof(file_decls->decls[i]));
+            old_std_buf_push((void (**))(&(decls)), &(file_decls->decls[i]), sizeof(file_decls->decls[i]));
         }
     }
     package->decls = decls;
-    package->num_decls = (int)(std_buf_len(decls));
+    package->num_decls = (int)(old_std_buf_len(decls));
     return (package) != (NULL);
 }
 
@@ -9204,7 +9204,7 @@ bool src_pink_compile_package(src_pink_Package (*package)) {
         return false;
     }
     src_pink_Package (*old_package) = src_pink_enter_package(package);
-    if ((std_buf_len(src_pink_package_list)) == (1)) {
+    if ((old_std_buf_len(src_pink_package_list)) == (1)) {
         src_pink_init_builtin_syms();
     }
     if (src_pink_builtin_package) {
@@ -9218,7 +9218,7 @@ bool src_pink_compile_package(src_pink_Package (*package)) {
 
 void src_pink_resolve_package_syms(src_pink_Package (*package)) {
     src_pink_Package (*old_package) = src_pink_enter_package(package);
-    for (size_t i = 0; (i) < (std_buf_len(package->syms)); (i)++) {
+    for (size_t i = 0; (i) < (old_std_buf_len(package->syms)); (i)++) {
         if ((package->syms[i]->home_package) == (package)) {
             src_pink_resolve_sym(package->syms[i]);
         }
@@ -9231,7 +9231,7 @@ void src_pink_finalize_reachable_syms(void) {
         printf("Finalizing reachable symbols\n");
     }
     size_t prev_num_reachable = 0;
-    ullong num_reachable = std_buf_len(src_pink_reachable_syms);
+    ullong num_reachable = old_std_buf_len(src_pink_reachable_syms);
     for (size_t i = 0; (i) < (num_reachable); (i)++) {
         src_pink_finalize_sym(src_pink_reachable_syms[i]);
         if ((i) == ((num_reachable) - (1))) {
@@ -9243,7 +9243,7 @@ void src_pink_finalize_reachable_syms(void) {
                 printf("\n");
             }
             prev_num_reachable = num_reachable;
-            num_reachable = std_buf_len(src_pink_reachable_syms);
+            num_reachable = old_std_buf_len(src_pink_reachable_syms);
         }
     }
 }
@@ -9418,20 +9418,20 @@ int src_pink_next_typeid = 1;
 src_pink_Type (*src_pink_type_uintptr);
 src_pink_Type (*src_pink_type_usize);
 src_pink_Type (*src_pink_type_ssize);
-std_Map src_pink_typeid_map;
+old_std_Map src_pink_typeid_map;
 src_pink_Type (*src_pink_get_type_from_typeid(int typeid)) {
     if ((typeid) == (0)) {
         return NULL;
     }
-    return std_map_get(&(src_pink_typeid_map), (void *)((uintptr_t)(typeid)));
+    return old_std_map_get(&(src_pink_typeid_map), (void *)((uintptr_t)(typeid)));
 }
 
 void src_pink_register_typeid(src_pink_Type (*type)) {
-    std_map_put(&(src_pink_typeid_map), (void *)((uintptr_t)(type->typeid)), type);
+    old_std_map_put(&(src_pink_typeid_map), (void *)((uintptr_t)(type->typeid)), type);
 }
 
 src_pink_Type (*src_pink_type_alloc(TypeKind kind)) {
-    src_pink_Type (*type) = std_xcalloc(1, sizeof(src_pink_Type));
+    src_pink_Type (*type) = old_std_xcalloc(1, sizeof(src_pink_Type));
     type->kind = kind;
     type->typeid = (src_pink_next_typeid)++;
     src_pink_register_typeid(type);
@@ -9557,25 +9557,25 @@ size_t src_pink_type_alignof(src_pink_Type (*type)) {
     return type->align;
 }
 
-std_Map src_pink_cached_ptr_types;
+old_std_Map src_pink_cached_ptr_types;
 src_pink_Type (*src_pink_type_ptr(src_pink_Type (*base))) {
-    src_pink_Type (*type) = std_map_get(&(src_pink_cached_ptr_types), base);
+    src_pink_Type (*type) = old_std_map_get(&(src_pink_cached_ptr_types), base);
     if (!(type)) {
         type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_PTR);
         type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
         type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
         type->base = base;
-        std_map_put(&(src_pink_cached_ptr_types), base, type);
+        old_std_map_put(&(src_pink_cached_ptr_types), base, type);
     }
     return type;
 }
 
-std_Map src_pink_cached_const_types;
+old_std_Map src_pink_cached_const_types;
 src_pink_Type (*src_pink_type_const(src_pink_Type (*base))) {
     if ((base->kind) == (SRC_PINK_CMPL_TYPE_CONST)) {
         return base;
     }
-    src_pink_Type (*type) = std_map_get(&(src_pink_cached_const_types), base);
+    src_pink_Type (*type) = old_std_map_get(&(src_pink_cached_const_types), base);
     if (!(type)) {
         src_pink_complete_type(base);
         type = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_CONST);
@@ -9583,7 +9583,7 @@ src_pink_Type (*src_pink_type_const(src_pink_Type (*base))) {
         type->size = base->size;
         type->align = base->align;
         type->base = base;
-        std_map_put(&(src_pink_cached_const_types), base, type);
+        old_std_map_put(&(src_pink_cached_const_types), base, type);
     }
     return type;
 }
@@ -9596,11 +9596,11 @@ src_pink_Type (*src_pink_unqualify_type(src_pink_Type (*type))) {
     }
 }
 
-std_Map src_pink_cached_array_types;
+old_std_Map src_pink_cached_array_types;
 src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems)) {
-    ullong hash = std_hash_mix(std_hash_ptr(base), std_hash_uint64(num_elems));
+    ullong hash = old_std_hash_mix(old_std_hash_ptr(base), old_std_hash_uint64(num_elems));
     uint64_t key = (hash ? hash : 1);
-    src_pink_CachedArrayType (*cached) = std_map_get_from_uint64(&(src_pink_cached_array_types), key);
+    src_pink_CachedArrayType (*cached) = old_std_map_get_from_uint64(&(src_pink_cached_array_types), key);
     for (src_pink_CachedArrayType (*it) = cached; it; it = it->next) {
         src_pink_Type (*type) = it->type;
         if (((type->base) == (base)) && ((type->num_elems) == (num_elems))) {
@@ -9614,19 +9614,19 @@ src_pink_Type (*src_pink_type_array(src_pink_Type (*base), size_t num_elems)) {
     type->align = src_pink_type_alignof(base);
     type->base = base;
     type->num_elems = num_elems;
-    src_pink_CachedArrayType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedArrayType));
+    src_pink_CachedArrayType (*new_cached) = old_std_xmalloc(sizeof(src_pink_CachedArrayType));
     new_cached->type = type;
     new_cached->next = cached;
-    std_map_put_from_uint64(&(src_pink_cached_array_types), key, new_cached);
+    old_std_map_put_from_uint64(&(src_pink_cached_array_types), key, new_cached);
     return type;
 }
 
-std_Map src_pink_cached_func_types;
+old_std_Map src_pink_cached_func_types;
 src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params, src_pink_Type (*ret), bool has_varargs)) {
     ullong params_size = (num_params) * (sizeof(*(params)));
-    ullong hash = std_hash_mix(std_hash_bytes(params, params_size), std_hash_ptr(ret));
+    ullong hash = old_std_hash_mix(old_std_hash_bytes(params, params_size), old_std_hash_ptr(ret));
     uint64_t key = (hash ? hash : 1);
-    src_pink_CachedFuncType (*cached) = std_map_get_from_uint64(&(src_pink_cached_func_types), key);
+    src_pink_CachedFuncType (*cached) = old_std_map_get_from_uint64(&(src_pink_cached_func_types), key);
     for (src_pink_CachedFuncType (*it) = cached; it; it = it->next) {
         src_pink_Type (*type) = it->type;
         if ((((type->function.num_params) == (num_params)) && ((type->function.ret) == (ret))) && ((type->function.has_varargs) == (has_varargs))) {
@@ -9638,14 +9638,14 @@ src_pink_Type (*src_pink_type_func(src_pink_Type (*(*params)), size_t num_params
     src_pink_Type (*type) = src_pink_type_alloc(SRC_PINK_CMPL_TYPE_FUNC);
     type->size = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].size;
     type->align = src_pink_type_metrics[SRC_PINK_CMPL_TYPE_PTR].align;
-    type->function.params = std_memdup(params, params_size);
+    type->function.params = old_std_memdup(params, params_size);
     type->function.num_params = num_params;
     type->function.has_varargs = has_varargs;
     type->function.ret = ret;
-    src_pink_CachedFuncType (*new_cached) = std_xmalloc(sizeof(src_pink_CachedFuncType));
+    src_pink_CachedFuncType (*new_cached) = old_std_xmalloc(sizeof(src_pink_CachedFuncType));
     new_cached->type = type;
     new_cached->next = cached;
-    std_map_put_from_uint64(&(src_pink_cached_func_types), key, new_cached);
+    old_std_map_put_from_uint64(&(src_pink_cached_func_types), key, new_cached);
     return type;
 }
 
@@ -9664,7 +9664,7 @@ void src_pink_add_type_fields(src_pink_TypeField (*(*fields)), src_pink_Type (*t
     for (size_t i = 0; (i) < (type->aggregate.num_fields); (i)++) {
         src_pink_TypeField (*field) = &(type->aggregate.fields[i]);
         src_pink_TypeField new_field = {field->name, field->type, (field->offset) + (offset)};
-        std_buf_push((void (**))(fields), &(new_field), sizeof(new_field));
+        old_std_buf_push((void (**))(fields), &(new_field), sizeof(new_field));
     }
 }
 
@@ -9677,17 +9677,17 @@ void src_pink_type_complete_struct(src_pink_Type (*type), src_pink_TypeField (*f
     for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
         if (it->name) {
             it->offset = type->size;
-            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
+            old_std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
         } else {
             src_pink_add_type_fields(&(new_fields), it->type, type->size);
         }
-        type->align = std_max(type->align, src_pink_type_alignof(it->type));
-        type->size = (src_pink_type_sizeof(it->type)) + (std_align_up(type->size, src_pink_type_alignof(it->type)));
+        type->align = old_std_max(type->align, src_pink_type_alignof(it->type));
+        type->size = (src_pink_type_sizeof(it->type)) + (old_std_align_up(type->size, src_pink_type_alignof(it->type)));
         nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
     }
-    type->size = std_align_up(type->size, type->align);
+    type->size = old_std_align_up(type->size, type->align);
     type->aggregate.fields = new_fields;
-    type->aggregate.num_fields = std_buf_len(new_fields);
+    type->aggregate.num_fields = old_std_buf_len(new_fields);
     type->nonmodifiable = nonmodifiable;
 }
 
@@ -9700,17 +9700,17 @@ void src_pink_type_complete_union(src_pink_Type (*type), src_pink_TypeField (*fi
     for (src_pink_TypeField (*it) = fields; (it) != ((fields) + (num_fields)); (it)++) {
         if (it->name) {
             it->offset = type->size;
-            std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
+            old_std_buf_push((void (**))(&(new_fields)), it, sizeof(*(it)));
         } else {
             src_pink_add_type_fields(&(new_fields), it->type, 0);
         }
-        type->size = std_max(type->size, src_pink_type_sizeof(it->type));
-        type->align = std_max(type->align, src_pink_type_alignof(it->type));
+        type->size = old_std_max(type->size, src_pink_type_sizeof(it->type));
+        type->align = old_std_max(type->align, src_pink_type_alignof(it->type));
         nonmodifiable = (it->type->nonmodifiable) || (nonmodifiable);
     }
-    type->size = std_align_up(type->size, type->align);
+    type->size = old_std_align_up(type->size, type->align);
     type->aggregate.fields = new_fields;
-    type->aggregate.num_fields = std_buf_len(new_fields);
+    type->aggregate.num_fields = old_std_buf_len(new_fields);
     type->nonmodifiable = nonmodifiable;
 }
 
@@ -9775,75 +9775,75 @@ src_pink_Type (*src_pink_aggregate_item_field_type_from_name(src_pink_Type (*typ
     return src_pink_aggregate_item_field_type_from_index(type, index);
 }
 
-void (*std_arena_alloc(std_Arena (*arena), size_t size)) {
+void (*old_std_arena_alloc(old_std_Arena (*arena), size_t size)) {
     if ((size) > ((size_t)(((arena->end) - (arena->ptr))))) {
-        std_arena_grow(arena, size);
+        old_std_arena_grow(arena, size);
     }
     char (*ptr) = arena->ptr;
-    arena->ptr = std_align_up_ptr((arena->ptr) + (size), STD_ARENA_ALIGNMENT);
+    arena->ptr = old_std_align_up_ptr((arena->ptr) + (size), OLD_STD_ARENA_ALIGNMENT);
     return ptr;
 }
 
-void std_buf_printf(char (*(*buf)), char const ((*fmt)), ...) {
+void old_std_buf_printf(char (*(*buf)), char const ((*fmt)), ...) {
     va_list args = {0};
     va_start_ptr(&(args), &(fmt));
-    ullong cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
-    int n = (1) + (vsnprintf(std_buf_end(*(buf), 1), cap, fmt, args));
+    ullong cap = (old_std_buf_cap(*(buf))) - (old_std_buf_len(*(buf)));
+    int n = (1) + (vsnprintf(old_std_buf_end(*(buf), 1), cap, fmt, args));
     va_end_ptr(&(args));
     if ((n) > (cap)) {
-        std_buf_fit((void (**))(buf), (n) + (std_buf_len(*(buf))), 1);
+        old_std_buf_fit((void (**))(buf), (n) + (old_std_buf_len(*(buf))), 1);
         va_start_ptr(&(args), &(fmt));
-        ullong new_cap = (std_buf_cap(*(buf))) - (std_buf_len(*(buf)));
-        n = (1) + (vsnprintf(std_buf_end(*(buf), 1), new_cap, fmt, args));
+        ullong new_cap = (old_std_buf_cap(*(buf))) - (old_std_buf_len(*(buf)));
+        n = (1) + (vsnprintf(old_std_buf_end(*(buf), 1), new_cap, fmt, args));
         va_end_ptr(&(args));
     }
-    std_buf__hdr(*(buf))->len += (n) - (1);
+    old_std_buf__hdr(*(buf))->len += (n) - (1);
 }
 
-char (*std_strf(char const ((*fmt)), ...)) {
+char (*old_std_strf(char const ((*fmt)), ...)) {
     va_list args = {0};
     va_start_ptr(&(args), &(fmt));
     int n = (1) + (vsnprintf(NULL, 0, fmt, args));
     va_end_ptr(&(args));
-    char (*str) = std_xmalloc(n);
+    char (*str) = old_std_xmalloc(n);
     va_start_ptr(&(args), &(fmt));
     vsnprintf(str, n, fmt, args);
     va_end_ptr(&(args));
     return str;
 }
 
-void (*std_map_get(std_Map (*map), void const ((*key)))) {
-    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)))));
+void (*old_std_map_get(old_std_Map (*map), void const ((*key)))) {
+    return (void *)((uintptr_t)(old_std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)))));
 }
 
-void std_map_put(std_Map (*map), void const ((*key)), void (*val)) {
-    std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), (uint64_t)((uintptr_t)(val)));
+void old_std_map_put(old_std_Map (*map), void const ((*key)), void (*val)) {
+    old_std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), (uint64_t)((uintptr_t)(val)));
 }
 
-void (*std_buf_end(void (*b), size_t elem_size)) {
-    return ((char *)(b)) + ((elem_size) * (std_buf_len(b)));
+void (*old_std_buf_end(void (*b), size_t elem_size)) {
+    return ((char *)(b)) + ((elem_size) * (old_std_buf_len(b)));
 }
 
-size_t std_buf_len(void (*b)) {
-    return (b ? std_buf__hdr(b)->len : 0);
+size_t old_std_buf_len(void (*b)) {
+    return (b ? old_std_buf__hdr(b)->len : 0);
 }
 
-char const ((*std_str_intern(char const ((*str))))) {
-    return std_str_intern_range(str, (str) + (strlen(str)));
+char const ((*old_std_str_intern(char const ((*str))))) {
+    return old_std_str_intern_range(str, (str) + (strlen(str)));
 }
 
-void std_buf_push(void (*(*b)), void (*elem), size_t elem_size) {
-    std_buf_fit(b, (1) + (std_buf_len(*(b))), elem_size);
-    memcpy(((char *)(*(b))) + ((elem_size) * ((std_buf__hdr(*(b))->len)++)), elem, elem_size);
+void old_std_buf_push(void (*(*b)), void (*elem), size_t elem_size) {
+    old_std_buf_fit(b, (1) + (old_std_buf_len(*(b))), elem_size);
+    memcpy(((char *)(*(b))) + ((elem_size) * ((old_std_buf__hdr(*(b))->len)++)), elem, elem_size);
 }
 
-void std_os_path_copy(char (path[MAX_PATH]), char const ((*src))) {
+void old_std_os_path_copy(char (path[MAX_PATH]), char const ((*src))) {
     strncpy(path, src, MAX_PATH);
     path[(MAX_PATH) - (1)] = 0;
-    std_os_path_normalize(path);
+    old_std_os_path_normalize(path);
 }
 
-void std_os_path_join(char (path[MAX_PATH]), char const ((*src))) {
+void old_std_os_path_join(char (path[MAX_PATH]), char const ((*src))) {
     char (*ptr) = (path) + (strlen(path));
     if (((ptr) != (path)) && ((ptr[-(1)]) == ('/'))) {
         (ptr)--;
@@ -9854,52 +9854,52 @@ void std_os_path_join(char (path[MAX_PATH]), char const ((*src))) {
     snprintf(ptr, ((path) + (MAX_PATH)) - (ptr), "/%s", src);
 }
 
-void std_os_path_absolute(char (path[MAX_PATH])) {
+void old_std_os_path_absolute(char (path[MAX_PATH])) {
     char (rel_path[MAX_PATH]) = {0};
-    std_os_path_copy(rel_path, path);
+    old_std_os_path_copy(rel_path, path);
     _fullpath(path, rel_path, MAX_PATH);
 }
 
-std_Arena std_intern_arena;
-char const ((*std_str_intern_range(char const ((*start)), char const ((*end))))) {
+old_std_Arena old_std_intern_arena;
+char const ((*old_std_str_intern_range(char const ((*start)), char const ((*end))))) {
     size_t len = (end) - (start);
-    ullong hash = std_hash_bytes(start, len);
+    ullong hash = old_std_hash_bytes(start, len);
     uint64_t key = (hash ? hash : 1);
-    std_Intern (*intern) = std_map_get_from_uint64(&(std_interns), key);
-    for (std_Intern (*it) = intern; it; it = it->next) {
+    old_std_Intern (*intern) = old_std_map_get_from_uint64(&(old_std_interns), key);
+    for (old_std_Intern (*it) = intern; it; it = it->next) {
         if (((it->len) == (len)) && ((strncmp(it->str, start, len)) == (0))) {
             return it->str;
         }
     }
-    std_Intern (*new_intern) = std_arena_alloc(&(std_intern_arena), ((offsetof(std_Intern, str)) + (len)) + (1));
+    old_std_Intern (*new_intern) = old_std_arena_alloc(&(old_std_intern_arena), ((offsetof(old_std_Intern, str)) + (len)) + (1));
     new_intern->len = len;
     new_intern->next = intern;
     memcpy(new_intern->str, start, len);
     new_intern->str[len] = 0;
-    std_map_put_from_uint64(&(std_interns), key, new_intern);
+    old_std_map_put_from_uint64(&(old_std_interns), key, new_intern);
     return new_intern->str;
 }
 
-size_t std_clamp_max(size_t x, size_t max) {
-    return std_min(x, max);
+size_t old_std_clamp_max(size_t x, size_t max) {
+    return old_std_min(x, max);
 }
 
-void std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help))) {
-    std_os_FlagDef def = {.kind = STD_OS_FLAG_STR, .name = name, .help = help, .arg_name = arg_name, .ptr = {.s = ptr}};
-    std_buf_push((void (**))(&(std_os_flag_defs)), &(def), sizeof(def));
+void old_std_os_add_flag_str(char const ((*name)), char const ((*(*ptr))), char const ((*arg_name)), char const ((*help))) {
+    old_std_os_FlagDef def = {.kind = OLD_STD_OS_FLAG_STR, .name = name, .help = help, .arg_name = arg_name, .ptr = {.s = ptr}};
+    old_std_buf_push((void (**))(&(old_std_os_flag_defs)), &(def), sizeof(def));
 }
 
-void std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options) {
-    std_os_FlagDef def = {.kind = STD_OS_FLAG_ENUM, .name = name, .help = help, .ptr = {.i = ptr}, .options = options, .num_options = num_options};
-    std_buf_push((void (**))(&(std_os_flag_defs)), &(def), sizeof(def));
+void old_std_os_add_flag_enum(char const ((*name)), int (*ptr), char const ((*help)), char const ((*(*options))), int num_options) {
+    old_std_os_FlagDef def = {.kind = OLD_STD_OS_FLAG_ENUM, .name = name, .help = help, .ptr = {.i = ptr}, .options = options, .num_options = num_options};
+    old_std_buf_push((void (**))(&(old_std_os_flag_defs)), &(def), sizeof(def));
 }
 
-void std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help))) {
-    std_os_FlagDef def = {.kind = STD_OS_FLAG_BOOL, .name = name, .help = help, .ptr = {.b = ptr}};
-    std_buf_push((void (**))(&(std_os_flag_defs)), &(def), sizeof(def));
+void old_std_os_add_flag_bool(char const ((*name)), bool (*ptr), char const ((*help))) {
+    old_std_os_FlagDef def = {.kind = OLD_STD_OS_FLAG_BOOL, .name = name, .help = help, .ptr = {.b = ptr}};
+    old_std_buf_push((void (**))(&(old_std_os_flag_defs)), &(def), sizeof(def));
 }
 
-char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr))))))) {
+char const ((*old_std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr))))))) {
     int argc = *(argc_ptr);
     char const ((*(*argv))) = *(argv_ptr);
     int i = {0};
@@ -9911,17 +9911,17 @@ char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr))))
             if ((*(name)) == ('-')) {
                 (name)++;
             }
-            std_os_FlagDef (*flag) = std_os_get_flag_def(name);
+            old_std_os_FlagDef (*flag) = old_std_os_get_flag_def(name);
             if (!(flag)) {
                 printf("Unknown flag %s\n", arg);
                 continue;
             }
             switch (flag->kind) {
-            case STD_OS_FLAG_BOOL: {
+            case OLD_STD_OS_FLAG_BOOL: {
                 *(flag->ptr.b) = true;
                 break;
             }
-            case STD_OS_FLAG_STR: {
+            case OLD_STD_OS_FLAG_STR: {
                 if (((i) + (1)) < (argc)) {
                     (i)++;
                     *(flag->ptr.s) = argv[i];
@@ -9930,7 +9930,7 @@ char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr))))
                 }
                 break;
             }
-            case STD_OS_FLAG_ENUM: {
+            case OLD_STD_OS_FLAG_ENUM: {
                 {
                     char const ((*option)) = {0};
                     if (((i) + (1)) < (argc)) {
@@ -9965,24 +9965,24 @@ char const ((*std_os_parse_flags(int (*argc_ptr), char const ((*(*(*argv_ptr))))
     }
     *(argc_ptr) = (argc) - (i);
     *(argv_ptr) = (argv) + (i);
-    return std_os_path_file(_strdup(argv[0]));
+    return old_std_os_path_file(_strdup(argv[0]));
 }
 
-void std_os_print_flags_usage(void) {
+void old_std_os_print_flags_usage(void) {
     printf("Flags:\n");
-    for (size_t i = 0; (i) < (std_buf_len(std_os_flag_defs)); (i)++) {
-        std_os_FlagDef flag = std_os_flag_defs[i];
+    for (size_t i = 0; (i) < (old_std_buf_len(old_std_os_flag_defs)); (i)++) {
+        old_std_os_FlagDef flag = old_std_os_flag_defs[i];
         char (note[256]) = {0};
         char (format[256]) = {0};
         switch (flag.kind) {
-        case STD_OS_FLAG_STR: {
+        case OLD_STD_OS_FLAG_STR: {
             snprintf(format, sizeof(format), "%s <%s>", flag.name, (flag.arg_name ? flag.arg_name : (char const (*))("value")));
             if (*(flag.ptr.s)) {
                 snprintf(note, sizeof(note), "(default: %s)", *(flag.ptr.s));
             }
             break;
         }
-        case STD_OS_FLAG_ENUM: {
+        case OLD_STD_OS_FLAG_ENUM: {
             {
                 char (*end) = (format) + (sizeof(format));
                 char (*ptr) = format;
@@ -9997,7 +9997,7 @@ void std_os_print_flags_usage(void) {
             }
             break;
         }
-        case STD_OS_FLAG_BOOL:
+        case OLD_STD_OS_FLAG_BOOL:
         default: {
             snprintf(format, sizeof(format), "%s", flag.name);
             break;
@@ -10007,7 +10007,7 @@ void std_os_print_flags_usage(void) {
     }
 }
 
-bool std_write_file(char const ((*path)), char const ((*buf)), size_t len) {
+bool old_std_write_file(char const ((*path)), char const ((*buf)), size_t len) {
     FILE (*file) = fopen(path, "w");
     if (!(file)) {
         return false;
@@ -10017,7 +10017,7 @@ bool std_write_file(char const ((*path)), char const ((*buf)), size_t len) {
     return (n) == (1);
 }
 
-void (*std_xcalloc(size_t num_elems, size_t elem_size)) {
+void (*old_std_xcalloc(size_t num_elems, size_t elem_size)) {
     void (*ptr) = calloc(num_elems, elem_size);
     if (!(ptr)) {
         perror("xcalloc failed");
@@ -10026,7 +10026,7 @@ void (*std_xcalloc(size_t num_elems, size_t elem_size)) {
     return ptr;
 }
 
-void std_fatal(char const ((*fmt)), ...) {
+void old_std_fatal(char const ((*fmt)), ...) {
     va_list args = {0};
     va_start_ptr(&(args), &(fmt));
     printf("FATAL: ");
@@ -10036,49 +10036,49 @@ void std_fatal(char const ((*fmt)), ...) {
     exit(1);
 }
 
-uint64_t std_map_get_uint64(std_Map (*map), void (*key)) {
-    return std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)));
+uint64_t old_std_map_get_uint64(old_std_Map (*map), void (*key)) {
+    return old_std_map_get_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)));
 }
 
-void std_map_put_uint64(std_Map (*map), void (*key), uint64_t val) {
-    std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), val);
+void old_std_map_put_uint64(old_std_Map (*map), void (*key), uint64_t val) {
+    old_std_map_put_uint64_from_uint64(map, (uint64_t)((uintptr_t)(key)), val);
 }
 
-size_t std_max(size_t x, size_t y) {
+size_t old_std_max(size_t x, size_t y) {
     return ((x) >= (y) ? x : y);
 }
 
-void std_os_dir_list(std_os_DirListIter (*iter), char const ((*path))) {
+void old_std_os_dir_list(old_std_os_DirListIter (*iter), char const ((*path))) {
     memset(iter, 0, sizeof(*(iter)));
-    std_os_path_copy(iter->base, path);
+    old_std_os_path_copy(iter->base, path);
     char (filespec[MAX_PATH]) = {0};
-    std_os_path_copy(filespec, path);
-    std_os_path_join(filespec, "*");
+    old_std_os_path_copy(filespec, path);
+    old_std_os_path_join(filespec, "*");
     FindData fileinfo = {0};
     llong handle = _findfirst(filespec, &(fileinfo));
     iter->handle = (void *)(handle);
-    std_os_dir__update(iter, (handle) == (-(1)), &(fileinfo));
-    if (std_os_dir_excluded(iter)) {
-        std_os_dir_list_next(iter);
+    old_std_os_dir__update(iter, (handle) == (-(1)), &(fileinfo));
+    if (old_std_os_dir_excluded(iter)) {
+        old_std_os_dir_list_next(iter);
     }
 }
 
-void std_os_dir_list_next(std_os_DirListIter (*iter)) {
+void old_std_os_dir_list_next(old_std_os_DirListIter (*iter)) {
     if (!(iter->valid)) {
         return;
     }
     do {
         FindData fileinfo = {0};
         int result = _findnext((intptr_t)(iter->handle), &(fileinfo));
-        std_os_dir__update(iter, (result) != (0), &(fileinfo));
+        old_std_os_dir__update(iter, (result) != (0), &(fileinfo));
         if ((result) != (0)) {
-            std_os_dir_list_free(iter);
+            old_std_os_dir_list_free(iter);
             return;
         }
-    } while (std_os_dir_excluded(iter));
+    } while (old_std_os_dir_excluded(iter));
 }
 
-char (*std_os_path_ext(char (path[MAX_PATH]))) {
+char (*old_std_os_path_ext(char (path[MAX_PATH]))) {
     for (char (*ptr) = (path) + (strlen(path)); (ptr) != (path); (ptr)--) {
         if ((ptr[-(1)]) == ('.')) {
             return ptr;
@@ -10087,7 +10087,7 @@ char (*std_os_path_ext(char (path[MAX_PATH]))) {
     return path;
 }
 
-void std_os_dir_list_free(std_os_DirListIter (*iter)) {
+void old_std_os_dir_list_free(old_std_os_DirListIter (*iter)) {
     if (iter->valid) {
         _findclose((intptr_t)(iter->handle));
         iter->valid = false;
@@ -10095,7 +10095,7 @@ void std_os_dir_list_free(std_os_DirListIter (*iter)) {
     }
 }
 
-bool std_str_islower(char const ((*str))) {
+bool old_std_str_islower(char const ((*str))) {
     while (*(str)) {
         if ((isalpha(*(str))) && (!(islower(*(str))))) {
             return false;
@@ -10105,14 +10105,14 @@ bool std_str_islower(char const ((*str))) {
     return true;
 }
 
-void std_buf_free(void (*(*b))) {
+void old_std_buf_free(void (*(*b))) {
     if (b) {
-        free(std_buf__hdr(*(b)));
+        free(old_std_buf__hdr(*(b)));
         *(b) = NULL;
     }
 }
 
-char (*std_read_file(char const ((*path)))) {
+char (*old_std_read_file(char const ((*path)))) {
     FILE (*file) = fopen(path, "rb");
     if (!(file)) {
         return NULL;
@@ -10120,7 +10120,7 @@ char (*std_read_file(char const ((*path)))) {
     fseek(file, 0, SEEK_END);
     long len = ftell(file);
     fseek(file, 0, SEEK_SET);
-    char (*buf) = std_xmalloc((len) + (1));
+    char (*buf) = old_std_xmalloc((len) + (1));
     if ((len) && ((fread(buf, len, 1, file)) != (1))) {
         fclose(file);
         free(buf);
@@ -10131,28 +10131,28 @@ char (*std_read_file(char const ((*path)))) {
     return buf;
 }
 
-uint64_t std_hash_mix(uint64_t x, uint64_t y) {
+uint64_t old_std_hash_mix(uint64_t x, uint64_t y) {
     x ^= y;
     x *= 0xff51afd7ed558ccd;
     x ^= (x) >> (32);
     return x;
 }
 
-uint64_t std_hash_ptr(void const ((*ptr))) {
-    return std_hash_uint64((uintptr_t)(ptr));
+uint64_t old_std_hash_ptr(void const ((*ptr))) {
+    return old_std_hash_uint64((uintptr_t)(ptr));
 }
 
-uint64_t std_hash_uint64(uint64_t x) {
+uint64_t old_std_hash_uint64(uint64_t x) {
     x *= 0xff51afd7ed558ccd;
     x ^= (x) >> (32);
     return x;
 }
 
-void (*std_map_get_from_uint64(std_Map (*map), uint64_t key)) {
-    return (void *)((uintptr_t)(std_map_get_uint64_from_uint64(map, key)));
+void (*old_std_map_get_from_uint64(old_std_Map (*map), uint64_t key)) {
+    return (void *)((uintptr_t)(old_std_map_get_uint64_from_uint64(map, key)));
 }
 
-void (*std_xmalloc(size_t num_bytes)) {
+void (*old_std_xmalloc(size_t num_bytes)) {
     void (*ptr) = malloc(num_bytes);
     if (!(ptr)) {
         perror("xmalloc failed");
@@ -10161,11 +10161,11 @@ void (*std_xmalloc(size_t num_bytes)) {
     return ptr;
 }
 
-void std_map_put_from_uint64(std_Map (*map), uint64_t key, void (*val)) {
-    std_map_put_uint64_from_uint64(map, key, (uint64_t)((uintptr_t)(val)));
+void old_std_map_put_from_uint64(old_std_Map (*map), uint64_t key, void (*val)) {
+    old_std_map_put_uint64_from_uint64(map, key, (uint64_t)((uintptr_t)(val)));
 }
 
-uint64_t std_hash_bytes(void const ((*ptr)), size_t len) {
+uint64_t old_std_hash_bytes(void const ((*ptr)), size_t len) {
     uint64_t x = 0xcbf29ce484222325;
     char const ((*buf)) = (char const (*))(ptr);
     for (size_t i = 0; (i) < (len); (i)++) {
@@ -10176,46 +10176,46 @@ uint64_t std_hash_bytes(void const ((*ptr)), size_t len) {
     return x;
 }
 
-void (*std_memdup(void (*src), size_t size)) {
-    void (*dest) = std_xmalloc(size);
+void (*old_std_memdup(void (*src), size_t size)) {
+    void (*dest) = old_std_xmalloc(size);
     memcpy(dest, src, size);
     return dest;
 }
 
-uintptr_t std_align_up(uintptr_t n, size_t a) {
-    return std_align_down(((n) + (a)) - (1), a);
+uintptr_t old_std_align_up(uintptr_t n, size_t a) {
+    return old_std_align_down(((n) + (a)) - (1), a);
 }
 
-void std_arena_grow(std_Arena (*arena), size_t min_size) {
-    ullong size = std_align_up(std_clamp_min(min_size, STD_ARENA_BLOCK_SIZE), STD_ARENA_ALIGNMENT);
-    arena->ptr = std_xmalloc(size);
+void old_std_arena_grow(old_std_Arena (*arena), size_t min_size) {
+    ullong size = old_std_align_up(old_std_clamp_min(min_size, OLD_STD_ARENA_BLOCK_SIZE), OLD_STD_ARENA_ALIGNMENT);
+    arena->ptr = old_std_xmalloc(size);
     arena->end = (arena->ptr) + (size);
-    std_buf_push((void (**))(&(arena->blocks)), &(arena->ptr), sizeof(arena->ptr));
+    old_std_buf_push((void (**))(&(arena->blocks)), &(arena->ptr), sizeof(arena->ptr));
 }
 
-void (*std_align_up_ptr(void (*p), size_t a)) {
-    return (void *)(std_align_up((uintptr_t)(p), a));
+void (*old_std_align_up_ptr(void (*p), size_t a)) {
+    return (void *)(old_std_align_up((uintptr_t)(p), a));
 }
 
-size_t std_buf_cap(void const ((*b))) {
-    return (b ? std_buf__hdr((void *)(b))->cap : 0);
+size_t old_std_buf_cap(void const ((*b))) {
+    return (b ? old_std_buf__hdr((void *)(b))->cap : 0);
 }
 
-void std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size) {
-    if ((new_len) > (std_buf_cap(*(b)))) {
-        *(b) = std_buf__grow(*(b), new_len, elem_size);
+void old_std_buf_fit(void (*(*b)), size_t new_len, size_t elem_size) {
+    if ((new_len) > (old_std_buf_cap(*(b)))) {
+        *(b) = old_std_buf__grow(*(b), new_len, elem_size);
     }
 }
 
-std_BufHdr (*std_buf__hdr(void (*b))) {
-    return (std_BufHdr *)((((char *)(b)) - (offsetof(std_BufHdr, buf))));
+old_std_BufHdr (*old_std_buf__hdr(void (*b))) {
+    return (old_std_BufHdr *)((((char *)(b)) - (offsetof(old_std_BufHdr, buf))));
 }
 
-uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key) {
+uint64_t old_std_map_get_uint64_from_uint64(old_std_Map (*map), uint64_t key) {
     if ((map->len) == (0)) {
         return 0;
     }
-    ullong i = (size_t)(std_hash_uint64(key));
+    ullong i = (size_t)(old_std_hash_uint64(key));
     for (;;) {
         i &= (map->cap) - (1);
         if ((map->keys[i]) == (key)) {
@@ -10228,14 +10228,14 @@ uint64_t std_map_get_uint64_from_uint64(std_Map (*map), uint64_t key) {
     return 0;
 }
 
-void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val) {
+void old_std_map_put_uint64_from_uint64(old_std_Map (*map), uint64_t key, uint64_t val) {
     if (!(val)) {
         return;
     }
     if (((2) * (map->len)) >= (map->cap)) {
-        std_map_grow(map, (2) * (map->cap));
+        old_std_map_grow(map, (2) * (map->cap));
     }
-    ullong i = (size_t)(std_hash_uint64(key));
+    ullong i = (size_t)(old_std_hash_uint64(key));
     for (;;) {
         i &= (map->cap) - (1);
         if (!(map->keys[i])) {
@@ -10251,7 +10251,7 @@ void std_map_put_uint64_from_uint64(std_Map (*map), uint64_t key, uint64_t val) 
     }
 }
 
-void std_os_path_normalize(char (*path)) {
+void old_std_os_path_normalize(char (*path)) {
     char (*ptr) = {0};
     for (ptr = path; *(ptr); (ptr)++) {
         if ((*(ptr)) == ('\\')) {
@@ -10263,23 +10263,23 @@ void std_os_path_normalize(char (*path)) {
     }
 }
 
-std_Map std_interns;
-size_t std_min(size_t x, size_t y) {
+old_std_Map old_std_interns;
+size_t old_std_min(size_t x, size_t y) {
     return ((x) <= (y) ? x : y);
 }
 
-std_os_FlagDef (*std_os_flag_defs);
-std_os_FlagDef (*std_os_get_flag_def(char const ((*name)))) {
-    for (size_t i = 0; (i) < (std_buf_len(std_os_flag_defs)); (i)++) {
-        if ((strcmp(std_os_flag_defs[i].name, name)) == (0)) {
-            return &(std_os_flag_defs[i]);
+old_std_os_FlagDef (*old_std_os_flag_defs);
+old_std_os_FlagDef (*old_std_os_get_flag_def(char const ((*name)))) {
+    for (size_t i = 0; (i) < (old_std_buf_len(old_std_os_flag_defs)); (i)++) {
+        if ((strcmp(old_std_os_flag_defs[i].name, name)) == (0)) {
+            return &(old_std_os_flag_defs[i]);
         }
     }
     return NULL;
 }
 
-char (*std_os_path_file(char (path[MAX_PATH]))) {
-    std_os_path_normalize(path);
+char (*old_std_os_path_file(char (path[MAX_PATH]))) {
+    old_std_os_path_normalize(path);
     for (char (*ptr) = (path) + (strlen(path)); (ptr) != (path); (ptr)--) {
         if ((ptr[-(1)]) == ('/')) {
             return ptr;
@@ -10288,7 +10288,7 @@ char (*std_os_path_file(char (path[MAX_PATH]))) {
     return path;
 }
 
-void std_os_dir__update(std_os_DirListIter (*iter), bool done, FindData (*fileinfo)) {
+void old_std_os_dir__update(old_std_os_DirListIter (*iter), bool done, FindData (*fileinfo)) {
     iter->valid = !(done);
     iter->error = (done) && ((errno) != (ENOENT));
     if (!(done)) {
@@ -10299,38 +10299,38 @@ void std_os_dir__update(std_os_DirListIter (*iter), bool done, FindData (*filein
     }
 }
 
-bool std_os_dir_excluded(std_os_DirListIter (*iter)) {
+bool old_std_os_dir_excluded(old_std_os_DirListIter (*iter)) {
     return (iter->valid) && ((((strcmp(iter->name, ".")) == (0)) || ((strcmp(iter->name, "..")) == (0))));
 }
 
-uintptr_t std_align_down(uintptr_t n, size_t a) {
+uintptr_t old_std_align_down(uintptr_t n, size_t a) {
     return (n) & (~(((a) - (1))));
 }
 
-size_t std_clamp_min(size_t x, size_t min) {
-    return std_max(x, min);
+size_t old_std_clamp_min(size_t x, size_t min) {
+    return old_std_max(x, min);
 }
 
-void (*std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size)) {
-    ullong new_cap = std_clamp_min((2) * (std_buf_cap(buf)), std_max(new_len, 16));
-    ullong new_size = (offsetof(std_BufHdr, buf)) + ((new_cap) * (elem_size));
-    std_BufHdr (*new_hdr) = {0};
+void (*old_std_buf__grow(void const ((*buf)), size_t new_len, size_t elem_size)) {
+    ullong new_cap = old_std_clamp_min((2) * (old_std_buf_cap(buf)), old_std_max(new_len, 16));
+    ullong new_size = (offsetof(old_std_BufHdr, buf)) + ((new_cap) * (elem_size));
+    old_std_BufHdr (*new_hdr) = {0};
     if (buf) {
-        new_hdr = std_xrealloc(std_buf__hdr((void *)(buf)), new_size);
+        new_hdr = old_std_xrealloc(old_std_buf__hdr((void *)(buf)), new_size);
     } else {
-        new_hdr = std_xmalloc(new_size);
+        new_hdr = old_std_xmalloc(new_size);
         new_hdr->len = 0;
     }
     new_hdr->cap = new_cap;
     return new_hdr->buf;
 }
 
-void std_map_grow(std_Map (*map), size_t new_cap) {
-    new_cap = std_clamp_min(new_cap, 16);
-    std_Map new_map = {.keys = std_xcalloc(new_cap, sizeof(uint64_t)), .vals = std_xmalloc((new_cap) * (sizeof(uint64_t))), .cap = new_cap};
+void old_std_map_grow(old_std_Map (*map), size_t new_cap) {
+    new_cap = old_std_clamp_min(new_cap, 16);
+    old_std_Map new_map = {.keys = old_std_xcalloc(new_cap, sizeof(uint64_t)), .vals = old_std_xmalloc((new_cap) * (sizeof(uint64_t))), .cap = new_cap};
     for (size_t i = 0; (i) < (map->cap); (i)++) {
         if (map->keys[i]) {
-            std_map_put_uint64_from_uint64(&(new_map), map->keys[i], map->vals[i]);
+            old_std_map_put_uint64_from_uint64(&(new_map), map->keys[i], map->vals[i]);
         }
     }
     free((void *)(map->keys));
@@ -10338,7 +10338,7 @@ void std_map_grow(std_Map (*map), size_t new_cap) {
     *(map) = new_map;
 }
 
-void (*std_xrealloc(void (*ptr), size_t num_bytes)) {
+void (*old_std_xrealloc(void (*ptr), size_t num_bytes)) {
     ptr = realloc(ptr, num_bytes);
     if (!(ptr)) {
         perror("xrealloc failed");

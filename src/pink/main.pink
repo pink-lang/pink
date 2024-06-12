@@ -1,6 +1,6 @@
 import libc {...}
-import std {...}
-import std.os {...}
+import old.std {...}
+import old.std.os {...}
 
 #always
 
