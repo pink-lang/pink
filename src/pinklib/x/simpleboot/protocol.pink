@@ -47,8 +47,8 @@ struct MultibootLdrNameTag {
 struct MultibootModuleTag {
     type: uint32;
     sz: uint32;
-    mod_start: uint32
-    mod_end: uint32
+    mod_start: uint32;
+    mod_end: uint32;
     string: char[];
 }
 
@@ -62,8 +62,8 @@ var MB_MEM_BADRAM = 5;
 struct MemoryMapEntry {
     base_addr: uint64;
     len: uint64;
-    type: uint32
-    reserved: uint32
+    type: uint32;
+    reserved: uint32;
 }
 
 struct MultibootMemoryMapTag {
@@ -74,7 +74,7 @@ struct MultibootMemoryMapTag {
     mmap: MemoryMapEntry[];
 }
 
-struct MultibootMemoryMapTag {
+struct MultibootFramebufferTag {
     type: uint32;
     sz: uint32;
     framebuffer_addr: uint64;
