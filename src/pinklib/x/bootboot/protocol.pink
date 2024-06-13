@@ -1,49 +1,46 @@
-// https://gitlab.com/bztsrc/bootboot/-/blob/master/dist/bootboot.h?ref_type=heads translated to pink
-// might add some utils too, but thats for later
+var BOOTMAGIC = "BOOT";
 
-const MAGIC = "BOOT";
+var MMIO = 0xfffffffff8000000;
+var FB = 0xfffffffffc000000;
+var INFO = 0xffffffffffe00000;
+var ENV = 0xffffffffffe01000;
+var CORE = 0xffffffffffe02000;
 
-const MMIO = 0xfffffffff8000000;
-const FB = 0xfffffffffc000000;
-const INFO = 0xffffffffffe00000;
-const ENV = 0xffffffffffe01000;
-const CORE = 0xffffffffffe02000;
-
-const PROTO_MINIMAL = 0;
-const PROTO_STATIC  = 1;
-const PROTO_DYNAMIC = 2;
+var PROTO_MINIMAL = 0;
+var PROTO_STATIC  = 1;
+var PROTO_DYNAMIC = 2;
 
 
-const PROTO_BIGENDIAN = 0x80;
+var PROTO_BIGENDIAN = 0x80;
 
-func ldr_bios(): u64 {
+func ldr_bios(): uint64 {
     return (0<<2);
 }
 
-func ldr_uefi(): u64 {
+func ldr_uefi(): uint64 {
     return (1<<2);
 }
 
-func ldr_rpi(): u64 {
+func ldr_rpi(): uint64 {
     return (2<<2);
 }
 
-func ldr_coreboot(): u64 {
+func ldr_coreboot(): uint64 {
     return (3<<2);
 }
 
-const FB_ARGB = 0;
-const FB_RGBA = 1;
-const FB_ABGR = 2;
-const FB_BGRA = 3;
+var FB_ARGB = 0;
+var FB_RGBA = 1;
+var FB_ABGR = 2;
+var FB_BGRA = 3;
 
 struct MemoryMapEntry {
-    ptr: u64;
-    sz: u64;
+    ptr: uint64;
+    sz: uint64;
 }
 
 func mmap_sz(a: MemoryMapEntry): usize {
-    return ((a).size & 0xFFFFFFFFFFFFFFF0);
+    return ((a).sz & 0xFFFFFFFFFFFFFFF0);
 }
 
 func mmap_ptr(a: MemoryMapEntry): usize {
@@ -51,41 +48,41 @@ func mmap_ptr(a: MemoryMapEntry): usize {
 }
 
 func mmap_type(a: MemoryMapEntry): usize {
-    return ((a).size & 0xF);
+    return ((a).sz & 0xF);
 }
 
 func mmap_is_free(a: MemoryMapEntry): bool {
-    return (((a).size)==1);
+    return (((a).sz)==1);
 }
 
-const MMAP_USED = 0;
-const MMAP_FREE = 1;
-const MMAP_ACPI = 2;
-const MMAP_MMIO = 3;
+var MMAP_USED = 0;
+var MMAP_FREE = 1;
+var MMAP_ACPI = 2;
+var MMAP_MMIO = 3;
 
 
-const INITRD_MAX = 16;
+var INITRD_MAX = 16;
 
 struct X86_64 {
-    acpi_ptr: u64;
-    smbi_ptr: u64;
-    efi_ptr: u64;
-    mp_ptr: u64;
-    not_used0: u64;
-    not_used1: u64;
-    not_used2: u64;
-    not_used3: u64;
+    acpi_ptr: uint64;
+    smbi_ptr: uint64;
+    efi_ptr: uint64;
+    mp_ptr: uint64;
+    not_used0: uint64;
+    not_used1: uint64;
+    not_used2: uint64;
+    not_used3: uint64;
 }
 
 struct AArch64 {
-    acpi_ptr: u64;
-    mmio_ptr: u64;
-    efi_ptr: u64;
-    not_used0: u64;
-    not_used1: u64;
-    not_used2: u64;
-    not_used3: u64;
-    not_used4: u64;
+    acpi_ptr: uint64;
+    mmio_ptr: uint64;
+    efi_ptr: uint64;
+    not_used0: uint64;
+    not_used1: uint64;
+    not_used2: uint64;
+    not_used3: uint64;
+    not_used4: uint64;
 }
 
 union Arch {
@@ -94,21 +91,21 @@ union Arch {
 }
 
 struct BOOTBOOT {
-    magic: u8[4];
-    sz: u32;
-    protocol: u8;
-    fb_type: u8;
-    numcores: u16;
-    bspid: u16;
-    tz: i16;
-    datetime: u8[8];
-    initrd_ptr: u64;
-    initrd_sz: u64;
-    fb_ptr: u64;
-    fb_sz: u32;
-    fb_width: u32;
-    fb_height: u32;
-    fb_scanline: u32;
+    magic: uint8[4];
+    sz: uint32;
+    protocol: uint8;
+    fb_type: uint8;
+    numcores: uint16;
+    bspid: uint16;
+    tz: int16;
+    datetime: uint8[8];
+    initrd_ptr: uint64;
+    initrd_sz: uint64;
+    fb_ptr: uint64;
+    fb_sz: uint32;
+    fb_width: uint32;
+    fb_height: uint32;
+    fb_scanline: uint32;
 
     arch: Arch;
 

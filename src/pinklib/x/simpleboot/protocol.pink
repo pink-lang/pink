@@ -1,0 +1,39 @@
+var MAGIC = "Simpleboot";
+
+var MB_MAGIC = 0x36d76289;
+
+var MB_MOD_ALIGN = 0x00001000;
+var MB_INFO_ALIGN = 0x00000008;
+
+var MB_TAG_ALIGN = 8;
+var MB_TAG_TYPE_END = 0;
+var MB_TAG_TYPE_CMDLINE = 1;
+var MB_TAG_TYPE_BOOTLDR_NAME = 2;
+var MB_TAG_TYPE_MODULE = 3;
+var MB_TAG_TYPE_MMAP = 6;
+var MB_TAG_TYPE_FRAMEBUFFER = 8;
+var MB_TAG_TYPE_EFI64 = 12;
+var MB_TAG_TYPE_SMBIOS = 13;
+var MB_TAG_TYPE_ACPI_OLD = 14;
+var MB_TAG_TYPE_ACPI_NEW = 15;
+var MB_TAG_TYPE_EFI64_IH = 20;
+
+
+var MB_TAG_TYPE_EDID = 256;
+var MB_TAG_TYPE_SMP = 256;
+
+struct MultibootInfo {
+    total_sz: uint32;
+    reserved: uint32;
+}
+
+struct MultibootTag {
+    type: uint32;
+    sz: uint32;
+}
+
+struct MultibootCMDTag {
+    type: uint32;
+    sz: uint32;
+    string: char[];
+}
