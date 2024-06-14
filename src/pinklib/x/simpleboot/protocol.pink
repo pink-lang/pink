@@ -35,13 +35,13 @@ struct MultibootTag {
 struct MultibootCMDTag {
     type: uint32;
     sz: uint32;
-    string: char[];
+    str: char[255];
 }
 
 struct MultibootLdrNameTag {
     type: uint32;
     sz: uint32;
-    string: char[];
+    str: char[255];
 }
 
 struct MultibootModuleTag {
@@ -49,7 +49,7 @@ struct MultibootModuleTag {
     sz: uint32;
     mod_start: uint32;
     mod_end: uint32;
-    string: char[];
+    str: char[255];
 }
 
 var MB_MEM_USABLE = 0;
@@ -71,7 +71,7 @@ struct MultibootMemoryMapTag {
     sz: uint32;
     entry_sz: uint64;
     entry_version: uint64;
-    mmap: MemoryMapEntry[];
+    mmap: MemoryMapEntry[4096];
 }
 
 struct MultibootFramebufferTag {
@@ -104,19 +104,19 @@ struct MultibootSMBiosTag {
     major: uint8;
     minor: uint8;
     reserved: uint8[6];
-    tables: uint8[];
+    tables: uint8[255];
 }
 
 struct MultibootACPIOldTag {
     type: uint32;
     sz: uint32;
-    rsdp: uint8[];
+    rsdp: uint8[255];
 }
 
 struct MultibootACPINewTag {
     type: uint32;
     sz: uint32;
-    rsdp: uint8[];
+    rsdp: uint8[255];
 }
 
 struct MultibootEFI64IHTag {
@@ -128,7 +128,7 @@ struct MultibootEFI64IHTag {
 struct MultibootEDIDTag {
     type: uint32;
     sz: uint32;
-    edid: uint64[];
+    edid: uint64[255];
 }
 
 struct MultibootSMPTag {
