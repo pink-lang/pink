@@ -1,0 +1,10 @@
+
+func pinb_entry(): int {
+
+    mkdir("build", 0);
+
+    system("pink -o build/build.c -fullgen -notypeinfo -nosourcemap ./");
+    system("cc ./build/build.c -o build.exe");
+    system("build/build.exe");
+    return 0;
+}

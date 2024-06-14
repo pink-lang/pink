@@ -12,5 +12,6 @@ var flag_fullgen: bool;
 
 func main(argc: int, argv: char const**): int {
     // main_test();
-    return pink_entry(argc, argv, gen_all, "c");
+    pink_entry(argc, argv, gen_all, "c");
+    return 0;
 }

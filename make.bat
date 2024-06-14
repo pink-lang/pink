@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set PINK_HOME=%~dp0\src
+set PINK_HOME=%~dp0\dist
 set PINK_OS=win32
 
 call vs\vsenv -arch=x64

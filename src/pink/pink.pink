@@ -21,15 +21,17 @@ func add_package_search_path_range(start: char const*, end: char const*) {
 func init_package_search_paths() {
     pinkhome_var := getenv("PINK_HOME");
     if (!pinkhome_var) {
-        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where pinklib is located)\n");
+        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where `lib` is located)\n");
         exit(1);
     }
     path: char[MAX_PATH];
     path_copy(path, pinkhome_var);
-    path_join(path, "pinklib");
+    path_join(path, "lib");
     add_package_search_path(path);
     add_package_search_path(".");
-    add_package_search_path("./deps/");
+    add_package_search_path("./vendor");
+    add_package_search_path("./src");
+    add_package_search_path("./tmp");
     pinkpath_var := getenv("PINK_PATH");
     if (pinkpath_var) {
         start := pinkpath_var;

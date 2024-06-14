@@ -2992,7 +2992,7 @@ const TypeInfo *typeinfo_table[646] = {
     [453] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(68, TYPE_PTR, src_pink_Decl (**))},
     [454] = NULL, // Func
     [455] = NULL, // Func
-    [456] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [101]), .align = alignof(char [101]), .base = TYPEID(3, TYPE_CHAR, char), .count = 101},
+    [456] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [99]), .align = alignof(char [99]), .base = TYPEID(3, TYPE_CHAR, char), .count = 99},
     [457] = NULL, // Func
     [458] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [44]), .align = alignof(char [44]), .base = TYPEID(3, TYPE_CHAR, char), .count = 44},
     [459] = NULL, // Func
@@ -3221,7 +3221,8 @@ const TypeInfo **typeinfos = (const TypeInfo **)typeinfo_table;
 
 // Definitions
 int main(int argc, char const ((*(*argv)))) {
-    return src_pink_pink_entry(argc, argv, src_pink_gen_all, "c");
+    src_pink_pink_entry(argc, argv, src_pink_gen_all, "c");
+    return 0;
 }
 
 char const ((*current_os)) = "win32";
@@ -6773,15 +6774,17 @@ void src_pink_add_package_search_path_range(char const ((*start)), char const ((
 void src_pink_init_package_search_paths(void) {
     char (*pinkhome_var) = getenv("PINK_HOME");
     if (!(pinkhome_var)) {
-        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where pinklib is located)\n");
+        printf("error: Set the environment variable PINK_HOME to the Pink home directory (where `lib` is located)\n");
         exit(1);
     }
     char (path[MAX_PATH]) = {0};
     old_std_os_path_copy(path, pinkhome_var);
-    old_std_os_path_join(path, "pinklib");
+    old_std_os_path_join(path, "lib");
     src_pink_add_package_search_path(path);
     src_pink_add_package_search_path(".");
-    src_pink_add_package_search_path("./deps/");
+    src_pink_add_package_search_path("./vendor");
+    src_pink_add_package_search_path("./src");
+    src_pink_add_package_search_path("./tmp");
     char (*pinkpath_var) = getenv("PINK_PATH");
     if (pinkpath_var) {
         char (*start) = pinkpath_var;

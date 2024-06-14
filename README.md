@@ -18,4 +18,4 @@ see [`BUILDING.md`](./BUILDING.md)
 
 ## License
 
-the stdlib ([./src/pinklib/](./src/pinklib/)) is public domain, while the compiler  ([./src/pink/](./src/pink/)) is `GPL-3.0-only`
+the stdlib ([./dist/lib](./dist/lib/)) is public domain, while the compiler  ([./src/pink/](./src/pink/)) is `GPL-3.0-only`

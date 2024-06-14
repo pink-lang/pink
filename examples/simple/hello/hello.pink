@@ -1,5 +1,0 @@
-import libc {...}
-
-func main() {
-    printf("Hello, Pink");
-}

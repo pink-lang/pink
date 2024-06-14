@@ -1,0 +1,11 @@
+import libc {...}
+
+#foreign(header = "<fileapi.h>")
+
+@foreign("CreateDirectoryA")
+func mkdir (dirname: char const*, security: int);
+@foreign("RemoveDirectoryA")
+func rmdir (dirname: char const*);
+func main(): int {
+    return pinb_entry();
+}
