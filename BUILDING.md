@@ -12,4 +12,4 @@ get gcc, then run `make.sh`
 
 ## MacOS / osx
 
-get clang, then run `make_osx.sh`
+TBA

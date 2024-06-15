@@ -5,5 +5,5 @@ export PINK_OS=linux
 
 test -f ./dist/bin/pink && dist/bin/pink -nosourcemap -o src/c/out_pink_linux.c src/pink
 
-gcc -static -o dist/bin/pink src/c/pink.c
+gcc -pipe -O2 -flto -static -o dist/bin/pink src/c/pink.c
 
