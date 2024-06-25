@@ -1,15 +1,8 @@
 # Building pink
 
-hopefully simple...
+Should take under 1 minute.
 
 ## Windows
 
-get visual studio, then run `make.bat`
+get GCC from winlibs or TDM, then run make.bat and pray that it works
 
-## Linux
-
-get gcc, then run `make.sh`
-
-## MacOS / osx
-
-TBA
