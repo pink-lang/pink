@@ -1,1 +1,0 @@
-var current_os: char const* = "osx";

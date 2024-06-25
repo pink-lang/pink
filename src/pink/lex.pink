@@ -35,7 +35,7 @@ var declare_note_name: char const*;
 var static_assert_name: char const*;
 
 // #define KEYWORD(name) name##_keyword = str_intern(#name); buf_push(keywords, name##_keyword)
-func init_keyword(keyword: char const*): char const* {
+fun init_keyword(keyword: char const*): char const* {
     keyword = str_intern(keyword);
     buf_push((:void**)&keywords, (:void*)&keyword, sizeof(keyword));
     return keyword;
@@ -43,7 +43,7 @@ func init_keyword(keyword: char const*): char const* {
 
 var keywords_inited = false;
 
-func init_keywords() {
+fun init_keywords() {
     if (keywords_inited) {
         return;
     }
@@ -54,7 +54,7 @@ func init_keywords() {
     union_keyword = init_keyword("union");
     const_keyword = init_keyword("const");
     var_keyword = init_keyword("var");
-    func_keyword = init_keyword("func");
+    func_keyword = init_keyword("fun");
     import_keyword = init_keyword("import");
     goto_keyword = init_keyword("goto");
     sizeof_keyword = init_keyword("sizeof");
@@ -87,7 +87,7 @@ func init_keywords() {
 
 // #undef KEYWORD
 
-func is_keyword_name(name: char const*): bool {
+fun is_keyword_name(name: char const*): bool {
     return first_keyword <= name && name <= last_keyword;
 }
 
@@ -247,7 +247,7 @@ var token_kind_names: char const*[] = {
     [TOKEN_COLON_ASSIGN] = ":=",
 };
 
-func token_kind_name(kind: TokenKind): char const* {
+fun token_kind_name(kind: TokenKind): char const* {
     if (kind < sizeof(token_kind_names)/sizeof(*token_kind_names)) {
         return token_kind_names[kind];
     } else {
@@ -294,7 +294,7 @@ var token: Token;
 var stream: char const*;
 var line_start: char const*;
 
-func vnotice(level: char const*, pos: SrcPos, fmt: char const*, args: va_list) {
+fun vnotice(level: char const*, pos: SrcPos, fmt: char const*, args: va_list) {
     if (pos.name == NULL) {
         pos = pos_builtin;
     }
@@ -303,25 +303,25 @@ func vnotice(level: char const*, pos: SrcPos, fmt: char const*, args: va_list) {
     printf("\n");
 }
 
-func warning(pos: SrcPos, fmt: char const*, ...) {
+fun warning(pos: SrcPos, fmt: char const*, ...) {
     args: va_list;
     va_start(&args, &fmt);
     vnotice("warning", pos, fmt, args);
     va_end(&args);
 }
 
-func verror(pos: SrcPos, fmt: char const*, args: va_list) {
+fun verror(pos: SrcPos, fmt: char const*, args: va_list) {
     vnotice("error", pos, fmt, args);
 }
 
-func error(pos: SrcPos, fmt: char const*, ...) {
+fun error(pos: SrcPos, fmt: char const*, ...) {
     args: va_list;
     va_start(&args, &fmt);
     verror(pos, fmt, args);
     va_end(&args);
 }
 
-func fatal_error(pos: SrcPos, fmt: char const*, ...) {
+fun fatal_error(pos: SrcPos, fmt: char const*, ...) {
     args: va_list;
     va_start(&args, &fmt);
     verror(pos, fmt, args);
@@ -334,7 +334,7 @@ func fatal_error(pos: SrcPos, fmt: char const*, ...) {
 // #define warning_here(...) (error(token.pos, __VA_ARGS__))
 // #define fatal_error(token.pos, ...) (error(token.pos, __VA_ARGS__), exit(1))
 
-func token_info(): char const* {
+fun token_info(): char const* {
     if (token.kind == TOKEN_NAME || token.kind == TOKEN_KEYWORD) {
         return token.name;
     } else {
@@ -361,7 +361,7 @@ var char_to_digit: uint8[256] = {
     ['f'] = 15, ['F'] = 15,
 };
 
-func scan_int() {
+fun scan_int() {
     base := 10;
     start_digits := stream;
     if (*stream == '0') {
@@ -435,7 +435,7 @@ func scan_int() {
 
 @foreign const HUGE_VAL = 0.0;
 
-func scan_float() {
+fun scan_float() {
     start := stream;
     while (isdigit(*stream)) {
         stream++;
@@ -483,7 +483,7 @@ var escape_to_char: char[256] = {
     ['a'] = '\a',
 };
 
-func scan_hex_escape(): int {
+fun scan_hex_escape(): int {
     stream++;
     val := char_to_digit[(:uchar)*stream];
     if (!val && *stream != '0') {
@@ -503,7 +503,7 @@ func scan_hex_escape(): int {
     return val;
 }
 
-func scan_char() {
+fun scan_char() {
     stream++;
     val := 0;
     if (*stream == '\'') {
@@ -536,7 +536,7 @@ func scan_char() {
     token.mod = MOD_CHAR;
 }
 
-func scan_str() {
+fun scan_str() {
     stream++;
     str: char* = NULL;
     if (stream[0] == '"' && stream[1] == '"') {
@@ -621,7 +621,7 @@ func scan_str() {
 //         } \
 //         break;
 
-func next_token() {
+fun next_token() {
 :repeat
     token.start = stream;
     token.mod = 0;
@@ -868,7 +868,7 @@ func next_token() {
 // #undef CASE2
 // #undef CASE3
 
-func init_stream(name: char const*, buf: char const*) {
+fun init_stream(name: char const*, buf: char const*) {
     stream = buf;
     line_start = stream;
     token.pos.name = name ? name : (:char const*)"<string>";
@@ -876,23 +876,23 @@ func init_stream(name: char const*, buf: char const*) {
     next_token();
 }
 
-func is_token(kind: TokenKind): bool {
+fun is_token(kind: TokenKind): bool {
     return token.kind == kind;
 }
 
-func is_token_eof(): bool {
+fun is_token_eof(): bool {
     return token.kind == TOKEN_EOF;
 }
 
-func is_token_name(name: char const*): bool {
+fun is_token_name(name: char const*): bool {
     return token.kind == TOKEN_NAME && token.name == name;
 }
 
-func is_keyword(name: char const*): bool {
+fun is_keyword(name: char const*): bool {
     return is_token(TOKEN_KEYWORD) && token.name == name;
 }
 
-func match_keyword(name: char const*): bool {
+fun match_keyword(name: char const*): bool {
     if (is_keyword(name)) {
         next_token();
         return true;
@@ -901,7 +901,7 @@ func match_keyword(name: char const*): bool {
     }
 }
 
-func match_token(kind: TokenKind): bool {
+fun match_token(kind: TokenKind): bool {
     if (is_token(kind)) {
         next_token();
         return true;
@@ -910,7 +910,7 @@ func match_token(kind: TokenKind): bool {
     }
 }
 
-func expect_token(kind: TokenKind): bool {
+fun expect_token(kind: TokenKind): bool {
     if (is_token(kind)) {
         next_token();
         return true;

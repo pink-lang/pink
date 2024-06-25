@@ -10,7 +10,7 @@ var flag_nosourcemap: bool;
 var flag_notypeinfo: bool;
 var flag_fullgen: bool;
 
-func main(argc: int, argv: char const**): int {
+fun main(argc: int, argv: char const**): int {
     // main_test();
     pink_entry(argc, argv, gen_all, "c");
     return 0;

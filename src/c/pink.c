@@ -22,13 +22,7 @@ struct src_pink_Type;
 
 bool cast_operand(struct src_pink_Operand *operand, struct src_pink_Type *type);
 
-#ifdef _WIN32
-#   include "out_pink_win32.c"
-#elif __APPLE_
-#   include "out_pink_osx.c"
-#else
-#   include "out_pink_linux.c"
-#endif
+#include "out_pink.c"
 
 #define CASE(k, t) \
     case k: \

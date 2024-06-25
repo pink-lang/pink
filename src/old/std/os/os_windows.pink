@@ -16,27 +16,27 @@ struct FindData {
 }
 
 @foreign
-func _findclose(handle: intptr): int;
+fun _findclose(handle: intptr): int;
 
 @foreign
-func _findfirst(filespec: char const*, fileinfo: FindData*): intptr;
+fun _findfirst(filespec: char const*, fileinfo: FindData*): intptr;
 
 @foreign
-func _findnext(handle: intptr, fileinfo: FindData*): int;
+fun _findnext(handle: intptr, fileinfo: FindData*): int;
 
 @foreign
-func _fullpath(absPath: char*, relPath: char const*, maxLength: usize): char*;
+fun _fullpath(absPath: char*, relPath: char const*, maxLength: usize): char*;
 
 @foreign("_strdup")
-func strdup(strSource: char const*): char*;
+fun strdup(strSource: char const*): char*;
 
-func path_absolute(path: char[MAX_PATH]) {
+fun path_absolute(path: char[MAX_PATH]) {
     rel_path: char[MAX_PATH];
     path_copy(rel_path, path);
     _fullpath(path, rel_path, MAX_PATH);
 }
 
-func dir_list_free(iter: DirListIter*) {
+fun dir_list_free(iter: DirListIter*) {
     if (iter.valid) {
         _findclose((:intptr)iter.handle);
         iter.valid = false;
@@ -44,7 +44,7 @@ func dir_list_free(iter: DirListIter*) {
     }
 }
 
-func dir__update(iter: DirListIter*, done: bool, fileinfo: FindData*) {
+fun dir__update(iter: DirListIter*, done: bool, fileinfo: FindData*) {
     iter.valid = !done;
     iter.error = done && errno != ENOENT;
     if (!done) {
@@ -55,7 +55,7 @@ func dir__update(iter: DirListIter*, done: bool, fileinfo: FindData*) {
     }
 }
 
-func dir_list_next(iter: DirListIter*) {
+fun dir_list_next(iter: DirListIter*) {
     if (!iter.valid) {
         return;
     }
@@ -70,7 +70,7 @@ func dir_list_next(iter: DirListIter*) {
     } while (dir_excluded(iter));
 }
 
-func dir_list(iter: DirListIter*, path: char const*) {
+fun dir_list(iter: DirListIter*, path: char const*) {
     memset(iter, 0, sizeof(*iter));
     path_copy(iter.base, path);
     filespec: char[MAX_PATH];

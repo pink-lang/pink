@@ -1,14 +1,10 @@
 enum Os {
-    OS_WIN32,
-    OS_LINUX,
-    OS_OSX,
+    OS_WINDOWS,
     NUM_OSES,
 }
 
 var os_names: char const*[NUM_OSES] = {
-    [OS_WIN32] = "win32",
-    [OS_LINUX] = "linux",
-    [OS_OSX] = "osx",
+    [OS_WINDOWS] = "windows",
 };
 
 enum Arch {
@@ -25,7 +21,7 @@ var arch_names: char const*[NUM_ARCHES] = {
 var target_os: int;
 var target_arch: int;
 
-func get_os(name: char const*): int {
+fun get_os(name: char const*): int {
     for (i := 0; i < NUM_OSES; i++) {
         if (strcmp(os_names[i], name) == 0) {
             return i;
@@ -34,7 +30,7 @@ func get_os(name: char const*): int {
     return -1;
 }
 
-func get_arch(name: char const*): int {
+fun get_arch(name: char const*): int {
     for (i := 0; i < NUM_ARCHES; i++) {
         if (strcmp(arch_names[i], name) == 0) {
             return i;
@@ -43,7 +39,7 @@ func get_arch(name: char const*): int {
     return -1;
 }
 
-func init_default_type_metrics(metrics: TypeMetrics[NUM_CMPL_TYPE_KINDS]) {
+fun init_default_type_metrics(metrics: TypeMetrics[NUM_CMPL_TYPE_KINDS]) {
     metrics[CMPL_TYPE_BOOL] = {size = 1, align = 1};
     metrics[CMPL_TYPE_CHAR] = {size = 1, align = 1, max = 0x7f, sign = true};
     metrics[CMPL_TYPE_SCHAR] = {size = 1, align = 1, max = 0x7f, sign = true};
@@ -86,29 +82,15 @@ var lp64_metrics: TypeMetrics[NUM_CMPL_TYPE_KINDS] = {
     [CMPL_TYPE_ULONG] = {size = 8, align = 8, max = 0xffffffffffffffff, sign = true},
 };
 
-func init_target() {
+fun init_target() {
     type_metrics = NULL;
     switch (target_os) {
-    case OS_WIN32:
+    case OS_WINDOWS:
         switch (target_arch) {
         case ARCH_X86:
             type_metrics = win32_x86_metrics;
         case ARCH_X64:
             type_metrics = win32_x64_metrics;
-        default:
-        }
-    case OS_LINUX:
-        switch (target_arch) {
-        case ARCH_X86:
-            type_metrics = ilp32_metrics;
-        case ARCH_X64:
-            type_metrics = lp64_metrics;
-        default:
-        }
-    case OS_OSX:
-        switch (target_arch) {
-        case ARCH_X64:
-            type_metrics = lp64_metrics;
         default:
         }
     default:
@@ -130,7 +112,7 @@ func init_target() {
     }
 }
 
-func is_excluded_target_filename(name: char const*): bool {
+fun is_excluded_target_filename(name: char const*): bool {
     end := name + strlen(name);
 
     ptr1 := end;

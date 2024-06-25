@@ -3,14 +3,14 @@ var static_package_search_paths: char const*[MAX_SEARCH_PATHS];
 var package_search_paths: char const** = static_package_search_paths;
 var num_package_search_paths: int;
 
-func add_package_search_path(path: char const*) {
+fun add_package_search_path(path: char const*) {
     if (flag_verbose) {
         printf("Adding package search path %s\n", path);
     }
     package_search_paths[num_package_search_paths++] = str_intern(path);
 }
 
-func add_package_search_path_range(start: char const*, end: char const*) {
+fun add_package_search_path_range(start: char const*, end: char const*) {
     path: char[MAX_PATH];
     len: usize = clamp_max(end - start, MAX_PATH - 1);
     memcpy(path, start, len);
@@ -18,7 +18,7 @@ func add_package_search_path_range(start: char const*, end: char const*) {
     add_package_search_path(path);
 }
 
-func init_package_search_paths() {
+fun init_package_search_paths() {
     pinkhome_var := getenv("PINK_HOME");
     if (!pinkhome_var) {
         printf("error: Set the environment variable PINK_HOME to the Pink home directory (where `lib` is located)\n");
@@ -47,7 +47,7 @@ func init_package_search_paths() {
     }
 }
 
-func init_compiler() {
+fun init_compiler() {
     init_target();
     init_package_search_paths();
     init_keywords();
@@ -55,7 +55,7 @@ func init_compiler() {
     map_put(&decl_note_names, declare_note_name, (:void*)1);
 }
 
-func parse_env_vars() {
+fun parse_env_vars() {
     pinkos_var := getenv("PINK_OS");
     if (pinkos_var) {
         os := get_os(pinkos_var);
@@ -76,7 +76,7 @@ func parse_env_vars() {
     }
 }
 
-func pink_entry(argc: int, argv: char const**, gen_all: func(), extension: char const*): int {
+fun pink_entry(argc: int, argv: char const**, gen_all: fun(), extension: char const*): int {
     parse_env_vars();
     output_name: char const*;
     flag_check := false;

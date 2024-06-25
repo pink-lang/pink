@@ -14,9 +14,10 @@ jobs:
   build_windows:
     runs-on: windows-latest
     steps:
-    - uses: TheMrMilchmann/setup-msvc-dev@v3
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
       with:
-        arch: x64
+        platform: x64
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Try building for windows 0
@@ -25,3 +26,15 @@ jobs:
       run: cmd /c make.bat
     - name: Try building for windows 2
       run: cmd /c make.bat
+    - uses: actions/checkout@master
+    - name: Archive Release
+      uses: thedoctor0/zip-release@0.7.5
+      with:
+        type: '7z'
+        directory: './dist/'
+        filename: 'pink-windows_x64.7z'
+        exclusions: '*.git*'
+    - uses: actions/upload-artifact@v4
+      with:
+        name: 'Pink Windows x64'
+        path: 'pink-windows_x64.7z'

@@ -1521,13 +1521,9 @@ void src_pink_finalize_reachable_syms(void);
 
 typedef int src_pink_Os;
 
-#define SRC_PINK_OS_WIN32 ((src_pink_Os)(0))
+#define SRC_PINK_OS_WINDOWS ((src_pink_Os)(0))
 
-#define SRC_PINK_OS_LINUX ((src_pink_Os)((SRC_PINK_OS_WIN32) + (1)))
-
-#define SRC_PINK_OS_OSX ((src_pink_Os)((SRC_PINK_OS_LINUX) + (1)))
-
-#define SRC_PINK_NUM_OSES ((src_pink_Os)((SRC_PINK_OS_OSX) + (1)))
+#define SRC_PINK_NUM_OSES ((src_pink_Os)((SRC_PINK_OS_WINDOWS) + (1)))
 
 extern char const ((*(src_pink_os_names[SRC_PINK_NUM_OSES])));
 
@@ -2215,7 +2211,7 @@ const TypeInfo *typeinfo_table[646] = {
     [18] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(17, TYPE_CONST, char const )},
     [19] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(18, TYPE_PTR, char const (*))},
     [20] = NULL, // Func
-    [21] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [6]), .align = alignof(char [6]), .base = TYPEID(3, TYPE_CHAR, char), .count = 6},
+    [21] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [8]), .align = alignof(char [8]), .base = TYPEID(3, TYPE_CHAR, char), .count = 8},
     [22] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(3, TYPE_CHAR, char)},
     [23] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [4]), .align = alignof(char [4]), .base = TYPEID(3, TYPE_CHAR, char), .count = 4},
     [24] = NULL, // Enum
@@ -2692,7 +2688,7 @@ const TypeInfo *typeinfo_table[646] = {
     [214] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [2]), .align = alignof(char [2]), .base = TYPEID(3, TYPE_CHAR, char), .count = 2},
     [215] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [3]), .align = alignof(char [3]), .base = TYPEID(3, TYPE_CHAR, char), .count = 3},
     [216] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[7])), .align = alignof(char const (*[7])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 7},
-    [217] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [8]), .align = alignof(char [8]), .base = TYPEID(3, TYPE_CHAR, char), .count = 8},
+    [217] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [6]), .align = alignof(char [6]), .base = TYPEID(3, TYPE_CHAR, char), .count = 6},
     [218] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [7]), .align = alignof(char [7]), .base = TYPEID(3, TYPE_CHAR, char), .count = 7},
     [219] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [5]), .align = alignof(char [5]), .base = TYPEID(3, TYPE_CHAR, char), .count = 5},
     [220] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[54])), .align = alignof(char const (*[54])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 54},
@@ -2846,7 +2842,7 @@ const TypeInfo *typeinfo_table[646] = {
     [330] = NULL, // Func
     [331] = NULL, // Func
     [332] = NULL, // Enum
-    [333] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[3])), .align = alignof(char const (*[3])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 3},
+    [333] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[1])), .align = alignof(char const (*[1])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 1},
     [334] = NULL, // Enum
     [335] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char const (*[2])), .align = alignof(char const (*[2])), .base = TYPEID(18, TYPE_PTR, char const (*)), .count = 2},
     [336] = NULL, // Func
@@ -2969,7 +2965,7 @@ const TypeInfo *typeinfo_table[646] = {
     [430] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(8, TYPE_INT, int)},
     [431] = NULL, // Func
     [432] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [26]), .align = alignof(char [26]), .base = TYPEID(3, TYPE_CHAR, char), .count = 26},
-    [433] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [62]), .align = alignof(char [62]), .base = TYPEID(3, TYPE_CHAR, char), .count = 62},
+    [433] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [61]), .align = alignof(char [61]), .base = TYPEID(3, TYPE_CHAR, char), .count = 61},
     [434] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [49]), .align = alignof(char [49]), .base = TYPEID(3, TYPE_CHAR, char), .count = 49},
     [435] = &(TypeInfo){TYPE_PTR, .size = sizeof(void *), .align = alignof(void *), .base = TYPEID(64, TYPE_PTR, src_pink_Typespec (**))},
     [436] = &(TypeInfo){TYPE_ARRAY, .size = sizeof(char [69]), .align = alignof(char [69]), .base = TYPEID(3, TYPE_CHAR, char), .count = 69},
@@ -3225,7 +3221,7 @@ int main(int argc, char const ((*(*argv)))) {
     return 0;
 }
 
-char const ((*current_os)) = "win32";
+char const ((*current_os)) = "windows";
 char const ((*current_arch)) = "x64";
 TypeKind typeid_kind(typeid type) {
     return (TypeKind)((((type) >> (24))) & (0xff));
@@ -5147,7 +5143,7 @@ void src_pink_init_keywords(void) {
     src_pink_union_keyword = src_pink_init_keyword("union");
     src_pink_const_keyword = src_pink_init_keyword("const");
     src_pink_var_keyword = src_pink_init_keyword("var");
-    src_pink_func_keyword = src_pink_init_keyword("func");
+    src_pink_func_keyword = src_pink_init_keyword("fun");
     src_pink_import_keyword = src_pink_init_keyword("import");
     src_pink_goto_keyword = src_pink_init_keyword("goto");
     src_pink_sizeof_keyword = src_pink_init_keyword("sizeof");
@@ -5883,7 +5879,7 @@ src_pink_Typespec (*src_pink_parse_type_func_param(void)) {
     src_pink_Typespec (*type) = src_pink_parse_type();
     if (src_pink_match_token(SRC_PINK_TOKEN_COLON)) {
         if ((type->kind) != (SRC_PINK_TYPESPEC_NAME)) {
-            src_pink_error(src_pink_token.pos, "Colons in parameters of func types must be preceded by names.");
+            src_pink_error(src_pink_token.pos, "Colons in parameters of fun types must be preceded by names.");
         }
         type = src_pink_parse_type();
     }
@@ -7126,7 +7122,7 @@ void src_pink_put_type_name(char (*(*buf)), src_pink_Type (*type)) {
             break;
         }
         case SRC_PINK_CMPL_TYPE_FUNC: {
-            old_std_buf_printf(buf, "func(");
+            old_std_buf_printf(buf, "fun(");
             for (size_t i = 0; (i) < (type->function.num_params); (i)++) {
                 if ((i) != (0)) {
                     old_std_buf_printf(buf, ", ");
@@ -9251,7 +9247,7 @@ void src_pink_finalize_reachable_syms(void) {
     }
 }
 
-char const ((*(src_pink_os_names[SRC_PINK_NUM_OSES]))) = {[SRC_PINK_OS_WIN32] = "win32", [SRC_PINK_OS_LINUX] = "linux", [SRC_PINK_OS_OSX] = "osx"};
+char const ((*(src_pink_os_names[SRC_PINK_NUM_OSES]))) = {[SRC_PINK_OS_WINDOWS] = "windows"};
 char const ((*(src_pink_arch_names[SRC_PINK_NUM_ARCHES]))) = {[SRC_PINK_ARCH_X64] = "x64", [SRC_PINK_ARCH_X86] = "x86"};
 int src_pink_target_os;
 int src_pink_target_arch;
@@ -9295,7 +9291,7 @@ src_pink_TypeMetrics (src_pink_lp64_metrics[SRC_PINK_NUM_CMPL_TYPE_KINDS]) = {[S
 void src_pink_init_target(void) {
     src_pink_type_metrics = NULL;
     switch (src_pink_target_os) {
-    case SRC_PINK_OS_WIN32: {
+    case SRC_PINK_OS_WINDOWS: {
         switch (src_pink_target_arch) {
         case SRC_PINK_ARCH_X86: {
             src_pink_type_metrics = src_pink_win32_x86_metrics;
@@ -9303,34 +9299,6 @@ void src_pink_init_target(void) {
         }
         case SRC_PINK_ARCH_X64: {
             src_pink_type_metrics = src_pink_win32_x64_metrics;
-            break;
-        }
-        default: {
-            break;
-        }
-        }
-        break;
-    }
-    case SRC_PINK_OS_LINUX: {
-        switch (src_pink_target_arch) {
-        case SRC_PINK_ARCH_X86: {
-            src_pink_type_metrics = src_pink_ilp32_metrics;
-            break;
-        }
-        case SRC_PINK_ARCH_X64: {
-            src_pink_type_metrics = src_pink_lp64_metrics;
-            break;
-        }
-        default: {
-            break;
-        }
-        }
-        break;
-    }
-    case SRC_PINK_OS_OSX: {
-        switch (src_pink_target_arch) {
-        case SRC_PINK_ARCH_X64: {
-            src_pink_type_metrics = src_pink_lp64_metrics;
             break;
         }
         default: {
