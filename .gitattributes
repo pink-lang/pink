@@ -1,1 +1,2 @@
-*.pink linguist-language=Go
+*.pink linguist-language=Pink
+*.c linguist-language=Pink
