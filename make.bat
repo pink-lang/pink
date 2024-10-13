@@ -3,13 +3,11 @@ setlocal
 
 set PINK_HOME=%~dp0\dist
 set PINK_OS=windows
-
-call vs\vsenv -arch=x64
   
 dist\bin\pink.exe -nosourcemap -o src\c\out_pink.c src/pink
 
 md dist\bin
 
-gcc src\c\pink.c -o dist\bin\pink.exe
+cl /MP /FS /Ox /W0 /nologo src\c\pink.c /Fe:dist\bin\pink.exe /EHsc /link /SUBSYSTEM:CONSOLE /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:LIBCMT  kernel32.lib vcruntime.lib msvcrt.lib 
 
 endlocal

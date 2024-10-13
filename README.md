@@ -5,7 +5,7 @@
 Friendly high performance C-like programming language.
 
 ```pink
-import libc {...}
+import libc
 
 fun main() {
   printf("Hello, Pink");

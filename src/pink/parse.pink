@@ -846,6 +846,8 @@ fun parse_decl_import(pos: SrcPos): Decl* {
             }
         }
         expect_token(TOKEN_RBRACE);
+    } else {
+        import_all = true;
     }
     return new_decl_import(pos, rename_name, is_relative, names, buf_len(names), import_all, items, buf_len(items));
 }

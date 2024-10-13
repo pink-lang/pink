@@ -29,9 +29,8 @@ fun init_package_search_paths() {
     path_join(path, "lib");
     add_package_search_path(path);
     add_package_search_path(".");
-    add_package_search_path("./vendor");
-    add_package_search_path("./src");
-    add_package_search_path("./tmp");
+    add_package_search_path("vendor");
+    add_package_search_path("src");
     pinkpath_var := getenv("PINK_PATH");
     if (pinkpath_var) {
         start := pinkpath_var;

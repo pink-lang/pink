@@ -1,4 +1,4 @@
-import libc {...}
+import libc
 
 // #define MIN(x, y) ((x) <= (y) ? (x) : (y))
 fun min(x: usize, y: usize): usize {

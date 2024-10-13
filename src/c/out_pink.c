@@ -6701,6 +6701,8 @@ src_pink_Decl (*src_pink_parse_decl_import(src_pink_SrcPos pos)) {
             }
         }
         src_pink_expect_token(SRC_PINK_TOKEN_RBRACE);
+    } else {
+        import_all = true;
     }
     return src_pink_new_decl_import(pos, rename_name, is_relative, names, old_std_buf_len(names), import_all, items, old_std_buf_len(items));
 }
@@ -6778,9 +6780,8 @@ void src_pink_init_package_search_paths(void) {
     old_std_os_path_join(path, "lib");
     src_pink_add_package_search_path(path);
     src_pink_add_package_search_path(".");
-    src_pink_add_package_search_path("./vendor");
-    src_pink_add_package_search_path("./src");
-    src_pink_add_package_search_path("./tmp");
+    src_pink_add_package_search_path("vendor");
+    src_pink_add_package_search_path("src");
     char (*pinkpath_var) = getenv("PINK_PATH");
     if (pinkpath_var) {
         char (*start) = pinkpath_var;

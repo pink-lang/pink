@@ -4,5 +4,5 @@ Should take under 1 minute.
 
 ## Windows
 
-get GCC from winlibs or TDM, then run make.bat and pray that it works
+you need MSVC, then in a developer prompt run build.bat
 

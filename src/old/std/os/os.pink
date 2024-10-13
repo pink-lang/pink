@@ -1,6 +1,5 @@
-import old.std {...}
-import libc {...}
-
+import old.std
+import libc
 
 @foreign
 const MAX_PATH = 256;

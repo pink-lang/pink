@@ -1,4 +1,4 @@
-import libc {...}
+import libc
 
 fun print(fmt: char const*, ...) {
     args: va_list;
